@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "142203643271",
+    "project_id": "camera-app-d2fd5",
+    "storage_bucket": "camera-app-d2fd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142203643271:android:b97e6d75925cc41fd21f22",
+        "android_client_info": {
+          "package_name": "com.truongnguyen.camera"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6PZd8arQYphsoO3hR50USTRRxMLzyMeI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
