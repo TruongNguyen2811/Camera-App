@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 Future<void> main() async {
   // Khởi tạo CameraFlutterBinding trước khi chạy ứng dụng
   WidgetsFlutterBinding.ensureInitialized();
-
   // Lấy danh sách các camera có sẵn trên thiết bị
 
   runApp(CameraApp());

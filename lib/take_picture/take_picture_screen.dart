@@ -25,138 +25,159 @@ class _CameraPageState extends State<CameraPage> {
         backgroundColor: Colors.black,
         body: Stack(
           children: [
-            CameraAwesomeBuilder.custom(
-              flashMode: FlashMode.auto,
-              saveConfig: SaveConfig.photo(
-                pathBuilder: () {
-                  return _path(CaptureMode.photo);
-                },
-              ),
-              progressIndicator: Center(
-                child: CircularProgressIndicator(
-                  color: Colors.grey,
+            Container(
+              // height: MediaQuery.of(context).size.height * 0.8,
+              // width: MediaQuery.of(context).size.width,
+              child: CameraAwesomeBuilder.custom(
+                flashMode: FlashMode.auto,
+                // aspectRatio: CameraAspectRatios.ratio_16_9,
+                // previewFit: CameraPreviewFit.fitHeight,
+                saveConfig: SaveConfig.photo(
+                  pathBuilder: () {
+                    return _path(CaptureMode.photo);
+                  },
                 ),
-              ),
-              builder: (CameraState state, previewSize, previewRect) {
-                return state.when(
-                    onPreparingCamera: (state) => const Center(
-                            child: CircularProgressIndicator(
-                          color: Colors.grey,
-                          backgroundColor: Colors.black,
-                        )),
-                    onPhotoMode: (state) => Stack(
-                          children: [
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                // decoration: const BoxDecoration(
-                                //   color: Color.fromRGBO(47, 44, 44, 0.5),
-                                // ),
-                                child: Stack(children: [
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        // state.takePhoto();
-                                        setState(() {
-                                          isLoading = true;
-                                        });
-                                        final File imageFile;
-                                        try {
-                                          String imagePath =
-                                              await state.takePhoto();
-                                          // imageFile = File(await state.takePhoto());
-                                          setState(() {
-                                            isLoading = false;
-                                          });
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ViewPicture(
-                                                // image: imageFile,
-                                                imagePath: imagePath,
-                                              ),
-                                            ),
-                                          );
-                                        } catch (e) {
-                                          setState(() {
-                                            isLoading = false;
-                                          });
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                                content: Text(
-                                                    'Error: Unable to save photo to gallery')),
-                                          );
-                                        }
-                                      },
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.18,
-                                        // height: MediaQuery.of(context).size.height * 0.18,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.black26,
-                                          border: Border.all(
-                                            color: Colors.white,
-                                            width: 2,
-                                          ),
-                                        ),
-                                        child: Center(
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.15,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.16,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                progressIndicator: Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.grey,
+                  ),
+                ),
+                builder: (CameraState state, previewSize, previewRect) {
+                  return state.when(
+                      onPreparingCamera: (state) => const Center(
+                              child: CircularProgressIndicator(
+                            color: Colors.grey,
+                            backgroundColor: Colors.black,
+                          )),
+                      onPhotoMode: (state) => Stack(
+                            children: [
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.2,
+                                  decoration: const BoxDecoration(
+                                    color: Color.fromRGBO(47, 44, 44, 0.6),
                                   ),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 40),
+                                  child: Stack(children: [
+                                    Align(
+                                      alignment: Alignment.center,
                                       child: GestureDetector(
-                                        onTap: () {
-                                          state.switchCameraSensor();
+                                        onTap: () async {
+                                          // state.takePhoto();
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          final File imageFile;
+                                          try {
+                                            String imagePath =
+                                                await state.takePhoto();
+                                            // imageFile = File(await state.takePhoto());
+                                            setState(() {
+                                              isLoading = false;
+                                            });
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ViewPicture(
+                                                  // image: imageFile,
+                                                  imagePath: imagePath,
+                                                ),
+                                              ),
+                                            );
+                                          } catch (e) {
+                                            setState(() {
+                                              isLoading = false;
+                                            });
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                  content: Text(
+                                                      'Error: Unable to save photo to gallery')),
+                                            );
+                                          }
                                         },
                                         child: Container(
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.14,
-                                          decoration: const BoxDecoration(
+                                              0.18,
+                                          // height: MediaQuery.of(context).size.height * 0.18,
+                                          decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             color: Colors.black26,
+                                            border: Border.all(
+                                              color: Colors.white,
+                                              width: 2,
+                                            ),
                                           ),
-                                          child: const Icon(
-                                            Icons.autorenew,
-                                            color: Colors.white,
-                                            size: 35,
+                                          child: Center(
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.15,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.16,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  )
-                                ]),
+                                    Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 12),
+                                        child: Text(
+                                          "PHOTO",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(right: 20),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            state.switchCameraSensor();
+                                          },
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.14,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.black26,
+                                            ),
+                                            child: const Icon(
+                                              Icons.autorenew,
+                                              color: Colors.white,
+                                              size: 32,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ]),
+                                ),
                               ),
-                            ),
-                          ],
-                        ));
-              },
+                            ],
+                          ));
+                },
+              ),
             ),
             isLoading == true
                 ? AbsorbPointer(
