@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:app_camera/take_picture/view_picture.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> {
   bool isLoading = false;
+  double choose = 1;
+  int _pointers = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -26,156 +29,377 @@ class _CameraPageState extends State<CameraPage> {
         body: Stack(
           children: [
             Container(
-              // height: MediaQuery.of(context).size.height * 0.8,
-              // width: MediaQuery.of(context).size.width,
               child: CameraAwesomeBuilder.custom(
                 flashMode: FlashMode.auto,
-                // aspectRatio: CameraAspectRatios.ratio_16_9,
-                // previewFit: CameraPreviewFit.fitHeight,
+                aspectRatio: CameraAspectRatios.ratio_4_3,
+                zoom: 0,
                 saveConfig: SaveConfig.photo(
                   pathBuilder: () {
                     return _path(CaptureMode.photo);
                   },
                 ),
+                previewFit: CameraPreviewFit.fitWidth,
+                onPreviewScaleBuilder: (state) {
+                  return OnPreviewScale(
+                    onScale: (scale) {
+                      // Xử lý sự kiện zoom với giá trị tỷ lệ zoom là 'scale'
+                      state.sensorConfig.setZoom(sin(scale));
+                      print('Zoom scale: $scale');
+                    },
+                  );
+                },
                 progressIndicator: Center(
                   child: CircularProgressIndicator(
                     color: Colors.grey,
                   ),
                 ),
                 builder: (CameraState state, previewSize, previewRect) {
+                  double a = 0;
+                  // state.sensorConfig
+                  //     .setAspectRatio(CameraAspectRatios.ratio_16_9);
+                  print('check ${state.sensorConfig.zoom$.last}');
+                  // state.sensorConfig.zoom$.last;
                   return state.when(
                       onPreparingCamera: (state) => const Center(
                               child: CircularProgressIndicator(
                             color: Colors.grey,
                             backgroundColor: Colors.black,
                           )),
-                      onPhotoMode: (state) => Stack(
-                            children: [
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.2,
-                                  decoration: const BoxDecoration(
-                                    color: Color.fromRGBO(47, 44, 44, 0.6),
-                                  ),
-                                  child: Stack(children: [
+                      onPhotoMode: (state) {
+                        // state.sensorConfig
+                        //     .setAspectRatio(CameraAspectRatios.ratio_16_9);
+                        return StreamBuilder(
+                            stream: state.sensorConfig.zoom$,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Stack(
+                                  children: [
                                     Align(
-                                      alignment: Alignment.center,
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          // state.takePhoto();
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-                                          final File imageFile;
-                                          try {
-                                            String imagePath =
-                                                await state.takePhoto();
-                                            // imageFile = File(await state.takePhoto());
-                                            setState(() {
-                                              isLoading = false;
-                                            });
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ViewPicture(
-                                                  // image: imageFile,
-                                                  imagePath: imagePath,
-                                                ),
-                                              ),
-                                            );
-                                          } catch (e) {
-                                            setState(() {
-                                              isLoading = false;
-                                            });
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                  content: Text(
-                                                      'Error: Unable to save photo to gallery')),
-                                            );
-                                          }
-                                        },
+                                        alignment: Alignment.bottomCenter,
                                         child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.18,
-                                          // height: MediaQuery.of(context).size.height * 0.18,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.black26,
-                                            border: Border.all(
-                                              color: Colors.white,
-                                              width: 2,
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.15,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.16,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.topCenter,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 12),
-                                        child: Text(
-                                          "PHOTO",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(right: 20),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            state.switchCameraSensor();
-                                          },
-                                          child: Container(
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.14,
-                                            decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.black26,
+                                                0.3,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.06,
+                                            margin: EdgeInsets.only(
+                                                bottom: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.21),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(30)),
+                                              color: Color.fromRGBO(
+                                                  47, 44, 44, 0.5),
                                             ),
-                                            child: const Icon(
-                                              Icons.autorenew,
-                                              color: Colors.white,
-                                              size: 32,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      state.sensorConfig
+                                                          .setZoom(0);
+                                                    });
+                                                    // state.sensorConfig.setZoom(0);
+                                                  },
+                                                  child: Container(
+                                                    width: state.sensorConfig
+                                                                    .zoom >=
+                                                                0 &&
+                                                            state.sensorConfig
+                                                                    .zoom <
+                                                                0.125
+                                                        ? 40
+                                                        : 30,
+                                                    height:
+                                                        // ignore: unrelated_type_equality_checks
+                                                        state.sensorConfig
+                                                                        .zoom >=
+                                                                    0 &&
+                                                                state.sensorConfig
+                                                                        .zoom <
+                                                                    sqrt(0.125)
+                                                            ? 40
+                                                            : 30,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Color.fromRGBO(
+                                                          47, 44, 44, 0.7),
+                                                    ),
+                                                    child: Center(
+                                                        child: Text(
+                                                      state.sensorConfig.zoom >=
+                                                                  0 &&
+                                                              state.sensorConfig
+                                                                      .zoom <
+                                                                  sqrt(0.125)
+                                                          ? '${(4 * (state.sensorConfig.zoom) * (state.sensorConfig.zoom) + 1).toStringAsFixed(1)}x'
+                                                          : '1',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: state.sensorConfig
+                                                                        .zoom >=
+                                                                    0 &&
+                                                                state.sensorConfig
+                                                                        .zoom <
+                                                                    sqrt(0.125)
+                                                            ? Colors.yellow
+                                                            : Colors.white,
+                                                      ),
+                                                    )),
+                                                  ),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      state.sensorConfig
+                                                          .setZoom(sqrt(0.125));
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    width: state.sensorConfig
+                                                                    .zoom >=
+                                                                sqrt(0.125) &&
+                                                            state.sensorConfig
+                                                                    .zoom <
+                                                                sqrt(0.5)
+                                                        ? 40
+                                                        : 30,
+                                                    height: state.sensorConfig
+                                                                    .zoom >=
+                                                                sqrt(0.125) &&
+                                                            state.sensorConfig
+                                                                    .zoom <
+                                                                sqrt(0.5)
+                                                        ? 40
+                                                        : 30,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Color.fromRGBO(
+                                                          47, 44, 44, 0.7),
+                                                    ),
+                                                    child: Center(
+                                                        child: Text(
+                                                      state.sensorConfig.zoom >=
+                                                                  sqrt(0.125) &&
+                                                              state.sensorConfig
+                                                                      .zoom <
+                                                                  sqrt(0.5)
+                                                          ? '${(4 * (state.sensorConfig.zoom) * (state.sensorConfig.zoom) + 1).toStringAsFixed(1)}x'
+                                                          : '1.5',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: state.sensorConfig
+                                                                        .zoom >=
+                                                                    sqrt(
+                                                                        0.125) &&
+                                                                state.sensorConfig
+                                                                        .zoom <
+                                                                    sqrt(0.5)
+                                                            ? Colors.yellow
+                                                            : Colors.white,
+                                                      ),
+                                                    )),
+                                                  ),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      state.sensorConfig
+                                                          .setZoom(sqrt(0.5));
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    width: state.sensorConfig
+                                                                .zoom >=
+                                                            sqrt(0.5)
+                                                        ? 40
+                                                        : 30,
+                                                    height: state.sensorConfig
+                                                                .zoom >=
+                                                            sqrt(0.5)
+                                                        ? 40
+                                                        : 30,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Color.fromRGBO(
+                                                          47, 44, 44, 0.7),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        state.sensorConfig
+                                                                    .zoom >=
+                                                                sqrt(0.5)
+                                                            ? '${(4 * (state.sensorConfig.zoom) * (state.sensorConfig.zoom) + 1).toStringAsFixed(1)}x'
+                                                            : '3',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          color:
+                                                              state.sensorConfig
+                                                                          .zoom >=
+                                                                      sqrt(0.5)
+                                                                  ? Colors
+                                                                      .yellow
+                                                                  : Colors
+                                                                      .white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ))),
+                                    Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.2,
+                                        decoration: const BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(47, 44, 44, 0.6),
+                                        ),
+                                        child: Stack(children: [
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                // state.takePhoto();
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                final File imageFile;
+                                                try {
+                                                  String imagePath =
+                                                      await state.takePhoto();
+                                                  // imageFile = File(await state.takePhoto());
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ViewPicture(
+                                                        // image: imageFile,
+                                                        imagePath: imagePath,
+                                                      ),
+                                                    ),
+                                                  );
+                                                } catch (e) {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                        content: Text(
+                                                            'Error: Unable to save photo to gallery')),
+                                                  );
+                                                }
+                                              },
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.18,
+                                                // height: MediaQuery.of(context).size.height * 0.18,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.black26,
+                                                  border: Border.all(
+                                                    color: Colors.white,
+                                                    width: 2,
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.15,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.16,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                          Align(
+                                            alignment: Alignment.topCenter,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 12),
+                                              child: Text(
+                                                "PHOTO",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 20),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  // setState(() {
+                                                  state.switchCameraSensor();
+                                                  state.sensorConfig
+                                                      .setAspectRatio(
+                                                          CameraAspectRatios
+                                                              .ratio_16_9);
+                                                  // });
+                                                },
+                                                child: Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.14,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.black26,
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.autorenew,
+                                                    color: Colors.white,
+                                                    size: 32,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ]),
                                       ),
-                                    )
-                                  ]),
-                                ),
-                              ),
-                            ],
-                          ));
+                                    ),
+                                  ],
+                                );
+                              } else {
+                                return Container(); // Return an empty container or a placeholder widget
+                              }
+                            });
+                      });
                 },
               ),
             ),
