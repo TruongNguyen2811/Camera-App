@@ -114,7 +114,7 @@ class _CameraPageState extends State<CameraPage> {
                                                                 0 &&
                                                             state.sensorConfig
                                                                     .zoom <
-                                                                0.125
+                                                                sqrt(0.125)
                                                         ? 40
                                                         : 30,
                                                     height:
