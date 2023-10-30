@@ -15,7 +15,9 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   bool isLoading = false;
   double choose = 1;
-  int _pointers = 0;
+  double zoom = 0;
+  // int _pointers = 0;
+  bool isFlash = true;
   @override
   void initState() {
     // TODO: implement initState
@@ -32,7 +34,7 @@ class _CameraPageState extends State<CameraPage> {
               child: CameraAwesomeBuilder.custom(
                 flashMode: FlashMode.auto,
                 aspectRatio: CameraAspectRatios.ratio_16_9,
-                zoom: 0,
+                zoom: zoom,
                 saveConfig: SaveConfig.photo(
                   pathBuilder: () {
                     return _path(CaptureMode.photo);
@@ -56,8 +58,7 @@ class _CameraPageState extends State<CameraPage> {
                 builder: (CameraState state, previewSize, previewRect) {
                   double a = 0;
                   // state.sensorConfig
-                  //     .setAspectRatio(CameraAspectRatios.ratio_16_9);
-                  print('check ${state.sensorConfig.zoom$.last}');
+                  //     .setAspectRatio(CameraAspectRatios.ratio_16_9)
                   // state.sensorConfig.zoom$.last;
                   return state.when(
                       onPreparingCamera: (state) => const Center(
@@ -72,8 +73,81 @@ class _CameraPageState extends State<CameraPage> {
                             stream: state.sensorConfig.zoom$,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
+                                zoom = state.sensorConfig.zoom;
+                                print(
+                                    'check sensor ${state.sensorConfig.zoom}');
                                 return Stack(
                                   children: [
+                                    Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.12,
+                                            decoration: BoxDecoration(
+                                              color: Color.fromRGBO(
+                                                  47, 44, 44, 0.5),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            // alignment: Alignment.topLeft,
+                                            left: 16,
+                                            top: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.075,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                if (isFlash == true) {
+                                                  state.sensorConfig
+                                                      .setFlashMode(
+                                                          FlashMode.none);
+                                                  setState(() {
+                                                    isFlash = false;
+                                                  });
+                                                } else {
+                                                  state.sensorConfig
+                                                      .setFlashMode(
+                                                          FlashMode.auto);
+                                                  setState(() {
+                                                    isFlash = true;
+                                                  });
+                                                }
+                                              },
+                                              child: Container(
+                                                // margin:
+                                                //     EdgeInsets.only(left: 0),
+                                                // width: MediaQuery.of(context)
+                                                //         .size
+                                                //         .width *
+                                                //     0.32,
+                                                decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.black26,
+                                                ),
+                                                child: Center(
+                                                  child: Icon(
+                                                    isFlash == true
+                                                        ? Icons
+                                                            .flash_on_outlined
+                                                        : Icons
+                                                            .flash_off_outlined,
+                                                    color: Colors.white,
+                                                    size: 28,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
                                     Align(
                                         alignment: Alignment.bottomCenter,
                                         child: Container(
@@ -369,6 +443,16 @@ class _CameraPageState extends State<CameraPage> {
                                                       .setAspectRatio(
                                                           CameraAspectRatios
                                                               .ratio_16_9);
+                                                  if (isFlash == true) {
+                                                    state.sensorConfig
+                                                        .setFlashMode(
+                                                            FlashMode.auto);
+                                                  }
+                                                  if (isFlash == false) {
+                                                    state.sensorConfig
+                                                        .setFlashMode(
+                                                            FlashMode.none);
+                                                  }
                                                   // });
                                                 },
                                                 child: Container(
