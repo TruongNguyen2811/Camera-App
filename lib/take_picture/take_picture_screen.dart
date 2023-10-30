@@ -31,7 +31,7 @@ class _CameraPageState extends State<CameraPage> {
             Container(
               child: CameraAwesomeBuilder.custom(
                 flashMode: FlashMode.auto,
-                aspectRatio: CameraAspectRatios.ratio_4_3,
+                aspectRatio: CameraAspectRatios.ratio_16_9,
                 zoom: 0,
                 saveConfig: SaveConfig.photo(
                   pathBuilder: () {
