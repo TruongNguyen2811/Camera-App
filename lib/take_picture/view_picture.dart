@@ -9,10 +9,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 class ViewPicture extends StatefulWidget {
   // final File image;
   String imagePath;
-  ViewPicture(
-      {super.key,
-      // required this.image,
-      required this.imagePath});
+  ViewPicture({super.key, required this.imagePath});
 
   @override
   State<ViewPicture> createState() => _ViewPictureState();
