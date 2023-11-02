@@ -66,8 +66,8 @@ class _CameraPageState extends State<CameraPage> {
                     //   state.sensorConfig.setZoom(scale / 3);
                     // }
                     // Xử lý sự kiện zoom với giá trị tỷ lệ zoom là 'scale'
-                    state.sensorConfig.setZoom(sin(scale));
-                    print('Zoom scale: $scale');
+                    state.sensorConfig.setZoom(0);
+                    // print('Zoom scale: $scale');
                   },
                 );
               },
@@ -165,182 +165,182 @@ class _CameraPageState extends State<CameraPage> {
                                       ],
                                     ),
                                   ),
-                                  Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.32,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.06,
-                                          margin: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.21),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(30)),
-                                            color:
-                                                Color.fromRGBO(47, 44, 44, 0.5),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    state.sensorConfig
-                                                        .setZoom(0);
-                                                  });
-                                                  // state.sensorConfig.setZoom(0);
-                                                },
-                                                child: Container(
-                                                  width:
-                                                      state.sensorConfig.zoom >=
-                                                                  0 &&
-                                                              state.sensorConfig
-                                                                      .zoom <
-                                                                  sqrt(0.125)
-                                                          ? 40
-                                                          : 30,
-                                                  height:
-                                                      // ignore: unrelated_type_equality_checks
-                                                      state.sensorConfig.zoom >=
-                                                                  0 &&
-                                                              state.sensorConfig
-                                                                      .zoom <
-                                                                  sqrt(0.125)
-                                                          ? 40
-                                                          : 30,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Color.fromRGBO(
-                                                        47, 44, 44, 0.7),
-                                                  ),
-                                                  child: Center(
-                                                      child: Text(
-                                                    state.sensorConfig.zoom >=
-                                                                0 &&
-                                                            state.sensorConfig
-                                                                    .zoom <
-                                                                sqrt(0.125)
-                                                        ? '${(4 * (state.sensorConfig.zoom) * (state.sensorConfig.zoom) + 1).toStringAsFixed(1)}x'
-                                                        : '1',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: state.sensorConfig
-                                                                      .zoom >=
-                                                                  0 &&
-                                                              state.sensorConfig
-                                                                      .zoom <
-                                                                  sqrt(0.125)
-                                                          ? Colors.yellow
-                                                          : Colors.white,
-                                                    ),
-                                                  )),
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    state.sensorConfig
-                                                        .setZoom(sqrt(0.125));
-                                                  });
-                                                },
-                                                child: Container(
-                                                  width:
-                                                      state.sensorConfig.zoom >=
-                                                                  sqrt(0.125) &&
-                                                              state.sensorConfig
-                                                                      .zoom <
-                                                                  sqrt(0.5)
-                                                          ? 40
-                                                          : 30,
-                                                  height:
-                                                      state.sensorConfig.zoom >=
-                                                                  sqrt(0.125) &&
-                                                              state.sensorConfig
-                                                                      .zoom <
-                                                                  sqrt(0.5)
-                                                          ? 40
-                                                          : 30,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Color.fromRGBO(
-                                                        47, 44, 44, 0.7),
-                                                  ),
-                                                  child: Center(
-                                                      child: Text(
-                                                    state.sensorConfig.zoom >=
-                                                                sqrt(0.125) &&
-                                                            state.sensorConfig
-                                                                    .zoom <
-                                                                sqrt(0.5)
-                                                        ? '${(4 * (state.sensorConfig.zoom) * (state.sensorConfig.zoom) + 1).toStringAsFixed(1)}x'
-                                                        : '1.5',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: state.sensorConfig
-                                                                      .zoom >=
-                                                                  sqrt(0.125) &&
-                                                              state.sensorConfig
-                                                                      .zoom <
-                                                                  sqrt(0.5)
-                                                          ? Colors.yellow
-                                                          : Colors.white,
-                                                    ),
-                                                  )),
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    state.sensorConfig
-                                                        .setZoom(sqrt(0.5));
-                                                  });
-                                                },
-                                                child: Container(
-                                                  width:
-                                                      state.sensorConfig.zoom >=
-                                                              sqrt(0.5)
-                                                          ? 40
-                                                          : 30,
-                                                  height:
-                                                      state.sensorConfig.zoom >=
-                                                              sqrt(0.5)
-                                                          ? 40
-                                                          : 30,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Color.fromRGBO(
-                                                        47, 44, 44, 0.7),
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      state.sensorConfig.zoom >=
-                                                              sqrt(0.5)
-                                                          ? '${(4 * (state.sensorConfig.zoom) * (state.sensorConfig.zoom) + 1).toStringAsFixed(1)}x'
-                                                          : '3',
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color:
-                                                            state.sensorConfig
-                                                                        .zoom >=
-                                                                    sqrt(0.5)
-                                                                ? Colors.yellow
-                                                                : Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ))),
+                                  // Align(
+                                  //     alignment: Alignment.bottomCenter,
+                                  //     child: Container(
+                                  //         width: MediaQuery.of(context)
+                                  //                 .size
+                                  //                 .width *
+                                  //             0.32,
+                                  //         height: MediaQuery.of(context)
+                                  //                 .size
+                                  //                 .height *
+                                  //             0.06,
+                                  //         margin: EdgeInsets.only(
+                                  //             bottom: MediaQuery.of(context)
+                                  //                     .size
+                                  //                     .height *
+                                  //                 0.21),
+                                  //         decoration: BoxDecoration(
+                                  //           borderRadius: BorderRadius.all(
+                                  //               Radius.circular(30)),
+                                  //           color:
+                                  //               Color.fromRGBO(47, 44, 44, 0.5),
+                                  //         ),
+                                  //         child: Row(
+                                  //           mainAxisAlignment:
+                                  //               MainAxisAlignment.spaceEvenly,
+                                  //           children: [
+                                  //             GestureDetector(
+                                  //               onTap: () {
+                                  //                 setState(() {
+                                  //                   state.sensorConfig
+                                  //                       .setZoom(0);
+                                  //                 });
+                                  //                 // state.sensorConfig.setZoom(0);
+                                  //               },
+                                  //               child: Container(
+                                  //                 width:
+                                  //                     state.sensorConfig.zoom >=
+                                  //                                 0 &&
+                                  //                             state.sensorConfig
+                                  //                                     .zoom <
+                                  //                                 sqrt(0.125)
+                                  //                         ? 40
+                                  //                         : 30,
+                                  //                 height:
+                                  //                     // ignore: unrelated_type_equality_checks
+                                  //                     state.sensorConfig.zoom >=
+                                  //                                 0 &&
+                                  //                             state.sensorConfig
+                                  //                                     .zoom <
+                                  //                                 sqrt(0.125)
+                                  //                         ? 40
+                                  //                         : 30,
+                                  //                 decoration: BoxDecoration(
+                                  //                   shape: BoxShape.circle,
+                                  //                   color: Color.fromRGBO(
+                                  //                       47, 44, 44, 0.7),
+                                  //                 ),
+                                  //                 child: Center(
+                                  //                     child: Text(
+                                  //                   state.sensorConfig.zoom >=
+                                  //                               0 &&
+                                  //                           state.sensorConfig
+                                  //                                   .zoom <
+                                  //                               sqrt(0.125)
+                                  //                       ? '${(4 * (state.sensorConfig.zoom) * (state.sensorConfig.zoom) + 1).toStringAsFixed(1)}x'
+                                  //                       : '1',
+                                  //                   style: TextStyle(
+                                  //                     fontSize: 14,
+                                  //                     color: state.sensorConfig
+                                  //                                     .zoom >=
+                                  //                                 0 &&
+                                  //                             state.sensorConfig
+                                  //                                     .zoom <
+                                  //                                 sqrt(0.125)
+                                  //                         ? Colors.yellow
+                                  //                         : Colors.white,
+                                  //                   ),
+                                  //                 )),
+                                  //               ),
+                                  //             ),
+                                  //             GestureDetector(
+                                  //               onTap: () {
+                                  //                 setState(() {
+                                  //                   state.sensorConfig
+                                  //                       .setZoom(sqrt(0.125));
+                                  //                 });
+                                  //               },
+                                  //               child: Container(
+                                  //                 width:
+                                  //                     state.sensorConfig.zoom >=
+                                  //                                 sqrt(0.125) &&
+                                  //                             state.sensorConfig
+                                  //                                     .zoom <
+                                  //                                 sqrt(0.5)
+                                  //                         ? 40
+                                  //                         : 30,
+                                  //                 height:
+                                  //                     state.sensorConfig.zoom >=
+                                  //                                 sqrt(0.125) &&
+                                  //                             state.sensorConfig
+                                  //                                     .zoom <
+                                  //                                 sqrt(0.5)
+                                  //                         ? 40
+                                  //                         : 30,
+                                  //                 decoration: BoxDecoration(
+                                  //                   shape: BoxShape.circle,
+                                  //                   color: Color.fromRGBO(
+                                  //                       47, 44, 44, 0.7),
+                                  //                 ),
+                                  //                 child: Center(
+                                  //                     child: Text(
+                                  //                   state.sensorConfig.zoom >=
+                                  //                               sqrt(0.125) &&
+                                  //                           state.sensorConfig
+                                  //                                   .zoom <
+                                  //                               sqrt(0.5)
+                                  //                       ? '${(4 * (state.sensorConfig.zoom) * (state.sensorConfig.zoom) + 1).toStringAsFixed(1)}x'
+                                  //                       : '1.5',
+                                  //                   style: TextStyle(
+                                  //                     fontSize: 14,
+                                  //                     color: state.sensorConfig
+                                  //                                     .zoom >=
+                                  //                                 sqrt(0.125) &&
+                                  //                             state.sensorConfig
+                                  //                                     .zoom <
+                                  //                                 sqrt(0.5)
+                                  //                         ? Colors.yellow
+                                  //                         : Colors.white,
+                                  //                   ),
+                                  //                 )),
+                                  //               ),
+                                  //             ),
+                                  //             GestureDetector(
+                                  //               onTap: () {
+                                  //                 setState(() {
+                                  //                   state.sensorConfig
+                                  //                       .setZoom(sqrt(0.5));
+                                  //                 });
+                                  //               },
+                                  //               child: Container(
+                                  //                 width:
+                                  //                     state.sensorConfig.zoom >=
+                                  //                             sqrt(0.5)
+                                  //                         ? 40
+                                  //                         : 30,
+                                  //                 height:
+                                  //                     state.sensorConfig.zoom >=
+                                  //                             sqrt(0.5)
+                                  //                         ? 40
+                                  //                         : 30,
+                                  //                 decoration: BoxDecoration(
+                                  //                   shape: BoxShape.circle,
+                                  //                   color: Color.fromRGBO(
+                                  //                       47, 44, 44, 0.7),
+                                  //                 ),
+                                  //                 child: Center(
+                                  //                   child: Text(
+                                  //                     state.sensorConfig.zoom >=
+                                  //                             sqrt(0.5)
+                                  //                         ? '${(4 * (state.sensorConfig.zoom) * (state.sensorConfig.zoom) + 1).toStringAsFixed(1)}x'
+                                  //                         : '3',
+                                  //                     style: TextStyle(
+                                  //                       fontSize: 14,
+                                  //                       color:
+                                  //                           state.sensorConfig
+                                  //                                       .zoom >=
+                                  //                                   sqrt(0.5)
+                                  //                               ? Colors.yellow
+                                  //                               : Colors.white,
+                                  //                     ),
+                                  //                   ),
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           ],
+                                  //         ))),
                                   Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
