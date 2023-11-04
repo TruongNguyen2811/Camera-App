@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Your own description</string>
+	<string>$(PRODUCT_NAME) uses Cameras</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>$(PRODUCT_NAME) uses photo library</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>To enable microphone access when recording video</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

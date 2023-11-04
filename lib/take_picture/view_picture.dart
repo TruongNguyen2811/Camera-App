@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -123,13 +124,15 @@ class _ViewPictureState extends State<ViewPicture> {
                             var compressedImage =
                                 await FlutterImageCompress.compressWithFile(
                               widget.imagePath,
-                              quality: 55,
+                              quality: 10,
                             );
                             final file = File(widget.imagePath);
                             await file.writeAsBytes(compressedImage!.toList());
-                            final result = await ImageGallerySaver.saveFile(
-                              file.path,
-                              name: controller.text,
+                            List<int> bytes = await file.readAsBytes();
+                            final result = await ImageGallerySaver.saveImage(
+                              Uint8List.fromList(bytes),
+                              quality: 40,
+                              name: '${controller.text}',
                             );
                             if (result['isSuccess']) {
                               setState(() {
