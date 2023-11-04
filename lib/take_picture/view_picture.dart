@@ -2,10 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class ViewPicture extends StatefulWidget {
   // final File image;
@@ -124,20 +122,24 @@ class _ViewPictureState extends State<ViewPicture> {
                             var compressedImage =
                                 await FlutterImageCompress.compressWithFile(
                               widget.imagePath,
+                              format: CompressFormat.jpeg,
                               quality: 10,
                             );
                             final file = File(widget.imagePath);
                             await file.writeAsBytes(compressedImage!.toList());
-                            List<int> bytes = await file.readAsBytes();
-                            final result = await ImageGallerySaver.saveImage(
-                              Uint8List.fromList(bytes),
-                              quality: 40,
-                              name: '${controller.text}',
+                            // List<int> bytes = await file.readAsBytes();
+                            final AssetEntity? result =
+                                await PhotoManager.editor.saveImage(
+                              compressedImage,
+                              // quality: 40,
+                              title: '${controller.text}.jpg',
+                              // isReturnImagePathOfIOS: true,
                             );
-                            if (result['isSuccess']) {
+                            if (result != null) {
                               setState(() {
                                 isLoading = false;
                               });
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content: Text('Photo saved to gallery')),
