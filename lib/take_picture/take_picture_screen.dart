@@ -24,19 +24,19 @@ class _CameraPageState extends State<CameraPage> {
     super.initState();
   }
 
-  Future<void> _handleScaleUpdate(ScaleUpdateDetails details) async {
-    // When there are not exactly two fingers on screen don't scale
-    // if (_controller == null || _pointers != 2) {
-    //   print('check ${_pointers}');
-    //   return;
-    // }
-    // state.sensorConfig.setZoom(1);
-    // _currentScale = (_baseScale * details.scale)
-    //     .clamp(_minAvailableZoom, _maxAvailableZoom);
-    print('checka ${details.scale}');
-    // print('check ${_currentScale}');
-    // await _controller.setZoomLevel(_currentScale);
-  }
+  // Future<void> _handleScaleUpdate(ScaleUpdateDetails details) async {
+  //   // When there are not exactly two fingers on screen don't scale
+  //   // if (_controller == null || _pointers != 2) {
+  //   //   print('check ${_pointers}');
+  //   //   return;
+  //   // }
+  //   // state.sensorConfig.setZoom(1);
+  //   // _currentScale = (_baseScale * details.scale)
+  //   //     .clamp(_minAvailableZoom, _maxAvailableZoom);
+  //   print('checka ${details.scale}');
+  //   // print('check ${_currentScale}');
+  //   // await _controller.setZoomLevel(_currentScale);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +89,7 @@ class _CameraPageState extends State<CameraPage> {
                           stream: state.sensorConfig.zoom$,
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              print('check sensor ${state.sensorConfig.zoom}');
+                              // print('check sensor ${state.sensorConfig.zoom}');
                               return Stack(
                                 children: [
                                   Container(

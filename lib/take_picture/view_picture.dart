@@ -128,14 +128,13 @@ class _ViewPictureState extends State<ViewPicture> {
                             final file = File(widget.imagePath);
                             await file.writeAsBytes(compressedImage!.toList());
                             // List<int> bytes = await file.readAsBytes();
-                            final AssetEntity? result =
-                                await PhotoManager.editor.saveImage(
-                              compressedImage,
-                              // quality: 40,
-                              title: '${controller.text}.jpg',
-                              // isReturnImagePathOfIOS: true,
-                            );
-                            if (result != null) {
+                            try {
+                              await PhotoManager.editor.saveImage(
+                                compressedImage,
+                                // quality: 40,
+                                title: '${controller.text}.jpg',
+                                // isReturnImagePathOfIOS: true,
+                              );
                               setState(() {
                                 isLoading = false;
                               });
@@ -145,16 +144,38 @@ class _ViewPictureState extends State<ViewPicture> {
                                     content: Text('Photo saved to gallery')),
                               );
                               Navigator.pop(context);
-                            } else {
+                            } catch (e) {
                               setState(() {
                                 isLoading = false;
                               });
+                              print("check $e");
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content: Text(
                                         'Error: Unable to save photo to gallery')),
                               );
                             }
+                            // print('check $result');
+                            // if (result != null) {
+                            //   setState(() {
+                            //     isLoading = false;
+                            //   });
+
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(
+                            //         content: Text('Photo saved to gallery')),
+                            //   );
+                            //   Navigator.pop(context);
+                            // } else {
+                            //   setState(() {
+                            //     isLoading = false;
+                            //   });
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(
+                            //         content: Text(
+                            //             'Error: Unable to save photo to gallery')),
+                            //   );
+                            // }
                           }),
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.2,
