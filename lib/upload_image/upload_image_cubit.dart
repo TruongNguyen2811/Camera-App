@@ -16,8 +16,7 @@ class UploadImageCubit extends Cubit<UploadImageState> {
 
   void selectImages() async {
     emit(UploadLoading());
-    final List<XFile>? selectedImages =
-        await ImagePicker().pickMultiImage(imageQuality: 60);
+    final List<XFile>? selectedImages = await ImagePicker().pickMultiImage();
     if (selectedImages!.isNotEmpty) {
       imageFileList.addAll(selectedImages);
     }
@@ -82,7 +81,7 @@ class UploadImageCubit extends Cubit<UploadImageState> {
       print('check time');
       Response response = await dio.post('$domain/upload-images',
           queryParameters: {'session_id': sessionId}, data: formData);
-      print('check time2');
+
       if (response.statusCode == 200) {
         print('Image list uploaded successfully');
         emit(UpLoadSuccess('Image list uploaded successfully'));
