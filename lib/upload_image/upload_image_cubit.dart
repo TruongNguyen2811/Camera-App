@@ -6,6 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:path/path.dart' as path;
 
 class UploadImageCubit extends Cubit<UploadImageState> {
   UploadImageCubit() : super(UpLoadInitial());
@@ -19,6 +21,9 @@ class UploadImageCubit extends Cubit<UploadImageState> {
     final List<XFile>? selectedImages = await ImagePicker().pickMultiImage();
     if (selectedImages!.isNotEmpty) {
       imageFileList.addAll(selectedImages);
+      for (var i = 0; i < imageFileList.length; i++) {
+        print('full path ${imageFileList[i].path}');
+      }
     }
     // print("Image List Length:" + imageFileList.length.toString());
     emit(UpLoadInitial());
@@ -70,7 +75,8 @@ class UploadImageCubit extends Cubit<UploadImageState> {
       for (int i = 0; i < imageFileList.length; i++) {
         XFile image = imageFileList[i];
         File file = File(image.path);
-        formDataList.add(await MultipartFile.fromFile(file.path));
+        formDataList.add(await MultipartFile.fromFile(file.path,
+            filename: path.basename(file.path)));
       }
 
       FormData formData = FormData.fromMap({

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart' as path;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UploadImage extends StatefulWidget {
@@ -143,7 +144,8 @@ class _UploadImageState extends State<UploadImage> {
             mainAxisSpacing: 16.w,
             childAspectRatio: 3 / 4),
         itemBuilder: (BuildContext context, int index) {
-          // print('check path ${cubit.imageFileList[index].path}');
+          print('check full path ${cubit.imageFileList[index].path}');
+          print('check path ${path.basename(cubit.imageFileList[index].path)}');
           return Stack(
             alignment: Alignment.topRight,
             children: [
@@ -157,7 +159,7 @@ class _UploadImageState extends State<UploadImage> {
                     placeholder: AssetImage("assets/images/image_hover.png"),
                   ),
                   4.verticalSpace,
-                  Text('${cubit.imageFileList[index].path.split('/').last}')
+                  Text('${path.basename(cubit.imageFileList[index].path)}'),
                 ],
               ),
               Visibility(
