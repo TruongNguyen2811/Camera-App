@@ -11,16 +11,17 @@ import 'package:image_picker/image_picker.dart';
 class UploadImageCubit extends Cubit<UploadImageState> {
   UploadImageCubit() : super(UpLoadInitial());
 
-  final ImagePicker imagePicker = ImagePicker();
+  // final ImagePicker imagePicker = ImagePicker();
   List<XFile> imageFileList = [];
 
   void selectImages() async {
     emit(UploadLoading());
-    final List<XFile>? selectedImages = await imagePicker.pickMultiImage();
+    final List<XFile>? selectedImages =
+        await ImagePicker().pickMultiImage(imageQuality: 60);
     if (selectedImages!.isNotEmpty) {
       imageFileList.addAll(selectedImages);
     }
-    print("Image List Length:" + imageFileList.length.toString());
+    // print("Image List Length:" + imageFileList.length.toString());
     emit(UpLoadInitial());
   }
 
@@ -71,7 +72,6 @@ class UploadImageCubit extends Cubit<UploadImageState> {
       for (int i = 0; i < imageFileList.length; i++) {
         XFile image = imageFileList[i];
         File file = File(image.path);
-
         formDataList.add(await MultipartFile.fromFile(file.path));
       }
 
@@ -79,9 +79,10 @@ class UploadImageCubit extends Cubit<UploadImageState> {
         'images': formDataList,
         // Thêm các thông tin khác nếu cần thiết
       });
-
+      print('check time');
       Response response = await dio.post('$domain/upload-images',
           queryParameters: {'session_id': sessionId}, data: formData);
+      print('check time2');
       if (response.statusCode == 200) {
         print('Image list uploaded successfully');
         emit(UpLoadSuccess('Image list uploaded successfully'));
