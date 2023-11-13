@@ -153,7 +153,7 @@ class _UploadImageState extends State<UploadImage> {
                     image: FileImage(File(cubit.imageFileList[index].path)),
                     fit: BoxFit.cover,
                     width: 109.w,
-                    height: 125.h,
+                    height: 120.h,
                     placeholder: AssetImage("assets/images/image_hover.png"),
                   ),
                   4.verticalSpace,

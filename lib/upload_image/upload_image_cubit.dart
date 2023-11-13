@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:app_camera/upload_image/upload_image_state.dart';
 import 'package:camerawesome/generated/i18n.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +12,7 @@ class UploadImageCubit extends Cubit<UploadImageState> {
 
   // final ImagePicker imagePicker = ImagePicker();
   List<XFile> imageFileList = [];
+  // List<String> originalImagePaths = [];
 
   void selectImages() async {
     emit(UploadLoading());
@@ -63,8 +63,7 @@ class UploadImageCubit extends Cubit<UploadImageState> {
     emit(UploadLoading());
     try {
       Dio dio = Dio();
-      String url =
-          'https://your-api-endpoint.com/upload'; // Thay thế bằng đường dẫn API của bạn
+      // Thay thế bằng đường dẫn API của bạn
 
       List<MultipartFile> formDataList = [];
 
