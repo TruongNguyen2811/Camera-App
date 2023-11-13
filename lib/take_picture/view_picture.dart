@@ -18,6 +18,7 @@ class _ViewPictureState extends State<ViewPicture> {
   final FocusNode focusNode = FocusNode();
   final TextEditingController controller = TextEditingController();
   bool isLoading = false;
+  late AssetPathEntity _album;
 
   // Future<void> compressAndSaveImage(File imageFile) async {
   //   var compressedImage = await FlutterImageCompress.compressWithFile(
@@ -40,6 +41,7 @@ class _ViewPictureState extends State<ViewPicture> {
   //     );
   //   }
   // }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -60,7 +62,7 @@ class _ViewPictureState extends State<ViewPicture> {
               title: Text('Photo Information'),
               centerTitle: true,
               elevation: 0,
-              backgroundColor: Colors.grey[700],
+              backgroundColor: Color.fromARGB(255, 40, 40, 40),
             ),
             resizeToAvoidBottomInset: false,
             body: SafeArea(
@@ -123,7 +125,7 @@ class _ViewPictureState extends State<ViewPicture> {
                                 await FlutterImageCompress.compressWithFile(
                               widget.imagePath,
                               format: CompressFormat.jpeg,
-                              quality: 10,
+                              quality: Platform.isIOS ? 10 : 30,
                             );
                             final file = File(widget.imagePath);
                             await file.writeAsBytes(compressedImage!.toList());
@@ -138,7 +140,6 @@ class _ViewPictureState extends State<ViewPicture> {
                               setState(() {
                                 isLoading = false;
                               });
-
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content: Text('Photo saved to gallery')),
@@ -183,7 +184,7 @@ class _ViewPictureState extends State<ViewPicture> {
                             decoration: BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
-                              color: Colors.grey[700],
+                              color: Colors.green,
                             ),
                             child: Center(
                               child: Text(

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:app_camera/take_picture/view_picture.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CameraPage extends StatefulWidget {
@@ -117,11 +118,11 @@ class _CameraPageState extends State<CameraPage> {
                                         ),
                                         Positioned(
                                           // alignment: Alignment.topLeft,
-                                          left: 16,
+                                          right: 16,
                                           top: MediaQuery.of(context)
                                                   .size
                                                   .height *
-                                              0.075,
+                                              0.065,
                                           child: GestureDetector(
                                             onTap: () {
                                               if (isFlash == true) {
@@ -139,6 +140,7 @@ class _CameraPageState extends State<CameraPage> {
                                               }
                                             },
                                             child: Container(
+                                              padding: EdgeInsets.all(8.r),
                                               // margin:
                                               //     EdgeInsets.only(left: 0),
                                               // width: MediaQuery.of(context)
@@ -156,7 +158,40 @@ class _CameraPageState extends State<CameraPage> {
                                                       : Icons
                                                           .flash_off_outlined,
                                                   color: Colors.white,
-                                                  size: 28,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          // alignment: Alignment.topLeft,
+                                          left: 16,
+                                          top: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.065,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.all(8.r),
+                                              // margin:
+                                              //     EdgeInsets.only(left: 0),
+                                              // width: MediaQuery.of(context)
+                                              //         .size
+                                              //         .width *
+                                              //     0.32,
+                                              decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.black26,
+                                              ),
+                                              child: Center(
+                                                child: const Icon(
+                                                  Icons.arrow_back,
+                                                  color: Colors.white,
+                                                  size: 20,
                                                 ),
                                               ),
                                             ),
@@ -360,7 +395,7 @@ class _CameraPageState extends State<CameraPage> {
                                               setState(() {
                                                 isLoading = true;
                                               });
-                                              final File imageFile;
+                                              // final File imageFile;
                                               try {
                                                 String imagePath =
                                                     await state.takePhoto();
