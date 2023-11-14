@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -67,137 +68,144 @@ class _ViewPictureState extends State<ViewPicture> {
             resizeToAvoidBottomInset: false,
             body: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: textField(),
-                      ),
-                    ),
-                    Center(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      24.verticalSpace,
+                      Center(
                         child: Container(
-                            // color: Colors.amber,
-                            child: Image.file(
-                      File(widget.imagePath),
-                      fit: BoxFit.cover,
-                      // width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 0.62,
-                      scale: 1,
-                    ))),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        InkWell(
-                          onTap: (() {
-                            Navigator.pop(context);
-                          }),
+                          width: MediaQuery.of(context).size.width,
+                          child: textField(),
+                        ),
+                      ),
+                      16.verticalSpace,
+                      Center(
                           child: Container(
-                            width: MediaQuery.of(context).size.width * 0.2,
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              color: Colors.red,
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Delete',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        InkWell(
-                          onTap: (() async {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            // Future.delayed(Duration(seconds: 3));
-                            var compressedImage =
-                                await FlutterImageCompress.compressWithFile(
-                              widget.imagePath,
-                              format: CompressFormat.jpeg,
-                              quality: Platform.isIOS ? 10 : 30,
-                            );
-                            final file = File(widget.imagePath);
-                            await file.writeAsBytes(compressedImage!.toList());
-                            // List<int> bytes = await file.readAsBytes();
-                            try {
-                              await PhotoManager.editor.saveImage(
-                                compressedImage,
-                                // quality: 40,
-                                title: '${controller.text}.jpg',
-                                // isReturnImagePathOfIOS: true,
-                              );
-                              setState(() {
-                                isLoading = false;
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text('Photo saved to gallery')),
-                              );
+                              // color: Colors.amber,
+                              child: Image.file(
+                        File(widget.imagePath),
+                        fit: BoxFit.cover,
+                        // width: MediaQuery.of(context).size.width,
+                        // height: MediaQuery.of(context).size.height * 0.62,
+                        scale: 1,
+                      ))),
+                      16.verticalSpace,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: (() {
                               Navigator.pop(context);
-                            } catch (e) {
-                              setState(() {
-                                isLoading = false;
-                              });
-                              print("check $e");
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(
-                                        'Error: Unable to save photo to gallery')),
-                              );
-                            }
-                            // print('check $result');
-                            // if (result != null) {
-                            //   setState(() {
-                            //     isLoading = false;
-                            //   });
-
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //     SnackBar(
-                            //         content: Text('Photo saved to gallery')),
-                            //   );
-                            //   Navigator.pop(context);
-                            // } else {
-                            //   setState(() {
-                            //     isLoading = false;
-                            //   });
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //     SnackBar(
-                            //         content: Text(
-                            //             'Error: Unable to save photo to gallery')),
-                            //   );
-                            // }
-                          }),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.2,
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              color: Colors.green,
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Save',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white),
+                            }),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: Colors.red,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
                               ),
                             ),
                           ),
-                        )
-                      ],
-                    )
-                  ],
+                          SizedBox(
+                            width: 20,
+                          ),
+                          InkWell(
+                            onTap: (() async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              // Future.delayed(Duration(seconds: 3));
+                              var compressedImage =
+                                  await FlutterImageCompress.compressWithFile(
+                                widget.imagePath,
+                                format: CompressFormat.jpeg,
+                                quality: Platform.isIOS ? 10 : 30,
+                              );
+                              final file = File(widget.imagePath);
+                              await file
+                                  .writeAsBytes(compressedImage!.toList());
+                              // List<int> bytes = await file.readAsBytes();
+                              try {
+                                await PhotoManager.editor.saveImage(
+                                  compressedImage,
+                                  // quality: 40,
+                                  title: '${controller.text}.jpg',
+                                  // isReturnImagePathOfIOS: true,
+                                );
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Photo saved to gallery')),
+                                );
+                                Navigator.pop(context);
+                              } catch (e) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                print("check $e");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          'Error: Unable to save photo to gallery')),
+                                );
+                              }
+                              // print('check $result');
+                              // if (result != null) {
+                              //   setState(() {
+                              //     isLoading = false;
+                              //   });
+
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //     SnackBar(
+                              //         content: Text('Photo saved to gallery')),
+                              //   );
+                              //   Navigator.pop(context);
+                              // } else {
+                              //   setState(() {
+                              //     isLoading = false;
+                              //   });
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //     SnackBar(
+                              //         content: Text(
+                              //             'Error: Unable to save photo to gallery')),
+                              //   );
+                              // }
+                            }),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: Colors.green,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Save',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      24.verticalSpace,
+                    ],
+                  ),
                 ),
               ),
             ),
