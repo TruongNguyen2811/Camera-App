@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:app_camera/chooseImage/media_picker.dart';
 import 'package:app_camera/upload_image/upload_image_cubit.dart';
 import 'package:app_camera/upload_image/upload_image_state.dart';
 import 'package:app_camera/widget/show_loading.dart';
@@ -10,6 +10,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class UploadImage extends StatefulWidget {
   const UploadImage({super.key});
@@ -24,12 +25,37 @@ class _UploadImageState extends State<UploadImage> {
   final FocusNode focusNode2 = FocusNode();
   final TextEditingController controller2 = TextEditingController();
   late UploadImageCubit cubit;
+  // List<AssetEntity> selectedAssetList = [];
   @override
   void initState() {
     // TODO: implement initState
     cubit = UploadImageCubit();
     super.initState();
     controller1.text = "https://014f-42-114-89-6.ngrok-free.app";
+  }
+
+  Future pickAssets({
+    required int maxCount,
+    required RequestType requestType,
+  }) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return MediaPicker(maxCount, requestType, cubit.selectedAssetList);
+        },
+      ),
+    ).then((value) {
+      print(value);
+      if (value?.isNotEmpty ?? false) {
+        // setState(() {
+        print('check 1');
+        // cubit.selectedAssetList.addAll(value);
+        cubit.convertAssetsToFiles();
+        // });
+      }
+    });
+    ;
   }
 
   @override
@@ -80,7 +106,7 @@ class _UploadImageState extends State<UploadImage> {
                     16.verticalSpace,
                     sessionIdField(),
                     16.verticalSpace,
-                    if (cubit.imageFileList.isNotEmpty) ...[
+                    if (cubit.selectedAssetList.isNotEmpty) ...[
                       imageWidget(),
                       16.verticalSpace,
                     ],
@@ -134,7 +160,7 @@ class _UploadImageState extends State<UploadImage> {
 
   Widget imageWidget() {
     return GridView.builder(
-        itemCount: cubit.imageFileList.length,
+        itemCount: cubit.selectedAssetList.length,
         padding: EdgeInsets.symmetric(vertical: 12.h),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -144,28 +170,39 @@ class _UploadImageState extends State<UploadImage> {
             mainAxisSpacing: 16.w,
             childAspectRatio: 3 / 4),
         itemBuilder: (BuildContext context, int index) {
-          print('check full path ${cubit.imageFileList[index].path}');
-          print('check path ${path.basename(cubit.imageFileList[index].path)}');
+          print('chekc ${cubit.selectedAssetList.length}');
+          // print('check full path ${cubit.imageFileList[index].identifier}');
+          // print('check path ${(cubit.imageFileList[index].identifier)}');
+          AssetEntity assetEntity = cubit.selectedAssetList[index];
           return Stack(
             alignment: Alignment.topRight,
             children: [
               Column(
                 children: [
-                  FadeInImage(
-                    image: FileImage(File(cubit.imageFileList[index].path)),
+                  AssetEntityImage(
+                    assetEntity,
+                    isOriginal: false,
+                    thumbnailSize: const ThumbnailSize.square(1000),
                     fit: BoxFit.cover,
-                    width: 109.w,
-                    height: 120.h,
-                    placeholder: AssetImage("assets/images/image_hover.png"),
+                    width: 100,
+                    height: 100,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                        child: Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        ),
+                      );
+                    },
                   ),
                   4.verticalSpace,
-                  Text('${path.basename(cubit.imageFileList[index].path)}'),
+                  Text('${(assetEntity.title)}'),
                 ],
               ),
               Visibility(
                 child: InkWell(
                   onTap: () {
-                    cubit.onDeleteImagePicked(cubit.imageFileList[index]);
+                    cubit.onDeleteImagePicked(cubit.selectedAssetList[index]);
                   },
                   child: Padding(
                     padding: EdgeInsets.all(10.r),
@@ -184,7 +221,17 @@ class _UploadImageState extends State<UploadImage> {
   Widget _fieldPickCarServiceWidget(BuildContext context) {
     return InkWell(
       onTap: () {
-        cubit.selectImages();
+        // cubit.selectImages();
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => ChooseImage(),
+        //   ),
+        // );
+        pickAssets(
+          maxCount: 500,
+          requestType: RequestType.image,
+        );
       },
       child: Container(
         width: 343.w,

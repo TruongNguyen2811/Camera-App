@@ -13,28 +13,48 @@ class UploadImageCubit extends Cubit<UploadImageState> {
   UploadImageCubit() : super(UpLoadInitial());
 
   // final ImagePicker imagePicker = ImagePicker();
-  List<XFile> imageFileList = [];
+  // List<Asset> imageFileList = [];
+  List<AssetEntity> selectedAssetList = [];
   // List<String> originalImagePaths = [];
 
-  void selectImages() async {
+  // void selectImages() async {
+  //   emit(UploadLoading());
+  //   try {
+  //     final List<Asset>? selectedImages = await MultipleImagesPicker.pickImages(
+  //       maxImages: 500,
+  //     );
+  //     if (selectedImages!.isNotEmpty) {
+  //       imageFileList.addAll(selectedImages);
+  //       for (var i = 0; i < imageFileList.length; i++) {
+  //         print('full path ${imageFileList[i].identifier}');
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print('check $e');
+  //   }
+  //   // print("Image List Length:" + imageFileList.length.toString());
+  //   emit(UpLoadInitial());
+  // }
+
+  List<File> selectedFiles = [];
+  Future convertAssetsToFiles() async {
     emit(UploadLoading());
-    final List<XFile>? selectedImages = await ImagePicker().pickMultiImage();
-    if (selectedImages!.isNotEmpty) {
-      imageFileList.addAll(selectedImages);
-      for (var i = 0; i < imageFileList.length; i++) {
-        print('full path ${imageFileList[i].path}');
-      }
+    for (var i = 0; i < selectedAssetList.length; i++) {
+      final File? file = await selectedAssetList[i].file;
+      print(file?.path);
+      // setState(() {
+      selectedFiles.add(file!);
+      // });
     }
-    // print("Image List Length:" + imageFileList.length.toString());
     emit(UpLoadInitial());
   }
 
-  void onDeleteImagePicked(XFile imageDelete) {
+  void onDeleteImagePicked(AssetEntity imageDelete) {
     emit(UploadLoading());
     int checkIndex =
-        imageFileList.indexWhere((e) => e.path == imageDelete.path);
+        selectedAssetList.indexWhere((e) => e.id == imageDelete.id);
     if (checkIndex != -1) {
-      imageFileList.removeAt(checkIndex);
+      selectedAssetList.removeAt(checkIndex);
     }
     print('123');
     emit(UpLoadInitial());
@@ -72,9 +92,10 @@ class UploadImageCubit extends Cubit<UploadImageState> {
 
       List<MultipartFile> formDataList = [];
 
-      for (int i = 0; i < imageFileList.length; i++) {
-        XFile image = imageFileList[i];
-        File file = File(image.path);
+      for (int i = 0; i < selectedFiles.length; i++) {
+        // XFile image = selectedFiles[i];
+        File file = File(selectedFiles[i].path);
+        print('${file.path}');
         formDataList.add(await MultipartFile.fromFile(file.path,
             filename: path.basename(file.path)));
       }
