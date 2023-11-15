@@ -19,10 +19,12 @@ class MediaServices {
   }
 
   Future loadAssets(AssetPathEntity selectedAlbum) async {
+    int a = await selectedAlbum.assetCountAsync;
+    print('Check count ${a}');
     List<AssetEntity> assetList = await selectedAlbum.getAssetListRange(
       start: 0,
       // ignore: deprecated_member_use
-      end: selectedAlbum.assetCount,
+      end: a,
     );
     return assetList;
   }

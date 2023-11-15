@@ -28,6 +28,7 @@ class _MediaPickerState extends State<MediaPicker> {
       (value) {
         setState(() {
           albumList = value;
+          // for(i in range)
           selectedAlbum = value[0];
           print('check $albumList');
         });
