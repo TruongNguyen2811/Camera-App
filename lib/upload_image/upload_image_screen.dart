@@ -34,29 +34,29 @@ class _UploadImageState extends State<UploadImage> {
     controller1.text = "https://014f-42-114-89-6.ngrok-free.app";
   }
 
-  Future pickAssets({
-    required int maxCount,
-    required RequestType requestType,
-  }) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return MediaPicker(maxCount, requestType, cubit.selectedAssetList);
-        },
-      ),
-    ).then((value) {
-      print(value);
-      if (value?.isNotEmpty ?? false) {
-        // setState(() {
-        print('check 1');
-        // cubit.selectedAssetList.addAll(value);
-        cubit.convertAssetsToFiles();
-        // });
-      }
-    });
-    ;
-  }
+  // Future pickAssets({
+  //   required int maxCount,
+  //   required RequestType requestType,
+  // }) async {
+  //   final result = await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) {
+  //         return MediaPicker(maxCount, requestType, cubit.selectedAssetList);
+  //       },
+  //     ),
+  //   ).then((value) {
+  //     print(value);
+  //     if (value?.isNotEmpty ?? false) {
+  //       // setState(() {
+  //       print('check 1');
+  //       // cubit.selectedAssetList.addAll(value);
+  //       cubit.convertAssetsToFiles();
+  //       // });
+  //     }
+  //   });
+  //   ;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,7 @@ class _UploadImageState extends State<UploadImage> {
                     16.verticalSpace,
                     sessionIdField(),
                     16.verticalSpace,
-                    if (cubit.selectedAssetList.isNotEmpty) ...[
+                    if (cubit.files.isNotEmpty) ...[
                       imageWidget(),
                       16.verticalSpace,
                     ],
@@ -160,7 +160,7 @@ class _UploadImageState extends State<UploadImage> {
 
   Widget imageWidget() {
     return GridView.builder(
-        itemCount: cubit.selectedAssetList.length,
+        itemCount: cubit.files.length,
         padding: EdgeInsets.symmetric(vertical: 12.h),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -170,39 +170,30 @@ class _UploadImageState extends State<UploadImage> {
             mainAxisSpacing: 16.w,
             childAspectRatio: 3 / 4),
         itemBuilder: (BuildContext context, int index) {
-          print('chekc ${cubit.selectedAssetList.length}');
-          // print('check full path ${cubit.imageFileList[index].identifier}');
-          // print('check path ${(cubit.imageFileList[index].identifier)}');
-          AssetEntity assetEntity = cubit.selectedAssetList[index];
+          // print('chekc ${cubit.selectedAssetList[index].}');
+          print('check name ${cubit.files[index].name}');
+          print('check path ${(cubit.files[index].path)}');
+
           return Stack(
             alignment: Alignment.topRight,
             children: [
               Column(
                 children: [
-                  AssetEntityImage(
-                    assetEntity,
-                    isOriginal: false,
-                    thumbnailSize: const ThumbnailSize.square(1000),
+                  FadeInImage(
+                    image: FileImage(File(cubit.files[index].path ?? '')),
                     fit: BoxFit.cover,
-                    width: 100,
-                    height: 100,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Center(
-                        child: Icon(
-                          Icons.error,
-                          color: Colors.red,
-                        ),
-                      );
-                    },
+                    width: 100.w,
+                    height: 100.h,
+                    placeholder: AssetImage("assets/images/image_hover.png"),
                   ),
                   4.verticalSpace,
-                  Text('${(assetEntity.title)}'),
+                  Text('${cubit.files[index].name}'),
                 ],
               ),
               Visibility(
                 child: InkWell(
                   onTap: () {
-                    cubit.onDeleteImagePicked(cubit.selectedAssetList[index]);
+                    cubit.onDeleteImagePicked(cubit.files[index]);
                   },
                   child: Padding(
                     padding: EdgeInsets.all(10.r),
@@ -228,10 +219,7 @@ class _UploadImageState extends State<UploadImage> {
         //     builder: (context) => ChooseImage(),
         //   ),
         // );
-        pickAssets(
-          maxCount: 500,
-          requestType: RequestType.image,
-        );
+        cubit.selectImages();
       },
       child: Container(
         width: 343.w,

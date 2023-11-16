@@ -70,11 +70,12 @@ class _MediaPickerState extends State<MediaPicker> {
             },
             items: albumList.map<DropdownMenuItem<AssetPathEntity>>(
                 (AssetPathEntity album) {
+              // int a = await album.assetCountAsync;
               return DropdownMenuItem<AssetPathEntity>(
                 value: album,
                 // ignore: deprecated_member_use
                 child: Text(
-                  "${album.name} (${album.assetCount})",
+                  "${album.name}",
                   style: TextStyle(color: Colors.white),
                 ),
               );

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app_camera/upload_image/upload_image_state.dart';
 import 'package:camerawesome/generated/i18n.dart';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,47 +15,49 @@ class UploadImageCubit extends Cubit<UploadImageState> {
 
   // final ImagePicker imagePicker = ImagePicker();
   // List<Asset> imageFileList = [];
-  List<AssetEntity> selectedAssetList = [];
+  List<PlatformFile> files = [];
+  // List<AssetEntity> selectedAssetList = [];
   // List<String> originalImagePaths = [];
 
-  // void selectImages() async {
-  //   emit(UploadLoading());
-  //   try {
-  //     final List<Asset>? selectedImages = await MultipleImagesPicker.pickImages(
-  //       maxImages: 500,
-  //     );
-  //     if (selectedImages!.isNotEmpty) {
-  //       imageFileList.addAll(selectedImages);
-  //       for (var i = 0; i < imageFileList.length; i++) {
-  //         print('full path ${imageFileList[i].identifier}');
-  //       }
-  //     }
-  //   } catch (e) {
-  //     print('check $e');
-  //   }
-  //   // print("Image List Length:" + imageFileList.length.toString());
-  //   emit(UpLoadInitial());
-  // }
-
-  List<File> selectedFiles = [];
-  Future convertAssetsToFiles() async {
+  void selectImages() async {
     emit(UploadLoading());
-    for (var i = 0; i < selectedAssetList.length; i++) {
-      final File? file = await selectedAssetList[i].file;
-      print(file?.path);
-      // setState(() {
-      selectedFiles.add(file!);
-      // });
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ["jpg", "png"],
+          allowMultiple: true);
+
+      if (result != null) {
+        files.addAll(result.files);
+      } else {
+        // User canceled the picker
+        print('0');
+      }
+    } catch (e) {
+      print('check $e');
     }
+    // print("Image List Length:" + imageFileList.length.toString());
     emit(UpLoadInitial());
   }
 
-  void onDeleteImagePicked(AssetEntity imageDelete) {
+  // List<File> selectedFiles = [];
+  // Future convertAssetsToFiles() async {
+  //   emit(UploadLoading());
+  //   for (var i = 0; i < selectedAssetList.length; i++) {
+  //     final File? file = await selectedAssetList[i].originFile;
+  //     print('check path ${file?.path}');
+  //     // setState(() {
+  //     selectedFiles.add(file!);
+  //     // });
+  //   }
+  //   emit(UpLoadInitial());
+  // }
+
+  void onDeleteImagePicked(PlatformFile imageDelete) {
     emit(UploadLoading());
-    int checkIndex =
-        selectedAssetList.indexWhere((e) => e.id == imageDelete.id);
+    int checkIndex = files.indexWhere((e) => e.path == imageDelete.path);
     if (checkIndex != -1) {
-      selectedAssetList.removeAt(checkIndex);
+      files.removeAt(checkIndex);
     }
     print('123');
     emit(UpLoadInitial());
@@ -92,12 +95,13 @@ class UploadImageCubit extends Cubit<UploadImageState> {
 
       List<MultipartFile> formDataList = [];
 
-      for (int i = 0; i < selectedFiles.length; i++) {
+      for (int i = 0; i < files.length; i++) {
         // XFile image = selectedFiles[i];
-        File file = File(selectedFiles[i].path);
-        print('${file.path}');
-        formDataList.add(await MultipartFile.fromFile(file.path,
-            filename: path.basename(file.path)));
+
+        print('${files[i].path}');
+        print('${files[i].name}');
+        formDataList.add(await MultipartFile.fromFile(files[i].path!,
+            filename: files[i].name));
       }
 
       FormData formData = FormData.fromMap({
