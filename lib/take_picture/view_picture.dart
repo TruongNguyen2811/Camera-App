@@ -87,7 +87,7 @@ class _ViewPictureState extends State<ViewPicture> {
                               // color: Colors.amber,
                               child: Image.file(
                         File(widget.imagePath),
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                         // width: MediaQuery.of(context).size.width,
                         // height: MediaQuery.of(context).size.height * 0.62,
                         scale: 1,

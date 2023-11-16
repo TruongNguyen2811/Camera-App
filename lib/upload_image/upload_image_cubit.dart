@@ -23,8 +23,10 @@ class UploadImageCubit extends Cubit<UploadImageState> {
     emit(UploadLoading());
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: ["jpg", "png"],
+          type: FileType.image,
+          // allowedExtensions: [jp],
+          // type: FileType.custom,
+          // allowedExtensions: ["jpg", "png"],
           allowMultiple: true);
 
       if (result != null) {
@@ -33,11 +35,12 @@ class UploadImageCubit extends Cubit<UploadImageState> {
         // User canceled the picker
         print('0');
       }
+      emit(UpLoadInitial());
     } catch (e) {
       print('check $e');
+      emit(UpLoadFailure('Can not choose image'));
     }
     // print("Image List Length:" + imageFileList.length.toString());
-    emit(UpLoadInitial());
   }
 
   // List<File> selectedFiles = [];
