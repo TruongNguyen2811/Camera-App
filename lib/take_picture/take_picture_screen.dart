@@ -55,11 +55,11 @@ class _CameraPageState extends State<CameraPage> {
                   return _path(CaptureMode.photo);
                 },
               ),
-              previewFit: CameraPreviewFit.fitWidth,
+              previewFit: CameraPreviewFit.contain,
               onPreviewScaleBuilder: (state) {
                 return OnPreviewScale(
                   onScale: (scale) {
-                    state.sensorConfig.zoom;
+                    // state.sensorConfig.zoom;
                     // if (Platform.isAndroid) {
                     // state.sensorConfig.setZoom(scale / 2);
                     // }
@@ -67,7 +67,7 @@ class _CameraPageState extends State<CameraPage> {
                     //   state.sensorConfig.setZoom(scale / 3);
                     // }
                     // Xử lý sự kiện zoom với giá trị tỷ lệ zoom là 'scale'
-                    state.sensorConfig.setZoom(0);
+                    // state.sensorConfig.setZoom(0);
                     // print('Zoom scale: $scale');
                   },
                 );
