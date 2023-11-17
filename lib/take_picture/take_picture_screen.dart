@@ -55,7 +55,7 @@ class _CameraPageState extends State<CameraPage> {
                   return _path(CaptureMode.photo);
                 },
               ),
-              previewFit: CameraPreviewFit.contain,
+              previewFit: CameraPreviewFit.cover,
               onPreviewScaleBuilder: (state) {
                 return OnPreviewScale(
                   onScale: (scale) {
