@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:app_camera/take_picture/view_picture.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
+import 'package:camerawesome/pigeon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,6 +20,7 @@ class _CameraPageState extends State<CameraPage> {
   double zoom = 0;
   // int _pointers = 0;
   bool isFlash = true;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -47,7 +49,7 @@ class _CameraPageState extends State<CameraPage> {
           children: [
             CameraAwesomeBuilder.custom(
               flashMode: FlashMode.auto,
-              aspectRatio: CameraAspectRatios.ratio_16_9,
+              aspectRatio: CameraAspectRatios.ratio_4_3,
               zoom: zoom,
               sensor: Sensors.back,
               saveConfig: SaveConfig.photo(
@@ -55,7 +57,7 @@ class _CameraPageState extends State<CameraPage> {
                   return _path(CaptureMode.photo);
                 },
               ),
-              previewFit: CameraPreviewFit.cover,
+              previewFit: CameraPreviewFit.contain,
               onPreviewScaleBuilder: (state) {
                 return OnPreviewScale(
                   onScale: (scale) {
@@ -88,18 +90,12 @@ class _CameraPageState extends State<CameraPage> {
                     onPhotoMode: (state) {
                       return StreamBuilder(
                           stream: state.sensorConfig.zoom$,
+                          // stream: state.sensorConfig.aspectRatio$,
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               // print('check sensor ${state.sensorConfig.zoom}');
                               return Stack(
                                 children: [
-                                  Container(
-                                      // width:
-                                      //     MediaQuery.of(context).size.width,
-                                      // height:
-                                      //     MediaQuery.of(context).size.height,
-                                      // color: Color.fromRGBO(47, 44, 44, 0.0),
-                                      ),
                                   Align(
                                     alignment: Alignment.topCenter,
                                     child: Stack(
@@ -397,6 +393,9 @@ class _CameraPageState extends State<CameraPage> {
                                               });
                                               // final File imageFile;
                                               try {
+                                                state.sensorConfig.setZoom(0);
+                                                print(
+                                                    'Check ast ${state.sensorConfig}');
                                                 String imagePath =
                                                     await state.takePhoto();
                                                 // imageFile = File(await state.takePhoto());
@@ -483,7 +482,7 @@ class _CameraPageState extends State<CameraPage> {
                                                 state.sensorConfig
                                                     .setAspectRatio(
                                                         CameraAspectRatios
-                                                            .ratio_16_9);
+                                                            .ratio_4_3);
                                                 if (isFlash == true) {
                                                   state.sensorConfig
                                                       .setFlashMode(
