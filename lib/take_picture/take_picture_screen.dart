@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:app_camera/take_picture/custom_paint.dart';
 import 'package:app_camera/take_picture/view_picture.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:camerawesome/pigeon.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
@@ -89,13 +91,44 @@ class _CameraPageState extends State<CameraPage> {
                         )),
                     onPhotoMode: (state) {
                       return StreamBuilder(
-                          stream: state.sensorConfig.zoom$,
+                          stream: state.sensorConfig$,
                           // stream: state.sensorConfig.aspectRatio$,
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               // print('check sensor ${state.sensorConfig.zoom}');
                               return Stack(
                                 children: [
+                                  IgnorePointer(
+                                    ignoring: true,
+                                    child: Container(
+                                      // color: Color.fromRGBO(47, 44, 44, 0.5),
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    ),
+                                  ),
+                                  IgnorePointer(
+                                    ignoring: true,
+                                    child: Positioned(
+                                      child: Align(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            padding: EdgeInsets.all(30.w),
+                                            child: CustomPaint(
+                                              painter: MyCustomPainter(
+                                                  frameSFactor: .2, padding: 0),
+                                              child: AspectRatio(
+                                                aspectRatio: 3 / 4,
+                                                child: Container(
+                                                  width: 100,
+                                                  height: 100,
+                                                  color: Color.fromRGBO(
+                                                      182, 152, 152, 0),
+                                                ),
+                                              ),
+                                            ),
+                                          )),
+                                    ),
+                                  ),
                                   Align(
                                     alignment: Alignment.topCenter,
                                     child: Stack(
@@ -108,9 +141,9 @@ class _CameraPageState extends State<CameraPage> {
                                                   .height *
                                               0.12,
                                           decoration: BoxDecoration(
-                                            color:
-                                                Color.fromRGBO(47, 44, 44, 0.5),
-                                          ),
+                                              // color:
+                                              //     Color.fromRGBO(47, 44, 44, 0.5),
+                                              ),
                                         ),
                                         Positioned(
                                           // alignment: Alignment.topLeft,
@@ -378,10 +411,10 @@ class _CameraPageState extends State<CameraPage> {
                                       width: MediaQuery.of(context).size.width,
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              0.2,
+                                              0.17,
                                       decoration: const BoxDecoration(
-                                        color: Color.fromRGBO(47, 44, 44, 0.6),
-                                      ),
+                                          // color: Color.fromRGBO(47, 44, 44, 0.6),
+                                          ),
                                       child: Stack(children: [
                                         Align(
                                           alignment: Alignment.center,
