@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 import 'package:app_camera/take_picture/custom_paint.dart';
+import 'package:app_camera/take_picture/overlay.dart';
 import 'package:app_camera/take_picture/view_picture.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:camerawesome/pigeon.dart';
@@ -100,35 +102,38 @@ class _CameraPageState extends State<CameraPage> {
                                 children: [
                                   IgnorePointer(
                                     ignoring: true,
-                                    child: Container(
-                                      // color: Color.fromRGBO(47, 44, 44, 0.5),
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                    ),
+                                    child: QRScannerOverlay(
+                                        overlayColour:
+                                            Colors.black.withOpacity(0.5)),
                                   ),
-                                  IgnorePointer(
-                                    ignoring: true,
-                                    child: Positioned(
-                                      child: Align(
-                                          alignment: Alignment.center,
-                                          child: Container(
-                                            padding: EdgeInsets.all(30.w),
-                                            child: CustomPaint(
-                                              painter: MyCustomPainter(
-                                                  frameSFactor: .2, padding: 0),
-                                              child: AspectRatio(
-                                                aspectRatio: 3 / 4,
-                                                child: Container(
-                                                  width: 100,
-                                                  height: 100,
-                                                  color: Color.fromRGBO(
-                                                      182, 152, 152, 0),
-                                                ),
-                                              ),
-                                            ),
-                                          )),
-                                    ),
-                                  ),
+                                  // IgnorePointer(
+                                  //   ignoring: true,
+                                  //   child: Positioned(
+                                  //     child: Align(
+                                  //         alignment: Alignment.center,
+                                  //         child: ClipRect(
+                                  //           child: Container(
+                                  //             padding: EdgeInsets.only(
+                                  //                 // top: 30.w,
+                                  //                 // right: 60.w,
+                                  //                 // left: 60.w,
+                                  //                 // bottom: 30.w
+                                  //                 // horizontal: 50.w
+                                  //                 ),
+                                  //             child: CustomPaint(
+                                  //               painter: MyCustomPainter(
+                                  //                   frameSFactor: .1,
+                                  //                   padding: 0),
+                                  //               child: Container(
+                                  //                 width: 300.w,
+                                  //                 height: 170.h,
+                                  //                 color: Colors.transparent,
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //         )),
+                                  //   ),
+                                  // ),
                                   Align(
                                     alignment: Alignment.topCenter,
                                     child: Stack(
