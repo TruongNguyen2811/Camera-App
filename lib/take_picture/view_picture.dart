@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:native_exif/native_exif.dart';
 import 'package:path/path.dart' as path;
+import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -135,12 +137,14 @@ class _ViewPictureState extends State<ViewPicture> {
                               final file = File(widget.imagePath);
                               await file
                                   .writeAsBytes(compressedImage!.toList());
+                              // autoCropCenter(file.path);
                               // List<int> bytes = await file.readAsBytes();
                               try {
                                 await PhotoManager.editor.saveImage(
                                   compressedImage,
                                   // quality: 40,
                                   title: '${controller.text}.jpg',
+
                                   // isReturnImagePathOfIOS: true,
                                 );
                                 setState(() {
@@ -230,6 +234,67 @@ class _ViewPictureState extends State<ViewPicture> {
       ),
     );
   }
+
+  // Future<void> autoCropCenter(String imagePath) async {
+  //   final File originalImage = File(imagePath);
+
+  //   if (!originalImage.existsSync()) {
+  //     // Xử lý khi không tìm thấy ảnh
+  //     return;
+  //   }
+
+  //   // Đọc và giải mã ảnh
+  //   final img.Image? image = img.decodeImage(originalImage.readAsBytesSync());
+
+  //   if (image == null) {
+  //     // Xử lý khi không thể đọc ảnh
+  //     return;
+  //   }
+
+  //   // Kích thước ảnh gốc
+  //   final int imageWidth = image.width;
+  //   final int imageHeight = image.height;
+
+  //   // Kích thước khung cắt (vd: lấy 50% phần trung tâm của ảnh)
+  //   final double cropWidthPercent = 0.8;
+  //   final double cropHeightPercent = 0.35;
+
+  //   // Tính toán kích thước và vị trí khung cắt
+  //   final int cropWidth = (imageWidth * cropWidthPercent).toInt();
+  //   final int cropHeight = (imageHeight * cropHeightPercent).toInt();
+  //   final int cropX = (imageWidth - cropWidth) ~/ 2;
+  //   final int cropY = (imageHeight - cropHeight) ~/ 2;
+  //   // final exif = await Exif.fromPath(imagePath);
+  //   try {
+  //     await exif.writeAttributes({
+  //       'UserComment': "${cropX} ${cropY} ${cropWidth} ${cropHeight}}",
+  //     });
+  //     // Map<String, Object>? attributes;
+  //     // attributes?['usercomment'] = "this file was edited by flutterapp!";
+  //     // final result = await exif.writeAttributes(attributes);
+  //     // await exif!.writeAttributes({
+  //     //   'GPSLatitude': '${cropX.toString()}',
+  //     //   'GPSLatitudeRef': 'N',
+  //     //   'GPSLongitude': '${cropWidth}',
+  //     //   'GPSLongitudeRef': 'W',
+  //     // });
+  //   } catch (e) {
+  //     print('error $e');
+  //   }
+
+  //   final attribute = await exif.getAttributes();
+  //   print('check feature1 ${attribute}');
+
+  //   // Cắt ảnh theo khung đã tính toán
+  //   // final img.Image croppedImage = img.copyCrop(image,
+  //   //     x: cropX, y: cropY, height: cropHeight, width: cropWidth);
+
+  //   // // final String croppedImagePath = path.join(path.dirname(imagePath), 'cropped_image.jpg');
+  //   // File(imagePath).writeAsBytesSync(img.encodeJpg(croppedImage));
+
+  //   // Lưu ảnh đã cắt
+  //   return;
+  // }
 
   Widget textField() {
     return Column(

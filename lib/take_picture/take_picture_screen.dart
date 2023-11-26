@@ -6,6 +6,8 @@ import 'package:app_camera/take_picture/overlay.dart';
 import 'package:app_camera/take_picture/view_picture.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:camerawesome/pigeon.dart';
+import 'package:image/image.dart' as img;
+import 'package:path/path.dart' as path;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,18 +33,45 @@ class _CameraPageState extends State<CameraPage> {
     super.initState();
   }
 
-  // Future<void> _handleScaleUpdate(ScaleUpdateDetails details) async {
-  //   // When there are not exactly two fingers on screen don't scale
-  //   // if (_controller == null || _pointers != 2) {
-  //   //   print('check ${_pointers}');
-  //   //   return;
-  //   // }
-  //   // state.sensorConfig.setZoom(1);
-  //   // _currentScale = (_baseScale * details.scale)
-  //   //     .clamp(_minAvailableZoom, _maxAvailableZoom);
-  //   print('checka ${details.scale}');
-  //   // print('check ${_currentScale}');
-  //   // await _controller.setZoomLevel(_currentScale);
+  // String autoCropCenter(String imagePath) {
+  //   final File originalImage = File(imagePath);
+
+  //   if (!originalImage.existsSync()) {
+  //     // Xử lý khi không tìm thấy ảnh
+  //     return imagePath;
+  //   }
+
+  //   // Đọc và giải mã ảnh
+  //   final img.Image? image = img.decodeImage(originalImage.readAsBytesSync());
+
+  //   if (image == null) {
+  //     // Xử lý khi không thể đọc ảnh
+  //     return imagePath;
+  //   }
+
+  //   // Kích thước ảnh gốc
+  //   final int imageWidth = image.width;
+  //   final int imageHeight = image.height;
+
+  //   // Kích thước khung cắt (vd: lấy 50% phần trung tâm của ảnh)
+  //   final double cropWidthPercent = 0.8;
+  //   final double cropHeightPercent = 0.35;
+
+  //   // Tính toán kích thước và vị trí khung cắt
+  //   final int cropWidth = (imageWidth * cropWidthPercent).toInt();
+  //   final int cropHeight = (imageHeight * cropHeightPercent).toInt();
+  //   final int cropX = (imageWidth - cropWidth) ~/ 2;
+  //   final int cropY = (imageHeight - cropHeight) ~/ 2;
+
+  //   // Cắt ảnh theo khung đã tính toán
+  //   final img.Image croppedImage = img.copyCrop(image,
+  //       x: cropX, y: cropY, height: cropHeight, width: cropWidth);
+
+  //   // final String croppedImagePath = path.join(path.dirname(imagePath), 'cropped_image.jpg');
+  //   File(imagePath).writeAsBytesSync(img.encodeJpg(croppedImage));
+
+  //   // Lưu ảnh đã cắt
+  //   return imagePath;
   // }
 
   @override
@@ -436,6 +465,11 @@ class _CameraPageState extends State<CameraPage> {
                                                     'Check ast ${state.sensorConfig}');
                                                 String imagePath =
                                                     await state.takePhoto();
+
+                                                // imagePath =
+                                                //     autoCropCenter(imagePath);
+
+                                                // controller.croppedImage();
                                                 // imageFile = File(await state.takePhoto());
                                                 setState(() {
                                                   isLoading = false;
@@ -454,6 +488,7 @@ class _CameraPageState extends State<CameraPage> {
                                                 setState(() {
                                                   isLoading = false;
                                                 });
+                                                print('check fault $e');
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
                                                   SnackBar(

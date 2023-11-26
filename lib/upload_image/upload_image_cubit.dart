@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+// import 'package:native_exif/native_exif.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:path/path.dart' as path;
 
@@ -100,9 +101,11 @@ class UploadImageCubit extends Cubit<UploadImageState> {
 
       for (int i = 0; i < files.length; i++) {
         // XFile image = selectedFiles[i];
-
-        print('${files[i].path}');
-        print('${files[i].name}');
+        // final exif = await Exif.fromPath(files[i].path ?? '');
+        // final attribute = await exif.getAttributes();
+        // print('check feature ${attribute}');
+        // print('${files[i].path}');
+        // print('${files[i].name}');
         formDataList.add(await MultipartFile.fromFile(files[i].path!,
             filename: files[i].name));
       }

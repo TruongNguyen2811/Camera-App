@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:native_exif/native_exif.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -31,7 +32,7 @@ class _UploadImageState extends State<UploadImage> {
     // TODO: implement initState
     cubit = UploadImageCubit();
     super.initState();
-    controller1.text = "https://014f-42-114-89-6.ngrok-free.app";
+    controller1.text = "https://liked-dominant-raptor.ngrok-free.app";
   }
 
   // Future pickAssets({
@@ -171,8 +172,10 @@ class _UploadImageState extends State<UploadImage> {
             childAspectRatio: 3 / 4),
         itemBuilder: (BuildContext context, int index) {
           // print('chekc ${cubit.selectedAssetList[index].}');
+          // final exif = Exif.fromPath(cubit.files[index].path ?? '');
           print('check name ${cubit.files[index].name}');
           print('check path ${(cubit.files[index].path)}');
+          // print('${exif.getAttribute("key");}');
 
           return Stack(
             alignment: Alignment.topRight,
