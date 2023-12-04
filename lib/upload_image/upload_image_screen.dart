@@ -176,6 +176,10 @@ class _UploadImageState extends State<UploadImage> {
           print('check name ${cubit.files[index].name}');
           print('check path ${(cubit.files[index].path)}');
           // print('${exif.getAttribute("key");}');
+          String originalString = cubit.files[index].name;
+          String name =
+              originalString.substring(originalString.lastIndexOf('_') + 1);
+          print(name);
 
           return Stack(
             alignment: Alignment.topRight,
@@ -190,7 +194,7 @@ class _UploadImageState extends State<UploadImage> {
                     placeholder: AssetImage("assets/images/image_hover.png"),
                   ),
                   4.verticalSpace,
-                  Text('${cubit.files[index].name}'),
+                  Text('${name}'),
                 ],
               ),
               Visibility(

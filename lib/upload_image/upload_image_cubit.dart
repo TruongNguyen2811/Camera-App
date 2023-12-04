@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:native_exif/native_exif.dart';
+// import 'package:native_exif/native_exif.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:path/path.dart' as path;
 
@@ -36,6 +37,11 @@ class UploadImageCubit extends Cubit<UploadImageState> {
         // User canceled the picker
         print('0');
       }
+      // for (var i in files) {
+      //   final exif = await Exif.fromPath(i.path ?? '');
+      //   final attribute = await exif.getAttributes();
+      //   print('check feature ${attribute}');
+      // }
       emit(UpLoadInitial());
     } catch (e) {
       print('check $e');
@@ -101,13 +107,14 @@ class UploadImageCubit extends Cubit<UploadImageState> {
 
       for (int i = 0; i < files.length; i++) {
         // XFile image = selectedFiles[i];
-        // final exif = await Exif.fromPath(files[i].path ?? '');
-        // final attribute = await exif.getAttributes();
-        // print('check feature ${attribute}');
+        String originalString = files[i].name;
+        String name =
+            originalString.substring(originalString.lastIndexOf('_') + 1);
+        print('check split name $name');
         // print('${files[i].path}');
         // print('${files[i].name}');
-        formDataList.add(await MultipartFile.fromFile(files[i].path!,
-            filename: files[i].name));
+        formDataList
+            .add(await MultipartFile.fromFile(files[i].path!, filename: name));
       }
 
       FormData formData = FormData.fromMap({

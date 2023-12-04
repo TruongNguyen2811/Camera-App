@@ -1,3 +1,6 @@
+import 'package:app_camera/chooseImage/choose_image.dart';
+import 'package:app_camera/chooseImage/media_picker.dart';
+import 'package:app_camera/list_image/list_image.dart';
 import 'package:app_camera/take_picture/take_picture_screen.dart';
 import 'package:app_camera/upload_image/upload_image_screen.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +38,7 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w500,
                       color: Color.fromARGB(255, 40, 40, 40)),
                 ),
+                30.verticalSpace,
                 Column(
                   children: [
                     InkWell(
@@ -105,7 +109,44 @@ class _HomePageState extends State<HomePage> {
                               fontWeight: FontWeight.w600),
                         )),
                       ),
-                    )
+                    ),
+                    20.verticalSpace,
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ListImage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                          height: 48.h,
+                          width: 200.w,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10.h, horizontal: 16.w),
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(color: Colors.black, blurRadius: 3.0)
+                            ],
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(16.r),
+                            color: Color.fromARGB(255, 75, 75, 75),
+                          ),
+                          child: Center(
+                            child: RichText(
+                              text: TextSpan(children: [
+                                TextSpan(
+                                  text: "Review Image",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ]),
+                            ),
+                          )),
+                    ),
                   ],
                 )
               ]),

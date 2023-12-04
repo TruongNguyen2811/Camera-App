@@ -2,11 +2,13 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:native_exif/native_exif.dart';
+// import 'package:native_exif/native_exif.dart';
 import 'package:path/path.dart' as path;
 import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ViewPicture extends StatefulWidget {
   // final File image;
@@ -21,6 +23,7 @@ class _ViewPictureState extends State<ViewPicture> {
   final FocusNode focusNode = FocusNode();
   final TextEditingController controller = TextEditingController();
   bool isLoading = false;
+  bool isDBR = false;
   late AssetPathEntity _album;
 
   // Future<void> compressAndSaveImage(File imageFile) async {
@@ -84,6 +87,38 @@ class _ViewPictureState extends State<ViewPicture> {
                         ),
                       ),
                       16.verticalSpace,
+                      GestureDetector(
+                        onTap: () {
+                          if (isDBR == true) {
+                            setState(() {
+                              isDBR = false;
+                            });
+                          } else if (isDBR == false) {
+                            setState(() {
+                              isDBR = true;
+                            });
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "DBR",
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            Image.asset(
+                              isDBR == true
+                                  ? 'assets/images/ic_tick_square.png'
+                                  : 'assets/images/ic_untick_square.png',
+                              width: 24.w,
+                              height: 24.w,
+                            )
+                          ],
+                        ),
+                      ),
+                      16.verticalSpace,
                       Center(
                           child: Container(
                               // color: Colors.amber,
@@ -137,14 +172,28 @@ class _ViewPictureState extends State<ViewPicture> {
                               final file = File(widget.imagePath);
                               await file
                                   .writeAsBytes(compressedImage!.toList());
-                              // autoCropCenter(file.path);
+                              Directory? picturesDir =
+                                  await getExternalStorageDirectory();
+
+                              // await autoCropCenter(widget.imagePath);
                               // List<int> bytes = await file.readAsBytes();
+                              String title = '';
+                              if (isDBR == true) {
+                                title = 'CameraApp_DBR_${controller.text}.jpg';
+                              } else if (isDBR == false) {
+                                title = 'CameraApp_${controller.text}.jpg';
+                              }
                               try {
+                                // final newFolder = await PhotoManager.editor.('Camera App');
+                                // await PhotoManager.editor.darwin.createAlbum(
+                                //   "CameraApp",
+                                //   // parent: parent, // The value should be null, the root path or other accessible folders.
+                                // );
                                 await PhotoManager.editor.saveImage(
                                   compressedImage,
                                   // quality: 40,
-                                  title: '${controller.text}.jpg',
-
+                                  title: title,
+                                  // relativePath: '${picturesDir?.path}',
                                   // isReturnImagePathOfIOS: true,
                                 );
                                 setState(() {
@@ -235,6 +284,42 @@ class _ViewPictureState extends State<ViewPicture> {
     );
   }
 
+  // Future<AssetPathEntity> _getOrCreateAlbum(String albumName) async {
+  //   final albums = await PhotoManager.getAssetPathList();
+
+  //   for (var album in albums) {
+  //     if (album.name == albumName) {
+  //       return album;
+  //     }
+  //   }
+
+  //   final options = CreateAssetPathOptions(
+  //     name: albumName,
+  //     type: RequestType.image,
+  //   );
+  //   final result = await PhotoManager.createAssetPath(options);
+  //   return result;
+  // }
+
+//   Future<void> createAlbum(String albumName) async {
+//   // final result = await PhotoManager.requestPermission();
+//   if (result) {
+//     final albums = await PhotoManager.getAssetPathList();
+//     final existingAlbum = albums.firstWhere((album) => album.name == albumName, orElse: () => null);
+//     if (existingAlbum != null) {
+//       print('Album $albumName already exists');
+//       return;
+//     }
+//     await PhotoManager.editor.darwin.createAlbum(
+//       albumName,
+//       // parent: parent, // The value should be null, the root path or other accessible folders.
+//     );
+//     print('Album $albumName created successfully');
+//   } else {
+//     print('Permission denied');
+//   }
+// }
+
   // Future<void> autoCropCenter(String imagePath) async {
   //   final File originalImage = File(imagePath);
 
@@ -252,23 +337,26 @@ class _ViewPictureState extends State<ViewPicture> {
   //   }
 
   //   // Kích thước ảnh gốc
-  //   final int imageWidth = image.width;
-  //   final int imageHeight = image.height;
+  //   // final int imageWidth = image.width;
+  //   // final int imageHeight = image.height;
 
-  //   // Kích thước khung cắt (vd: lấy 50% phần trung tâm của ảnh)
-  //   final double cropWidthPercent = 0.8;
-  //   final double cropHeightPercent = 0.35;
+  //   // // Kích thước khung cắt (vd: lấy 50% phần trung tâm của ảnh)
+  //   // final double cropWidthPercent = 0.8;
+  //   // final double cropHeightPercent = 0.35;
 
-  //   // Tính toán kích thước và vị trí khung cắt
-  //   final int cropWidth = (imageWidth * cropWidthPercent).toInt();
-  //   final int cropHeight = (imageHeight * cropHeightPercent).toInt();
-  //   final int cropX = (imageWidth - cropWidth) ~/ 2;
-  //   final int cropY = (imageHeight - cropHeight) ~/ 2;
-  //   // final exif = await Exif.fromPath(imagePath);
+  //   // // Tính toán kích thước và vị trí khung cắt
+  //   // final int cropWidth = (imageWidth * cropWidthPercent).toInt();
+  //   // final int cropHeight = (imageHeight * cropHeightPercent).toInt();
+  //   // final int cropX = (imageWidth - cropWidth) ~/ 2;
+  //   // final int cropY = (imageHeight - cropHeight) ~/ 2;
+  //   final exif = await Exif.fromPath(imagePath);
+  //   print('check path ${imagePath}');
   //   try {
-  //     await exif.writeAttributes({
-  //       'UserComment': "${cropX} ${cropY} ${cropWidth} ${cropHeight}}",
-  //     });
+  //     if (isDBR == true) {
+  //       await exif.writeAttributes({
+  //         'UserComment': "DBR",
+  //       });
+  //     }
   //     // Map<String, Object>? attributes;
   //     // attributes?['usercomment'] = "this file was edited by flutterapp!";
   //     // final result = await exif.writeAttributes(attributes);
