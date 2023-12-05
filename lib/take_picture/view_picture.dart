@@ -87,6 +87,17 @@ class _ViewPictureState extends State<ViewPicture> {
                         ),
                       ),
                       16.verticalSpace,
+                      Center(
+                          child: Container(
+                              // color: Colors.amber,
+                              child: Image.file(
+                        File(widget.imagePath),
+                        fit: BoxFit.contain,
+                        // width: MediaQuery.of(context).size.width,
+                        // height: MediaQuery.of(context).size.height * 0.62,
+                        scale: 1,
+                      ))),
+                      16.verticalSpace,
                       GestureDetector(
                         onTap: () {
                           if (isDBR == true) {
@@ -118,17 +129,6 @@ class _ViewPictureState extends State<ViewPicture> {
                           ],
                         ),
                       ),
-                      16.verticalSpace,
-                      Center(
-                          child: Container(
-                              // color: Colors.amber,
-                              child: Image.file(
-                        File(widget.imagePath),
-                        fit: BoxFit.contain,
-                        // width: MediaQuery.of(context).size.width,
-                        // height: MediaQuery.of(context).size.height * 0.62,
-                        scale: 1,
-                      ))),
                       16.verticalSpace,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -172,8 +172,8 @@ class _ViewPictureState extends State<ViewPicture> {
                               final file = File(widget.imagePath);
                               await file
                                   .writeAsBytes(compressedImage!.toList());
-                              Directory? picturesDir =
-                                  await getExternalStorageDirectory();
+                              Directory picturesDir =
+                                  await getApplicationDocumentsDirectory();
 
                               // await autoCropCenter(widget.imagePath);
                               // List<int> bytes = await file.readAsBytes();
@@ -193,7 +193,7 @@ class _ViewPictureState extends State<ViewPicture> {
                                   compressedImage,
                                   // quality: 40,
                                   title: title,
-                                  // relativePath: '${picturesDir?.path}',
+                                  // relativePath: '${picturesDir.path}/$title',
                                   // isReturnImagePathOfIOS: true,
                                 );
                                 setState(() {

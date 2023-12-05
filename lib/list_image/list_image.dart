@@ -10,6 +10,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class ListImage extends StatefulWidget {
   const ListImage({super.key});
@@ -24,7 +25,8 @@ class _ListImageState extends State<ListImage> {
   void initState() {
     super.initState();
     cubit = ListImageCubit();
-    cubit.getImage();
+    // cubit.getImage();
+    cubit.getImagesFromApp();
   }
 
   @override
@@ -65,16 +67,16 @@ class _ListImageState extends State<ListImage> {
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (cubit.images.isEmpty) ...[
+                  if (cubit.image.isEmpty) ...[
                     _fieldPickCarServiceWidget(context),
                   ],
                   16.verticalSpace,
-                  if (cubit.images.isNotEmpty) ...[
+                  if (cubit.image.isNotEmpty) ...[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Number of DBR: ${cubit.imagesDBR.length}'),
-                        Text('Number of no DBR: ${cubit.imagesNoDBR.length}'),
+                        Text('Number of DBR: ${cubit.imageDBR.length}'),
+                        Text('Number of no DBR: ${cubit.imageNoDBR.length}'),
                       ],
                     ),
                     imageWidget(),
@@ -139,7 +141,7 @@ class _ListImageState extends State<ListImage> {
 
   Widget imageWidget() {
     return ListView.builder(
-        itemCount: cubit.images.length,
+        itemCount: cubit.image.length,
         padding: EdgeInsets.symmetric(vertical: 12.h),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -152,26 +154,27 @@ class _ListImageState extends State<ListImage> {
           // print('chekc ${cubit.selectedAssetList[index].}');
           // final exif = Exif.fromPath(cubit.files[index].path ?? '');
           // print('check name ${cubit.images[index].name}');
-          print('check path ${(cubit.images[index].path)}');
+          // print('check path ${(cubit.image[index].title)}');
           // print('check date ${(cubit.files[index].)}');
           // print('${exif.getAttribute("key");}');
-          String fileName = cubit.images[index].path.split('/').last;
-          String name = fileName.substring(fileName.lastIndexOf('_') + 1);
-          bool containsDBR = cubit.images[index].path.contains("DBR");
-          print(name);
+          // String fileName = cubit.image[index].path.split('/').last;
+          String name = cubit.image[index].title!
+              .substring(cubit.image[index].title!.lastIndexOf('_') + 1);
+          bool containsDBR = cubit.image[index].title!.contains("DBR");
+          // print(name);
           return Padding(
             padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
             child: InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => FullscreenImagePage(
-                            imageUrls: cubit.images.map((e) => e.path).toList(),
-                            isNetwork: false,
-                            initialPosition: index,
-                          )),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => FullscreenImagePage(
+                //             imageUrls: cubit.images.map((e) => e.path).toList(),
+                //             isNetwork: false,
+                //             initialPosition: index,
+                //           )),
+                // );
               },
               child: Container(
                 // color: Color.fromARGB(255, 212, 222, 231),
@@ -180,12 +183,12 @@ class _ListImageState extends State<ListImage> {
                   children: [
                     4.verticalSpace,
                     Container(
-                      // width: 30.w,
+                      width: 50.w,
                       // height: 30.h,
                       // color: Colors.amber,
                       child: Text(
                         '${name}',
-                        textAlign: TextAlign.center,
+                        textAlign: TextAlign.left,
                       ),
                     ),
                     // if (containsDBR == true) ...[
@@ -196,14 +199,28 @@ class _ListImageState extends State<ListImage> {
                             textAlign: TextAlign.center,
                           ))
                         : Expanded(child: Container()),
-                    // ],
-                    FadeInImage(
-                      image: FileImage(File(cubit.images[index].path)),
-                      fit: BoxFit.cover,
-                      width: 100.w,
-                      height: 40.h,
-                      placeholder: AssetImage("assets/images/image_hover.png"),
+                    AssetEntityImage(
+                      cubit.image[index],
+                      isOriginal: false,
+                      thumbnailSize: const ThumbnailSize.square(50),
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Center(
+                          child: Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          ),
+                        );
+                      },
                     ),
+                    // ],
+                    // FadeInImage(
+                    //   image: FileImage(File(cubit.images[index].path)),
+                    //   fit: BoxFit.cover,
+                    //   width: 100.w,
+                    //   height: 40.h,
+                    //   placeholder: AssetImage("assets/images/image_hover.png"),
+                    // ),
                   ],
                 ),
               ),

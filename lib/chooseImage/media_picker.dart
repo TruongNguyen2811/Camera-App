@@ -139,7 +139,7 @@ class _MediaPickerState extends State<MediaPicker> {
               child: AssetEntityImage(
                 assetEntity,
                 isOriginal: false,
-                thumbnailSize: const ThumbnailSize.square(250),
+                thumbnailSize: const ThumbnailSize.square(110),
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return const Center(

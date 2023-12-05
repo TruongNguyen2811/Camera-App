@@ -13,6 +13,12 @@ class ChooseImage extends StatefulWidget {
 
 class _ChooseImageState extends State<ChooseImage> {
   List<AssetEntity> selectedAssetList = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    getImagesFromApp();
+    super.initState();
+  }
 
   Future pickAssets({
     required int maxCount,
@@ -116,5 +122,30 @@ class _ChooseImageState extends State<ChooseImage> {
         ),
       ),
     );
+  }
+
+  Future<List<AssetEntity>> getImagesFromApp() async {
+    print('aaaa');
+    final optionGroup = FilterOptionGroup(
+      imageOption: const FilterOption(
+        durationConstraint: DurationConstraint(max: Duration.zero),
+        // sizeConstraint: SizeConstraint( 0),
+        needTitle: true,
+      ),
+    );
+
+    final pathList = await PhotoManager.getAssetPathList(onlyAll: true);
+    if (pathList.isEmpty) {
+      return [];
+    }
+
+    final galleryPath = pathList[0];
+
+    final assetList = await galleryPath.getAssetListPaged(page: 0, size: 1000);
+    print('check ${assetList.length}');
+    for (var i in assetList) {
+      print('check ${i.title}');
+    }
+    return assetList;
   }
 }

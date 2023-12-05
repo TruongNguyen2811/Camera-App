@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:exif/exif.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class ListImageCubit extends Cubit<ListImageState> {
   ListImageCubit() : super(ListImageInitial());
@@ -11,9 +12,62 @@ class ListImageCubit extends Cubit<ListImageState> {
   List<PlatformFile> files = [];
   List<PlatformFile> listDBR = [];
   List<PlatformFile> listNoneDBR = [];
-
+  List<AssetEntity> image = [];
+  List<AssetEntity> imageDBR = [];
+  List<AssetEntity> imageNoDBR = [];
   // List<AssetEntity> selectedAssetList = [];
   // List<String> originalImagePaths = [];
+
+  Future<void> getImagesFromApp() async {
+    emit(ListImageLoading());
+    print('aaaa');
+    try {
+      final optionGroup = FilterOptionGroup(
+        imageOption: const FilterOption(
+          durationConstraint: DurationConstraint(max: Duration.zero),
+          // sizeConstraint: SizeConstraint( 0),
+          needTitle: true,
+        ),
+      );
+
+      final pathList = await PhotoManager.getAssetPathList(
+          onlyAll: false, filterOption: optionGroup);
+      print('check list Album ${pathList.length}');
+      if (pathList.isEmpty) {
+        print('Empty Album?');
+      }
+
+      final galleryPath = pathList[0];
+
+      final assetList = await galleryPath.getAssetListPaged(page: 0, size: 400);
+      print('check title ${assetList.first.title}');
+      String originalSubTitle = await assetList.first.titleAsyncWithSubtype;
+      String originalFile = await assetList.first.titleAsync;
+      print('Check originsub $originalSubTitle');
+      print('Check origin $originalFile');
+      print('check ${assetList.length}');
+      for (var i in assetList) {
+        if (i.title!.contains('CameraApp')) {
+          image.add(i);
+        }
+      }
+      if (image.isNotEmpty) {
+        for (var i in image) {
+          print('Check date${i.createDateTime}');
+          // print('check ${i.title}');
+          if (i.title!.contains('DBR')) {
+            imageDBR.add(i);
+          } else {
+            imageNoDBR.add(i);
+          }
+        }
+      }
+      emit(ListImageInitial());
+    } catch (e) {
+      print('Check error $e');
+      emit(ListImageFailure('Can not load image'));
+    }
+  }
 
   void selectImages() async {
     emit(ListImageLoading());
@@ -82,19 +136,19 @@ class ListImageCubit extends Cubit<ListImageState> {
     print(1234);
     try {
       // Lấy đường dẫn đến thư mục lưu trữ ảnh
-      final directory = await getExternalStorageDirectory();
+      final directory = await getApplicationDocumentsDirectory();
       String trimmedPath =
-          directory?.path.substring(0, directory.path.lastIndexOf("/0")) ?? '';
+          directory.path.substring(0, directory.path.lastIndexOf("/0"));
       // Lọc danh sách các tệp thoả mãn điều kiện
       print('check trimmed ${trimmedPath}');
-      final imagesDirectoryPath = '${trimmedPath}/0/Pictures';
-      Directory imagesDirectory = Directory(imagesDirectoryPath);
+      // final imagesDirectoryPath = '${trimmedPath}/0/Pictures';
+      // Directory imagesDirectory = Directory(imagesDirectoryPath);
       // Directory appDir = await getApplicationDocumentsDirectory();
-      String galleryPathIos = directory!.parent.parent.parent.parent.path;
-      print('check IOS${galleryPathIos}');
+      // String galleryPathIos = directory.parent.parent.path;
+      print('check IOS${directory.path}');
 
-      if (imagesDirectory != null) {
-        String galleryPath = imagesDirectory.path;
+      if (directory != null) {
+        String galleryPath = directory.path;
 
         // Kiểm tra tất cả các tệp tin trong thư mục gallery
         Directory(galleryPath).listSync().forEach((entity) {
@@ -116,7 +170,7 @@ class ListImageCubit extends Cubit<ListImageState> {
           imagesNoDBR.add(image);
         }
       }
-      print('Check ${imagesDirectory}');
+      // print('Check ${imagesDirectory}');
       print('Check length ${images.length}');
       // In ra đường dẫn của các ảnh đã lọc được
     } catch (e) {
