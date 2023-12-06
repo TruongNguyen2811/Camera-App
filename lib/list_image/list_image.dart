@@ -29,6 +29,11 @@ class _ListImageState extends State<ListImage> {
     cubit.getImagesFromApp();
   }
 
+  bool _sortNameAsc = true;
+  bool _sortAgeAsc = true;
+  bool _sortHightAsc = true;
+  bool _sortAsc = true;
+  int _sortColumnIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,10 +80,23 @@ class _ListImageState extends State<ListImage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Number of DBR: ${cubit.imageDBR.length}'),
-                        Text('Number of no DBR: ${cubit.imageNoDBR.length}'),
+                        Text(
+                          'Number of DBR: ${cubit.imageDBR.length}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          'Number of no DBR: ${cubit.imageNoDBR.length}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ],
                     ),
+                    16.verticalSpace,
                     imageWidget(),
                   ],
                   16.verticalSpace,
@@ -90,6 +108,7 @@ class _ListImageState extends State<ListImage> {
                         Text('Number of no DBR: ${cubit.listNoneDBR.length}'),
                       ],
                     ),
+                    16.verticalSpace,
                     fileWidget(),
                   ],
                 ],
@@ -139,68 +158,168 @@ class _ListImageState extends State<ListImage> {
     );
   }
 
+  // onsortColum(int columnIndex, bool ascending) {
+  //   if (columnIndex == 0) {
+  //     if (ascending) {
+  //       cubit.imageName.sort((a, b) => a.compareTo(b));
+  //     } else {
+  //       cubit.imageName.sort((a, b) => b.compareTo(a.name!));
+  //     }
+  //   }
+  // }
+
   Widget imageWidget() {
-    return ListView.builder(
-        itemCount: cubit.image.length,
-        padding: EdgeInsets.symmetric(vertical: 12.h),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //     crossAxisCount: 3,
-        //     crossAxisSpacing: 16.h,
-        //     mainAxisSpacing: 16.w,
-        //     childAspectRatio: 3 / 4),
-        itemBuilder: (BuildContext context, int index) {
-          // print('chekc ${cubit.selectedAssetList[index].}');
-          // final exif = Exif.fromPath(cubit.files[index].path ?? '');
-          // print('check name ${cubit.images[index].name}');
-          // print('check path ${(cubit.image[index].title)}');
-          // print('check date ${(cubit.files[index].)}');
-          // print('${exif.getAttribute("key");}');
-          // String fileName = cubit.image[index].path.split('/').last;
-          String name = cubit.image[index].title!
-              .substring(cubit.image[index].title!.lastIndexOf('_') + 1);
-          bool containsDBR = cubit.image[index].title!.contains("DBR");
-          // print(name);
-          return Padding(
-            padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
-            child: InkWell(
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => FullscreenImagePage(
-                //             imageUrls: cubit.images.map((e) => e.path).toList(),
-                //             isNetwork: false,
-                //             initialPosition: index,
-                //           )),
-                // );
-              },
-              child: Container(
-                // color: Color.fromARGB(255, 212, 222, 231),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    4.verticalSpace,
-                    Container(
-                      width: 50.w,
-                      // height: 30.h,
-                      // color: Colors.amber,
-                      child: Text(
-                        '${name}',
-                        textAlign: TextAlign.left,
-                      ),
+    return Container(
+      width: double.infinity,
+      child: DataTable(
+        sortColumnIndex: _sortColumnIndex,
+        sortAscending: _sortAsc,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Color(0xFFC2C3C0),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        border: TableBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        dataRowHeight: 80.h,
+        columnSpacing: 0,
+        horizontalMargin: 12,
+
+        // dataRowColor: MaterialStateColor.resolveWith((states) {
+        //   // Mảng màu sắc xen kẽ
+        //   final colors = [AppColors.white, AppColors.mainBackground];
+        //   // Lấy màu tương ứng dựa trên chỉ số hàng
+        //   final colorIndex = 3 % colors.length;
+        //   return colors[colorIndex];
+        // }
+        // ),
+        columns: <DataColumn>[
+          DataColumn(
+              label: Expanded(
+                child: Text(
+                  'Image Name',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              onSort: (columnIndex, sortAscending) {
+                setState(() {
+                  if (columnIndex == _sortColumnIndex) {
+                    _sortAsc = _sortNameAsc = sortAscending;
+                  } else {
+                    _sortColumnIndex = columnIndex;
+                    _sortAsc = _sortNameAsc;
+                  }
+                  cubit.imageModel.sort((a, b) {
+                    int aNumber =
+                        int.parse(a.name!.replaceAll(RegExp(r'[^\d]+'), ''));
+                    int bNumber =
+                        int.parse(b.name!.replaceAll(RegExp(r'[^\d]+'), ''));
+
+                    return aNumber.compareTo(bNumber);
+                  });
+                  // cubit.imageModel.sort((a, b) => a.name!.compareTo(b.name!));
+                  if (!_sortAsc) {
+                    cubit.imageModel = cubit.imageModel.reversed.toList();
+                  }
+                });
+              }),
+          DataColumn(
+            label: Expanded(
+              child: Text(
+                'Image',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          DataColumn(
+              label: Expanded(
+                child: Text(
+                  'Is DBR',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              onSort: (columnIndex, sortAscending) {
+                setState(() {
+                  if (columnIndex == _sortColumnIndex) {
+                    _sortAsc = _sortNameAsc = sortAscending;
+                  } else {
+                    _sortColumnIndex = columnIndex;
+                    _sortAsc = _sortNameAsc;
+                  }
+                  cubit.imageModel
+                      .sort((a, b) => a.originName!.compareTo(b.originName!));
+                  if (!_sortAsc) {
+                    cubit.imageModel = cubit.imageModel.reversed.toList();
+                  }
+                });
+              }),
+        ],
+        rows: List<DataRow>.generate(cubit.imageModel.length, (index) {
+          // TextEditingController controllerText = TextEditingController();
+          // String name = cubit.imageName[index]
+          //     .substring(cubit.imageName[index].lastIndexOf('_') + 1);
+          // bool containsDBR = cubit.imageName[index].contains("DBR");
+          return DataRow(
+            color: MaterialStateColor.resolveWith((states) {
+              // Mảng màu sắc xen kẽ
+              final colors = [Colors.white, Color(0xFFFAFAFA)];
+              // Lấy màu tương ứng dựa trên chỉ số hàng
+              final colorIndex = index % colors.length;
+              return colors[colorIndex];
+            }),
+            cells: [
+              DataCell(
+                Container(
+                  width: 100.w,
+                  child: Text(
+                    // cubit.image[index].titleAsync,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
                     ),
-                    // if (containsDBR == true) ...[
-                    containsDBR == true
-                        ? Expanded(
-                            child: Text(
-                            'DBR',
-                            textAlign: TextAlign.center,
-                          ))
-                        : Expanded(child: Container()),
-                    AssetEntityImage(
-                      cubit.image[index],
+                    cubit.imageModel[index].name ?? '',
+                    // 'Lọc dầu Vios 2019',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FullscreenImagePage(
+                                imageUrls: cubit.imageModel
+                                    .map((e) => e.assetFile!.path)
+                                    .toList(),
+                                isNetwork: false,
+                                initialPosition: index,
+                              )),
+                    );
+                  },
+                  child: Container(
+                    width: 140.w,
+                    padding: EdgeInsets.all(8.h),
+                    child: AssetEntityImage(
+                      cubit.imageModel[index].assetEntity,
                       isOriginal: false,
                       thumbnailSize: const ThumbnailSize.square(50),
                       fit: BoxFit.contain,
@@ -213,96 +332,381 @@ class _ListImageState extends State<ListImage> {
                         );
                       },
                     ),
-                    // ],
-                    // FadeInImage(
-                    //   image: FileImage(File(cubit.images[index].path)),
-                    //   fit: BoxFit.cover,
-                    //   width: 100.w,
-                    //   height: 40.h,
-                    //   placeholder: AssetImage("assets/images/image_hover.png"),
-                    // ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              DataCell(Container(
+                width: 80.w,
+                child: InkWell(
+                  onTap: () {
+                    // if (cubit.imageModel[index].isDbr == true) {
+                    //   setState(() {
+                    //     cubit.imageModel[index].isDbr = false;
+                    //   });
+                    // } else if (cubit.imageModel[index].isDbr == false) {
+                    //   setState(() {
+                    //     cubit.imageModel[index].isDbr = true;
+                    //   });
+                    // }
+                  },
+                  child: Image.asset(
+                    cubit.imageModel[index].isDbr == true
+                        ? 'assets/images/ic_tick_square.png'
+                        : 'assets/images/ic_untick_square.png',
+                    width: 24.w,
+                    height: 24.w,
+                  ),
+                ),
+              )),
+            ],
           );
-        });
+        }),
+      ),
+    );
+    // return ListView.builder(
+    //     itemCount: cubit.image.length,
+    //     padding: EdgeInsets.symmetric(vertical: 12.h),
+    //     shrinkWrap: true,
+    //     physics: const NeverScrollableScrollPhysics(),
+    //     // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //     //     crossAxisCount: 3,
+    //     //     crossAxisSpacing: 16.h,
+    //     //     mainAxisSpacing: 16.w,
+    //     //     childAspectRatio: 3 / 4),
+    //     itemBuilder: (BuildContext context, int index) {
+    //       // print('chekc ${cubit.selectedAssetList[index].}');
+    //       // final exif = Exif.fromPath(cubit.files[index].path ?? '');
+    //       // print('check name ${cubit.images[index].name}');
+    //       // print('check path ${(cubit.image[index].title)}');
+    //       // print('check date ${(cubit.files[index].)}');
+    //       // print('${exif.getAttribute("key");}');
+    //       // String fileName = cubit.image[index].path.split('/').last;
+    //       String name = cubit.image[index].title!
+    //           .substring(cubit.image[index].title!.lastIndexOf('_') + 1);
+    //       bool containsDBR = cubit.image[index].title!.contains("DBR");
+    //       // print(name);
+    //       return Padding(
+    //         padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+    //         child: InkWell(
+    //           onTap: () {
+    //             // Navigator.push(
+    //             //   context,
+    //             //   MaterialPageRoute(
+    //             //       builder: (context) => FullscreenImagePage(
+    //             //             imageUrls: cubit.images.map((e) => e.path).toList(),
+    //             //             isNetwork: false,
+    //             //             initialPosition: index,
+    //             //           )),
+    //             // );
+    //           },
+    //           child: Container(
+    //             // color: Color.fromARGB(255, 212, 222, 231),
+    //             child: Row(
+    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //               children: [
+    //                 4.verticalSpace,
+    //                 Container(
+    //                   width: 50.w,
+    //                   // height: 30.h,
+    //                   // color: Colors.amber,
+    //                   child: Text(
+    //                     '${name}',
+    //                     textAlign: TextAlign.left,
+    //                   ),
+    //                 ),
+    //                 // if (containsDBR == true) ...[
+    //                 containsDBR == true
+    //                     ? Expanded(
+    //                         child: Text(
+    //                         'DBR',
+    //                         textAlign: TextAlign.center,
+    //                       ))
+    //                     : Expanded(child: Container()),
+    //                 AssetEntityImage(
+    //                   cubit.image[index],
+    //                   isOriginal: false,
+    //                   thumbnailSize: const ThumbnailSize.square(50),
+    //                   fit: BoxFit.contain,
+    //                   errorBuilder: (context, error, stackTrace) {
+    //                     return const Center(
+    //                       child: Icon(
+    //                         Icons.error,
+    //                         color: Colors.red,
+    //                       ),
+    //                     );
+    //                   },
+    //                 ),
+    //                 // ],
+    //                 // FadeInImage(
+    //                 //   image: FileImage(File(cubit.images[index].path)),
+    //                 //   fit: BoxFit.cover,
+    //                 //   width: 100.w,
+    //                 //   height: 40.h,
+    //                 //   placeholder: AssetImage("assets/images/image_hover.png"),
+    //                 // ),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //       );
+    //     });
   }
 
   Widget fileWidget() {
-    return ListView.builder(
-        itemCount: cubit.files.length,
-        padding: EdgeInsets.symmetric(vertical: 12.h),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //     crossAxisCount: 3,
-        //     crossAxisSpacing: 16.h,
-        //     mainAxisSpacing: 16.w,
-        //     childAspectRatio: 3 / 4),
-        itemBuilder: (BuildContext context, int index) {
-          // print('chekc ${cubit.selectedAssetList[index].}');
-          // final exif = Exif.fromPath(cubit.files[index].path ?? '');
-          print('check name ${cubit.files[index].name}');
-          print('check path ${(cubit.files[index].path)}');
-          // print('check date ${(cubit.files[index].)}');
-          // print('${exif.getAttribute("key");}');
-          String originalString = cubit.files[index].name;
-          String name =
-              originalString.substring(originalString.lastIndexOf('_') + 1);
-          bool containsDBR = cubit.files[index].name.contains("DBR");
-          print(name);
-          return Padding(
-            padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => FullscreenImagePage(
-                            imageUrls:
-                                cubit.files.map((e) => e.path ?? '').toList(),
-                            isNetwork: false,
-                            initialPosition: index,
-                          )),
-                );
-              },
-              child: Container(
-                // color: Color.fromARGB(255, 212, 222, 231),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    4.verticalSpace,
-                    Container(
-                      // width: 30.w,
-                      // height: 30.h,
-                      // color: Colors.amber,
-                      child: Text(
-                        '${name}',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    // if (containsDBR == true) ...[
-                    containsDBR == true
-                        ? Expanded(
-                            child: Text(
-                            'DBR',
-                            textAlign: TextAlign.center,
-                          ))
-                        : Expanded(child: Container()),
-                    // ],
-                    FadeInImage(
-                      image: FileImage(File(cubit.files[index].path ?? '')),
-                      fit: BoxFit.cover,
-                      width: 100.w,
-                      height: 40.h,
-                      placeholder: AssetImage("assets/images/image_hover.png"),
-                    ),
-                  ],
+    return Container(
+      width: double.infinity,
+      child: DataTable(
+        sortColumnIndex: _sortColumnIndex,
+        sortAscending: _sortAsc,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Color(0xFFC2C3C0),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        border: TableBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        dataRowHeight: 80.h,
+        columnSpacing: 0,
+        horizontalMargin: 12,
+
+        // dataRowColor: MaterialStateColor.resolveWith((states) {
+        //   // Mảng màu sắc xen kẽ
+        //   final colors = [AppColors.white, AppColors.mainBackground];
+        //   // Lấy màu tương ứng dựa trên chỉ số hàng
+        //   final colorIndex = 3 % colors.length;
+        //   return colors[colorIndex];
+        // }
+        // ),
+        columns: <DataColumn>[
+          DataColumn(
+              label: Expanded(
+                child: Text(
+                  'Image Name',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
+              onSort: (columnIndex, sortAscending) {
+                setState(() {
+                  if (columnIndex == _sortColumnIndex) {
+                    _sortAsc = _sortNameAsc = sortAscending;
+                  } else {
+                    _sortColumnIndex = columnIndex;
+                    _sortAsc = _sortNameAsc;
+                  }
+                  cubit.imageModel.sort((a, b) {
+                    int aNumber =
+                        int.parse(a.name!.replaceAll(RegExp(r'[^\d]+'), ''));
+                    int bNumber =
+                        int.parse(b.name!.replaceAll(RegExp(r'[^\d]+'), ''));
+
+                    return aNumber.compareTo(bNumber);
+                  });
+                  // cubit.imageModel.sort((a, b) => a.name!.compareTo(b.name!));
+                  if (!_sortAsc) {
+                    cubit.imageModel = cubit.imageModel.reversed.toList();
+                  }
+                });
+              }),
+          DataColumn(
+            label: Expanded(
+              child: Text(
+                'Image',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
+          ),
+          DataColumn(
+              label: Expanded(
+                child: Text(
+                  'Is DBR',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              onSort: (columnIndex, sortAscending) {
+                setState(() {
+                  if (columnIndex == _sortColumnIndex) {
+                    _sortAsc = _sortNameAsc = sortAscending;
+                  } else {
+                    _sortColumnIndex = columnIndex;
+                    _sortAsc = _sortNameAsc;
+                  }
+                  cubit.imageModel
+                      .sort((a, b) => a.originName!.compareTo(b.originName!));
+                  if (!_sortAsc) {
+                    cubit.imageModel = cubit.imageModel.reversed.toList();
+                  }
+                });
+              }),
+        ],
+        rows: List<DataRow>.generate(cubit.imageModel.length, (index) {
+          // TextEditingController controllerText = TextEditingController();
+          // String name = cubit.imageName[index]
+          //     .substring(cubit.imageName[index].lastIndexOf('_') + 1);
+          // bool containsDBR = cubit.imageName[index].contains("DBR");
+          return DataRow(
+            color: MaterialStateColor.resolveWith((states) {
+              // Mảng màu sắc xen kẽ
+              final colors = [Colors.white, Color(0xFFFAFAFA)];
+              // Lấy màu tương ứng dựa trên chỉ số hàng
+              final colorIndex = index % colors.length;
+              return colors[colorIndex];
+            }),
+            cells: [
+              DataCell(
+                Container(
+                  width: 100.w,
+                  child: Text(
+                    // cubit.image[index].titleAsync,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    cubit.imageModel[index].name ?? '',
+                    // 'Lọc dầu Vios 2019',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FullscreenImagePage(
+                                imageUrls: cubit.imageModel
+                                    .map((e) => e.file?.path ?? '')
+                                    .toList(),
+                                isNetwork: false,
+                                initialPosition: index,
+                              )),
+                    );
+                  },
+                  child: Container(
+                    width: 140.w,
+                    padding: EdgeInsets.all(8.h),
+                    child: FadeInImage(
+                      image: FileImage(
+                          File(cubit.imageModel[index].file?.path ?? '')),
+                      fit: BoxFit.contain,
+                      // width: 64.w,
+                      // height: 64 * 3 / 3.h,
+                      placeholder: AssetImage("assets/images/image_hover.png"),
+                    ),
+                  ),
+                ),
+              ),
+              DataCell(Container(
+                width: 80.w,
+                child: InkWell(
+                  onTap: () {
+                    // cubit.renameImage(
+                    //     cubit.image[index].id, 'CameraApp_DBR_1.jpg');
+                  },
+                  child: Image.asset(
+                    cubit.imageModel[index].isDbr == true
+                        ? 'assets/images/ic_tick_square.png'
+                        : 'assets/images/ic_untick_square.png',
+                    width: 24.w,
+                    height: 24.w,
+                  ),
+                ),
+              )),
+            ],
           );
-        });
+        }),
+      ),
+    );
+    // return ListView.builder(
+    //     itemCount: cubit.files.length,
+    //     padding: EdgeInsets.symmetric(vertical: 12.h),
+    //     shrinkWrap: true,
+    //     physics: const NeverScrollableScrollPhysics(),
+    //     // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //     //     crossAxisCount: 3,
+    //     //     crossAxisSpacing: 16.h,
+    //     //     mainAxisSpacing: 16.w,
+    //     //     childAspectRatio: 3 / 4),
+    //     itemBuilder: (BuildContext context, int index) {
+    //       // print('chekc ${cubit.selectedAssetList[index].}');
+    //       // final exif = Exif.fromPath(cubit.files[index].path ?? '');
+    //       print('check name ${cubit.files[index].name}');
+    //       print('check path ${(cubit.files[index].path)}');
+    //       // print('check date ${(cubit.files[index].)}');
+    //       // print('${exif.getAttribute("key");}');
+    //       String originalString = cubit.files[index].name;
+    //       String name =
+    //           originalString.substring(originalString.lastIndexOf('_') + 1);
+    //       bool containsDBR = cubit.files[index].name.contains("DBR");
+    //       print(name);
+    //       return Padding(
+    //         padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+    //         child: InkWell(
+    //           onTap: () {
+    //             Navigator.push(
+    //               context,
+    //               MaterialPageRoute(
+    //                   builder: (context) => FullscreenImagePage(
+    //                         imageUrls:
+    //                             cubit.files.map((e) => e.path ?? '').toList(),
+    //                         isNetwork: false,
+    //                         initialPosition: index,
+    //                       )),
+    //             );
+    //           },
+    //           child: Container(
+    //             // color: Color.fromARGB(255, 212, 222, 231),
+    //             child: Row(
+    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //               children: [
+    //                 4.verticalSpace,
+    //                 Container(
+    //                   // width: 30.w,
+    //                   // height: 30.h,
+    //                   // color: Colors.amber,
+    //                   child: Text(
+    //                     '${name}',
+    //                     textAlign: TextAlign.center,
+    //                   ),
+    //                 ),
+    //                 // if (containsDBR == true) ...[
+    //                 containsDBR == true
+    //                     ? Expanded(
+    //                         child: Text(
+    //                         'DBR',
+    //                         textAlign: TextAlign.center,
+    //                       ))
+    //                     : Expanded(child: Container()),
+    //                 // ],
+    //                 FadeInImage(
+    //                   image: FileImage(File(cubit.files[index].path ?? '')),
+    //                   fit: BoxFit.cover,
+    //                   width: 100.w,
+    //                   height: 40.h,
+    //                   placeholder: AssetImage("assets/images/image_hover.png"),
+    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //       );
+    //     });
   }
 }

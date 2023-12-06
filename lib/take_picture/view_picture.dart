@@ -177,6 +177,18 @@ class _ViewPictureState extends State<ViewPicture> {
 
                               // await autoCropCenter(widget.imagePath);
                               // List<int> bytes = await file.readAsBytes();
+                              if (controller.text == null ||
+                                  controller.text == '') {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          'Error: You need to enter the name of the photo')),
+                                );
+                                return;
+                              }
                               String title = '';
                               if (isDBR == true) {
                                 title = 'CameraApp_DBR_${controller.text}.jpg';

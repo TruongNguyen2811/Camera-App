@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:app_camera/list_image/list_image_state.dart';
+import 'package:app_camera/model/image_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,6 +17,8 @@ class ListImageCubit extends Cubit<ListImageState> {
   List<AssetEntity> image = [];
   List<AssetEntity> imageDBR = [];
   List<AssetEntity> imageNoDBR = [];
+  List<String> imageName = [];
+  List<ImageModel> imageModel = [];
   // List<AssetEntity> selectedAssetList = [];
   // List<String> originalImagePaths = [];
 
@@ -47,15 +51,32 @@ class ListImageCubit extends Cubit<ListImageState> {
       print('Check origin $originalFile');
       print('check ${assetList.length}');
       for (var i in assetList) {
-        if (i.title!.contains('CameraApp')) {
+        String originname = await i.titleAsync;
+        DateTime today = DateTime.now();
+        if (originname.contains('CameraApp') &&
+            today.year == i.createDateTime.year &&
+            today.month == i.createDateTime.month &&
+            today.day == i.createDateTime.day) {
           image.add(i);
         }
       }
       if (image.isNotEmpty) {
         for (var i in image) {
-          print('Check date${i.createDateTime}');
+          String nameOrigin = await i.titleAsync;
+          File file = await i.file ?? File('a');
+          imageName.add(nameOrigin);
+          String name = nameOrigin.substring(nameOrigin.lastIndexOf('_') + 1);
+          bool containsDBR = nameOrigin.contains("DBR");
+          imageModel.add(ImageModel(
+              name: name,
+              assetId: i.id,
+              createDate: i.createDateTime,
+              isDbr: containsDBR,
+              originName: nameOrigin,
+              assetFile: file,
+              assetEntity: i));
           // print('check ${i.title}');
-          if (i.title!.contains('DBR')) {
+          if (nameOrigin.contains('DBR')) {
             imageDBR.add(i);
           } else {
             imageNoDBR.add(i);
@@ -67,6 +88,30 @@ class ListImageCubit extends Cubit<ListImageState> {
       print('Check error $e');
       emit(ListImageFailure('Can not load image'));
     }
+  }
+
+  Future<void> renameImage(String assetId, String newName) async {
+    AssetEntity? asset = await AssetEntity.fromId(assetId);
+
+    if (asset != null) {
+      // Lấy đường dẫn của asset
+
+      // Tạo một bản sao của asset với tên mới
+      Uint8List? newAsset = await asset.originBytes;
+      // await asset.titleAsync = 'aaa';
+      // if (newAsset != null) {
+      //   PhotoManager.editor.saveImage(
+      //     newAsset,
+      //     // quality: 40,
+      //     title: newName,
+      //     // relativePath: '${picturesDir.path}/$title',
+      //     // isReturnImagePathOfIOS: true,
+      //   );
+      // }
+      // Xóa asset cũ
+
+      getImagesFromApp();
+    } else {}
   }
 
   void selectImages() async {
@@ -82,6 +127,16 @@ class ListImageCubit extends Cubit<ListImageState> {
         files.addAll(result.files);
         for (var file in result.files) {
           // Lấy thông tin Exif từ ảnh
+          String nameOrigin = file.name;
+          imageName.add(nameOrigin);
+          String name = nameOrigin.substring(nameOrigin.lastIndexOf('_') + 1);
+          bool containsDBR = nameOrigin.contains("DBR");
+          imageModel.add(ImageModel(
+            file: file,
+            originName: nameOrigin,
+            name: name,
+            isDbr: containsDBR,
+          ));
           if (file.name.contains('DBR')) {
             listDBR.add(file);
           } else {
