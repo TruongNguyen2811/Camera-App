@@ -1,12 +1,14 @@
 import 'package:app_camera/chooseImage/choose_image.dart';
 import 'package:app_camera/chooseImage/media_picker.dart';
 import 'package:app_camera/list_image/list_image.dart';
+import 'package:app_camera/model/image_data.dart';
 import 'package:app_camera/take_picture/take_picture_screen.dart';
 import 'package:app_camera/upload_image/upload_image_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/adapters.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,6 +18,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var box = Hive.box<List>('imageBox');
+  // List<ImageData> imageDataList = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // imageDataList = box.get('imageListKey', defaultValue: []) ?? [];
+    // DateTime today = DateTime.now();
+    // // Chuyển định dạng để so sánh chỉ theo ngày, không tính giờ phút giây
+    // DateTime todayWithoutTime = DateTime(today.year, today.month, today.day);
+    // List<ImageData> imagesToKeep = imageDataList.where((imageData) {
+    //   DateTime? imageDataDate = imageData.createDate;
+    //   return imageDataDate != null &&
+    //       imageDataDate.year == todayWithoutTime.year &&
+    //       imageDataDate.month == todayWithoutTime.month &&
+    //       imageDataDate.day == todayWithoutTime.day;
+    // }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

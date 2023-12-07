@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:app_camera/model/image_data.dart';
 import 'package:app_camera/upload_image/upload_image_state.dart';
 // import 'package:camerawesome/generated/i18n.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:native_exif/native_exif.dart';
 // import 'package:native_exif/native_exif.dart';
@@ -14,7 +16,6 @@ import 'package:path/path.dart' as path;
 
 class UploadImageCubit extends Cubit<UploadImageState> {
   UploadImageCubit() : super(UpLoadInitial());
-
   // final ImagePicker imagePicker = ImagePicker();
   // List<Asset> imageFileList = [];
   List<PlatformFile> files = [];

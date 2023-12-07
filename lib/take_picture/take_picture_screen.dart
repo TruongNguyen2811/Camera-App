@@ -6,12 +6,15 @@ import 'package:app_camera/take_picture/overlay.dart';
 import 'package:app_camera/take_picture/view_picture.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:camerawesome/pigeon.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../model/image_data.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
@@ -26,6 +29,8 @@ class _CameraPageState extends State<CameraPage> {
   double zoom = 0;
   // int _pointers = 0;
   bool isFlash = true;
+  Box<List> box = Hive.box<List>('imageBox');
+  List<ImageData> imageDataList = [];
 
   @override
   void initState() {
@@ -465,7 +470,34 @@ class _CameraPageState extends State<CameraPage> {
                                                     'Check ast ${state.sensorConfig}');
                                                 String imagePath =
                                                     await state.takePhoto();
-
+                                                imageDataList = box.get(
+                                                        'imageListKey',
+                                                        defaultValue: [])?.cast<ImageData>() ??
+                                                    [];
+                                                // imageDataList = box.get('imageListKey', defaultValue: <ImageData>[]) ??
+                                                //     [] as List<ImageData>;
+                                                DateTime today = DateTime.now();
+                                                // Chuyển định dạng để so sánh chỉ theo ngày, không tính giờ phút giây
+                                                DateTime todayWithoutTime =
+                                                    DateTime(today.year,
+                                                        today.month, today.day);
+                                                var imagesToKeep = imageDataList
+                                                    .where((imageData) {
+                                                  DateTime? imageDataDate =
+                                                      imageData.createDate;
+                                                  return imageDataDate !=
+                                                          null &&
+                                                      imageDataDate.year ==
+                                                          todayWithoutTime
+                                                              .year &&
+                                                      imageDataDate.month ==
+                                                          todayWithoutTime
+                                                              .month &&
+                                                      imageDataDate.day ==
+                                                          todayWithoutTime.day;
+                                                }).toList();
+                                                box.put('imageListKey',
+                                                    imagesToKeep);
                                                 // imagePath =
                                                 //     autoCropCenter(imagePath);
 

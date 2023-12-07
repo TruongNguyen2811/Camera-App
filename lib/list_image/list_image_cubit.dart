@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:app_camera/list_image/list_image_state.dart';
+import 'package:app_camera/model/image_data.dart';
 import 'package:app_camera/model/image_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:exif/exif.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -12,19 +14,40 @@ class ListImageCubit extends Cubit<ListImageState> {
   ListImageCubit() : super(ListImageInitial());
 
   List<PlatformFile> files = [];
-  List<PlatformFile> listDBR = [];
-  List<PlatformFile> listNoneDBR = [];
   List<AssetEntity> image = [];
-  List<AssetEntity> imageDBR = [];
-  List<AssetEntity> imageNoDBR = [];
-  List<String> imageName = [];
+  // List<String> imageName = [];
   List<ImageModel> imageModel = [];
+  List<ImageModel> imageDateNow = [];
+  // var box = Hive.box<ImageData>('imageBox');
+  Box<List> box = Hive.box<List>('imageBox');
+  List<ImageData> imageDataList = [];
+  int countFalse = 0;
+  int countTrue = 0;
   // List<AssetEntity> selectedAssetList = [];
   // List<String> originalImagePaths = [];
 
+  Future<void> checkDate() async {
+    imageDataList =
+        box.get('imageListKey', defaultValue: [])?.cast<ImageData>() ?? [];
+    // imageDataList = box.get('imageListKey', defaultValue: <ImageData>[]) ??
+    //     [] as List<ImageData>;
+    DateTime today = DateTime.now();
+    // Chuyển định dạng để so sánh chỉ theo ngày, không tính giờ phút giây
+    DateTime todayWithoutTime = DateTime(today.year, today.month, today.day);
+    var imagesToKeep = imageDataList.where((imageData) {
+      DateTime? imageDataDate = imageData.createDate;
+      return imageDataDate != null &&
+          imageDataDate.year == todayWithoutTime.year &&
+          imageDataDate.month == todayWithoutTime.month &&
+          imageDataDate.day == todayWithoutTime.day;
+    }).toList();
+    box.put('imageListKey', imagesToKeep);
+  }
+
   Future<void> getImagesFromApp() async {
     emit(ListImageLoading());
-    print('aaaa');
+    imageDataList =
+        box.get('imageListKey', defaultValue: [])?.cast<ImageData>() ?? [];
     try {
       final optionGroup = FilterOptionGroup(
         imageOption: const FilterOption(
@@ -43,46 +66,79 @@ class ListImageCubit extends Cubit<ListImageState> {
 
       final galleryPath = pathList[0];
 
-      final assetList = await galleryPath.getAssetListPaged(page: 0, size: 400);
-      print('check title ${assetList.first.title}');
-      String originalSubTitle = await assetList.first.titleAsyncWithSubtype;
-      String originalFile = await assetList.first.titleAsync;
-      print('Check originsub $originalSubTitle');
-      print('Check origin $originalFile');
-      print('check ${assetList.length}');
-      for (var i in assetList) {
-        String originname = await i.titleAsync;
-        DateTime today = DateTime.now();
-        if (originname.contains('CameraApp') &&
-            today.year == i.createDateTime.year &&
-            today.month == i.createDateTime.month &&
-            today.day == i.createDateTime.day) {
-          image.add(i);
-        }
-      }
-      if (image.isNotEmpty) {
-        for (var i in image) {
-          String nameOrigin = await i.titleAsync;
-          File file = await i.file ?? File('a');
-          imageName.add(nameOrigin);
-          String name = nameOrigin.substring(nameOrigin.lastIndexOf('_') + 1);
-          bool containsDBR = nameOrigin.contains("DBR");
-          imageModel.add(ImageModel(
-              name: name,
-              assetId: i.id,
-              createDate: i.createDateTime,
-              isDbr: containsDBR,
-              originName: nameOrigin,
-              assetFile: file,
-              assetEntity: i));
-          // print('check ${i.title}');
-          if (nameOrigin.contains('DBR')) {
-            imageDBR.add(i);
-          } else {
-            imageNoDBR.add(i);
+      final assetList =
+          await galleryPath.getAssetListPaged(page: 0, size: 1000);
+      if (assetList.isEmpty) {
+        emit(ListImageFailure("Your gallery have no photo"));
+        return;
+      } else {
+        print('Check abc ${assetList.length}');
+        for (var i in assetList) {
+          String originname = await i.titleAsync;
+          DateTime today = DateTime.now();
+          if (today.year == i.createDateTime.year &&
+              today.month == i.createDateTime.month &&
+              today.day == i.createDateTime.day) {
+            image.add(i);
           }
         }
+        if (image.isNotEmpty) {
+          for (var i in image) {
+            String nameOrigin = await i.titleAsync;
+            File file = await i.file ?? File('a');
+            // imageName.add(nameOrigin);
+            // String name = nameOrigin.substring(nameOrigin.lastIndexOf('_') + 1);
+            imageDateNow.add(ImageModel(
+                name: nameOrigin,
+                assetId: i.id,
+                createDate: i.createDateTime,
+                originName: nameOrigin,
+                assetFile: file,
+                assetEntity: i));
+          }
+        }
+
+        List<String?> imageDataIds =
+            imageDataList.map((imageData) => imageData.assetId).toList();
+// Tìm các assetId không tìm thấy trong assetList
+        List<String?> notFoundAssetIds = imageDataIds
+            .where((assetId) =>
+                assetList.every((imageObject) => imageObject.id != assetId))
+            .toList();
+
+// Xóa các imageData có assetId không tìm thấy
+        imageDataList.removeWhere(
+            (imageData) => notFoundAssetIds.contains(imageData.assetId));
+
+        imageModel = imageDataList
+            .where((imageData) => imageDataIds.contains(imageData.assetId))
+            .map((imageData) {
+          var matchingImageObject = imageDateNow.firstWhere(
+              (imageObject) => imageObject.assetId == imageData.assetId,
+              orElse: () => ImageModel());
+
+          return ImageModel(
+            name: imageData.name,
+            assetId: imageData.assetId ?? '', // Handle null case
+            createDate: imageData.createDate,
+            isDbr: imageData.isDbr,
+            originName: matchingImageObject.originName,
+            assetFile: matchingImageObject.assetFile,
+            assetEntity: matchingImageObject.assetEntity,
+          );
+        }).toList();
+        print('check length ${imageModel.length}');
+        countTrue =
+            imageDataList.where((imageData) => imageData.isDbr == true).length;
+        countFalse =
+            imageDataList.where((imageData) => imageData.isDbr == false).length;
       }
+      // print('check title ${assetList.first.title}');
+      // String originalSubTitle = await assetList.first.titleAsyncWithSubtype;
+      // String originalFile = await assetList.first.titleAsync;
+      // print('Check originsub $originalSubTitle');
+      // print('Check origin $originalFile');
+      // print('check ${assetList.length}');
       emit(ListImageInitial());
     } catch (e) {
       print('Check error $e');
@@ -90,28 +146,25 @@ class ListImageCubit extends Cubit<ListImageState> {
     }
   }
 
-  Future<void> renameImage(String assetId, String newName) async {
-    AssetEntity? asset = await AssetEntity.fromId(assetId);
-
-    if (asset != null) {
-      // Lấy đường dẫn của asset
-
-      // Tạo một bản sao của asset với tên mới
-      Uint8List? newAsset = await asset.originBytes;
-      // await asset.titleAsync = 'aaa';
-      // if (newAsset != null) {
-      //   PhotoManager.editor.saveImage(
-      //     newAsset,
-      //     // quality: 40,
-      //     title: newName,
-      //     // relativePath: '${picturesDir.path}/$title',
-      //     // isReturnImagePathOfIOS: true,
-      //   );
-      // }
-      // Xóa asset cũ
-
-      getImagesFromApp();
-    } else {}
+  void changeDBR(bool newDBR, String assetId) {
+    emit(ListImageInitial());
+    for (var i in imageDataList) {
+      if (i.assetId == assetId) {
+        // Nếu assetId trùng khớp với mục tiêu, cập nhật trường isDBR
+        i.isDbr = newDBR;
+        // Sử dụng box.put để lưu lại thay đổi
+      }
+      for (var x in imageModel) {
+        if (x.assetId == assetId) {
+          x.isDbr = newDBR;
+        }
+      }
+      countTrue =
+          imageDataList.where((imageData) => imageData.isDbr == true).length;
+      countFalse =
+          imageDataList.where((imageData) => imageData.isDbr == false).length;
+    }
+    emit(ListImageSuccess(''));
   }
 
   void selectImages() async {
@@ -128,7 +181,7 @@ class ListImageCubit extends Cubit<ListImageState> {
         for (var file in result.files) {
           // Lấy thông tin Exif từ ảnh
           String nameOrigin = file.name;
-          imageName.add(nameOrigin);
+          // imageName.add(nameOrigin);
           String name = nameOrigin.substring(nameOrigin.lastIndexOf('_') + 1);
           bool containsDBR = nameOrigin.contains("DBR");
           imageModel.add(ImageModel(
@@ -138,9 +191,9 @@ class ListImageCubit extends Cubit<ListImageState> {
             isDbr: containsDBR,
           ));
           if (file.name.contains('DBR')) {
-            listDBR.add(file);
+            // listDBR.add(file);
           } else {
-            listNoneDBR.add(file);
+            // listNoneDBR.add(file);
           }
         }
       } else {

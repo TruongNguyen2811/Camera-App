@@ -26,7 +26,12 @@ class _ListImageState extends State<ListImage> {
     super.initState();
     cubit = ListImageCubit();
     // cubit.getImage();
-    cubit.getImagesFromApp();
+    getData();
+  }
+
+  getData() async {
+    await cubit.checkDate();
+    await cubit.getImagesFromApp();
   }
 
   bool _sortNameAsc = true;
@@ -66,57 +71,113 @@ class _ListImageState extends State<ListImage> {
         builder: (context, state) {
           return ShowLoadingWidget(
             isLoading: state is ListImageLoading,
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (cubit.image.isEmpty) ...[
-                    _fieldPickCarServiceWidget(context),
-                  ],
-                  16.verticalSpace,
-                  if (cubit.image.isNotEmpty) ...[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Number of DBR: ${cubit.imageDBR.length}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        Text(
-                          'Number of no DBR: ${cubit.imageNoDBR.length}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
+            child: cubit.imageModel.isEmpty
+                ? Center(
+                    child: Text(
+                      'You have no photo today \n Please take a photo and comeback',
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    16.verticalSpace,
-                    imageWidget(),
-                  ],
-                  16.verticalSpace,
-                  if (cubit.files.isNotEmpty) ...[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  )
+                : Container(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Number of DBR: ${cubit.listDBR.length}'),
-                        Text('Number of no DBR: ${cubit.listNoneDBR.length}'),
+                        if (cubit.imageModel.isEmpty) ...[
+                          Center(
+                            child: Container(
+                              width: 370.w,
+                              height: 500.w,
+                              child: Text(
+                                  'You have no photo today \n Please take a photo and comeback'),
+                            ),
+                          ),
+                        ],
+                        16.verticalSpace,
+                        if (cubit.imageModel.isNotEmpty) ...[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Number of DBR: ${cubit.countTrue}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Text(
+                                'Number of no DBR: ${cubit.countFalse}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                          16.verticalSpace,
+                          imageWidget(),
+                        ],
+                        16.verticalSpace,
+                        if (cubit.files.isNotEmpty) ...[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Text('Number of DBR: ${cubit.listDBR.length}'),
+                              // Text('Number of no DBR: ${cubit.listNoneDBR.length}'),
+                            ],
+                          ),
+                          16.verticalSpace,
+                          fileWidget(),
+                        ],
                       ],
-                    ),
-                    16.verticalSpace,
-                    fileWidget(),
-                  ],
-                ],
-              )),
-            ),
+                    )),
+                  ),
           );
         },
       ),
+      // bottomNavigationBar: cubit.imageModel.isNotEmpty
+      //     ? Container(
+      //         child: Container(
+      //             padding:
+      //                 EdgeInsets.only(left: 16.w, right: 16.w, bottom: 28.h),
+      //             child: InkWell(
+      //               onTap: () {
+      //                 // if (controller2.text.isNotEmpty) {
+      //                 //   cubit.uploadImageList(controller2.text, controller1.text);
+      //                 // } else {
+      //                 //   ScaffoldMessenger.of(context).showSnackBar(
+      //                 //     SnackBar(
+      //                 //       content: Text('You need to fill in Session Id'),
+      //                 //       backgroundColor: Colors.red,
+      //                 //     ),
+      //                 //   );
+      //                 // }
+      //               },
+      //               child: Container(
+      //                 width: 343.w,
+      //                 height: 42.h,
+      //                 decoration: BoxDecoration(
+      //                   color: Colors.green,
+      //                   borderRadius: BorderRadius.circular(16.r),
+      //                 ),
+      //                 child: Center(
+      //                   child: Text(
+      //                     'Upload Image',
+      //                     style: TextStyle(
+      //                       color: Colors.white,
+      //                       fontSize: 16.sp,
+      //                       fontWeight: FontWeight.w600,
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ),
+      //             )),
+      //       )
+      //     : SizedBox(),
     );
   }
 
@@ -258,16 +319,38 @@ class _ListImageState extends State<ListImage> {
               onSort: (columnIndex, sortAscending) {
                 setState(() {
                   if (columnIndex == _sortColumnIndex) {
-                    _sortAsc = _sortNameAsc = sortAscending;
+                    // Nếu cột hiện tại đã được chọn, đảo ngược hướng sắp xếp
+                    _sortAsc = !_sortAsc;
                   } else {
+                    // Nếu chọn một cột mới, đặt lại các giá trị
                     _sortColumnIndex = columnIndex;
-                    _sortAsc = _sortNameAsc;
+                    _sortAsc = true; // Đặt mặc định là sắp xếp tăng dần
                   }
-                  cubit.imageModel
-                      .sort((a, b) => a.originName!.compareTo(b.originName!));
-                  if (!_sortAsc) {
-                    cubit.imageModel = cubit.imageModel.reversed.toList();
-                  }
+
+                  // Sắp xếp danh sách theo trường originName
+                  cubit.imageModel.sort((a, b) {
+                    if (a.isDbr == b.isDbr) {
+                      return 0;
+                    } else if (_sortAsc) {
+                      // Sắp xếp tăng dần
+                      return a.isDbr == null
+                          ? 1
+                          : b.isDbr == null
+                              ? -1
+                              : a.isDbr ?? true
+                                  ? -1
+                                  : 1;
+                    } else {
+                      // Sắp xếp giảm dần
+                      return a.isDbr == null
+                          ? 1
+                          : b.isDbr == null
+                              ? -1
+                              : a.isDbr ?? true
+                                  ? 1
+                                  : -1;
+                    }
+                  });
                 });
               }),
         ],
@@ -339,15 +422,13 @@ class _ListImageState extends State<ListImage> {
                 width: 80.w,
                 child: InkWell(
                   onTap: () {
-                    // if (cubit.imageModel[index].isDbr == true) {
-                    //   setState(() {
-                    //     cubit.imageModel[index].isDbr = false;
-                    //   });
-                    // } else if (cubit.imageModel[index].isDbr == false) {
-                    //   setState(() {
-                    //     cubit.imageModel[index].isDbr = true;
-                    //   });
-                    // }
+                    if (cubit.imageModel[index].isDbr == true) {
+                      cubit.changeDBR(
+                          false, cubit.imageModel[index].assetId ?? '');
+                    } else if (cubit.imageModel[index].isDbr == false) {
+                      cubit.changeDBR(
+                          true, cubit.imageModel[index].assetId ?? '');
+                    }
                   },
                   child: Image.asset(
                     cubit.imageModel[index].isDbr == true
@@ -488,7 +569,7 @@ class _ListImageState extends State<ListImage> {
                 child: Text(
                   'Image Name',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
                   textAlign: TextAlign.center,
@@ -521,7 +602,7 @@ class _ListImageState extends State<ListImage> {
               child: Text(
                 'Image',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
@@ -533,7 +614,7 @@ class _ListImageState extends State<ListImage> {
                 child: Text(
                   'Is DBR',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
                   textAlign: TextAlign.center,

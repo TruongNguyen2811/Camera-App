@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:app_camera/model/image_data.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/adapters.dart';
 // import 'package:native_exif/native_exif.dart';
 // import 'package:native_exif/native_exif.dart';
 import 'package:path/path.dart' as path;
@@ -25,6 +27,9 @@ class _ViewPictureState extends State<ViewPicture> {
   bool isLoading = false;
   bool isDBR = false;
   late AssetPathEntity _album;
+  var box = Hive.box<List>('imageBox');
+  List<ImageData> imageDataList = [];
+  ImageData latestImageData = ImageData();
 
   // Future<void> compressAndSaveImage(File imageFile) async {
   //   var compressedImage = await FlutterImageCompress.compressWithFile(
@@ -52,6 +57,13 @@ class _ViewPictureState extends State<ViewPicture> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    imageDataList =
+        box.get('imageListKey', defaultValue: [])?.cast<ImageData>() ?? [];
+    if (imageDataList.isNotEmpty) {
+      // Lấy phần tử mới nhất từ danh sách
+      latestImageData = imageDataList.last;
+      // Sử dụng latestImageData theo nhu cầu của bạn
+    }
   }
 
   @override
@@ -76,7 +88,7 @@ class _ViewPictureState extends State<ViewPicture> {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       24.verticalSpace,
@@ -87,6 +99,16 @@ class _ViewPictureState extends State<ViewPicture> {
                         ),
                       ),
                       16.verticalSpace,
+                      if (latestImageData.name != null) ...[
+                        Text(
+                          "Last run number: ${latestImageData.name}",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        16.verticalSpace,
+                      ],
                       Center(
                           child: Container(
                               // color: Colors.amber,
@@ -191,9 +213,9 @@ class _ViewPictureState extends State<ViewPicture> {
                               }
                               String title = '';
                               if (isDBR == true) {
-                                title = 'CameraApp_DBR_${controller.text}.jpg';
+                                title = '${controller.text}.jpg';
                               } else if (isDBR == false) {
-                                title = 'CameraApp_${controller.text}.jpg';
+                                title = '${controller.text}.jpg';
                               }
                               try {
                                 // final newFolder = await PhotoManager.editor.('Camera App');
@@ -201,13 +223,26 @@ class _ViewPictureState extends State<ViewPicture> {
                                 //   "CameraApp",
                                 //   // parent: parent, // The value should be null, the root path or other accessible folders.
                                 // );
-                                await PhotoManager.editor.saveImage(
+                                AssetEntity? a =
+                                    await PhotoManager.editor.saveImage(
                                   compressedImage,
                                   // quality: 40,
                                   title: title,
                                   // relativePath: '${picturesDir.path}/$title',
                                   // isReturnImagePathOfIOS: true,
                                 );
+                                imageDataList = box.get('imageListKey',
+                                        defaultValue: [])?.cast<ImageData>() ??
+                                    [];
+                                imageDataList.add(
+                                  ImageData(
+                                    createDate: a?.createDateTime,
+                                    assetId: a?.id,
+                                    name: title,
+                                    isDbr: isDBR,
+                                  ),
+                                );
+                                box.put('imageListKey', imageDataList);
                                 setState(() {
                                   isLoading = false;
                                 });
@@ -401,7 +436,10 @@ class _ViewPictureState extends State<ViewPicture> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Enter photo name: '),
+        Text('Enter photo name: ',
+            style: TextStyle(
+              fontSize: 14.sp,
+            )),
         SizedBox(
           height: 5,
         ),
@@ -410,6 +448,7 @@ class _ViewPictureState extends State<ViewPicture> {
           focusNode: focusNode,
           decoration: InputDecoration(
             hintText: 'Enter photo name',
+            hintStyle: TextStyle(fontSize: 14.sp),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(width: 1, color: Colors.black26),
