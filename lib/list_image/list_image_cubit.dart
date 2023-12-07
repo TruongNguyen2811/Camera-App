@@ -66,8 +66,7 @@ class ListImageCubit extends Cubit<ListImageState> {
 
       final galleryPath = pathList[0];
 
-      final assetList =
-          await galleryPath.getAssetListPaged(page: 0, size: 1000);
+      final assetList = await galleryPath.getAssetListPaged(page: 0, size: 400);
       if (assetList.isEmpty) {
         emit(ListImageFailure("Your gallery have no photo"));
         return;
