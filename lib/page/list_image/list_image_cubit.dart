@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:app_camera/list_image/list_image_state.dart';
+import 'package:app_camera/page/list_image/list_image_state.dart';
 import 'package:app_camera/model/image_data.dart';
 import 'package:app_camera/model/image_model.dart';
 import 'package:file_picker/file_picker.dart';
@@ -49,16 +49,15 @@ class ListImageCubit extends Cubit<ListImageState> {
     imageDataList =
         box.get('imageListKey', defaultValue: [])?.cast<ImageData>() ?? [];
     try {
-      final optionGroup = FilterOptionGroup(
-        imageOption: const FilterOption(
-          durationConstraint: DurationConstraint(max: Duration.zero),
-          // sizeConstraint: SizeConstraint( 0),
-          needTitle: true,
-        ),
-      );
+      // final optionGroup = FilterOptionGroup(
+      //   imageOption: const FilterOption(
+      //     durationConstraint: DurationConstraint(max: Duration.zero),
+      //     // sizeConstraint: SizeConstraint( 0),
+      //     needTitle: true,
+      //   ),
+      // );
 
-      final pathList = await PhotoManager.getAssetPathList(
-          onlyAll: false, filterOption: optionGroup);
+      final pathList = await PhotoManager.getAssetPathList(onlyAll: false);
       print('check list Album ${pathList.length}');
       if (pathList.isEmpty) {
         print('Empty Album?');

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:app_camera/model/image_data.dart';
-import 'package:app_camera/upload_image/upload_image_state.dart';
+import 'package:app_camera/page/upload_image/upload_image_state.dart';
 // import 'package:camerawesome/generated/i18n.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';

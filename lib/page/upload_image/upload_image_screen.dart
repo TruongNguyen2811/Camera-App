@@ -1,17 +1,17 @@
 import 'dart:io';
-import 'package:app_camera/chooseImage/media_picker.dart';
-import 'package:app_camera/upload_image/upload_image_cubit.dart';
-import 'package:app_camera/upload_image/upload_image_state.dart';
+// import 'package:app_camera/chooseImage/media_picker.dart';
+import 'package:app_camera/page/upload_image/upload_image_cubit.dart';
+import 'package:app_camera/page/upload_image/upload_image_state.dart';
 import 'package:app_camera/widget/show_loading.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+// import 'package:flutter/src/widgets/framework.dart';
+// import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:native_exif/native_exif.dart';
-import 'package:path/path.dart' as path;
+// import 'package:path/path.dart' as path;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:photo_manager/photo_manager.dart';
+// import 'package:photo_manager/photo_manager.dart';
 
 class UploadImage extends StatefulWidget {
   const UploadImage({super.key});
@@ -29,7 +29,6 @@ class _UploadImageState extends State<UploadImage> {
   // List<AssetEntity> selectedAssetList = [];
   @override
   void initState() {
-    // TODO: implement initState
     cubit = UploadImageCubit();
     super.initState();
     controller1.text = "https://liked-dominant-raptor.ngrok-free.app";
@@ -69,10 +68,10 @@ class _UploadImageState extends State<UploadImage> {
       child: Scaffold(
         // backgroundColor: Color.fromARGB(255, 40, 40, 40),
         appBar: AppBar(
-          title: Text("Upload Image"),
+          title: const Text("Upload Image"),
           centerTitle: true,
           elevation: 0,
-          backgroundColor: Color.fromARGB(255, 40, 40, 40),
+          backgroundColor: const Color.fromARGB(255, 40, 40, 40),
         ),
         body: BlocConsumer<UploadImageCubit, UploadImageState>(
           bloc: cubit,
@@ -131,7 +130,7 @@ class _UploadImageState extends State<UploadImage> {
           cubit.uploadImageList(controller2.text, controller1.text);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('You need to fill in Session Id'),
               backgroundColor: Colors.red,
             ),
@@ -191,10 +190,11 @@ class _UploadImageState extends State<UploadImage> {
                     fit: BoxFit.cover,
                     width: 100.w,
                     height: 100.h,
-                    placeholder: AssetImage("assets/images/image_hover.png"),
+                    placeholder:
+                        const AssetImage("assets/images/image_hover.png"),
                   ),
                   4.verticalSpace,
-                  Text('${name}'),
+                  Text(name),
                 ],
               ),
               Visibility(
@@ -236,14 +236,14 @@ class _UploadImageState extends State<UploadImage> {
           dashPattern: [4, 2],
           radius: Radius.circular(16.r),
           strokeWidth: 1.75,
-          color: Color.fromARGB(255, 40, 40, 40),
+          color: const Color.fromARGB(255, 40, 40, 40),
           strokeCap: StrokeCap.butt,
           // padding: EdgeInsets.all(6),
           child: Center(
             child: Text(
               'Choose new image +',
               style: TextStyle(
-                color: Color.fromARGB(255, 40, 40, 40),
+                color: const Color.fromARGB(255, 40, 40, 40),
                 fontSize: 16.sp,
                 fontWeight: FontWeight.normal,
               ),
@@ -259,8 +259,8 @@ class _UploadImageState extends State<UploadImage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Domain name: '),
-        SizedBox(
+        const Text('Domain name: '),
+        const SizedBox(
           height: 5,
         ),
         TextField(

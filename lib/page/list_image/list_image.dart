@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:app_camera/list_image/list_image_cubit.dart';
-import 'package:app_camera/list_image/list_image_state.dart';
+import 'package:app_camera/page/list_image/list_image_cubit.dart';
+import 'package:app_camera/page/list_image/list_image_state.dart';
 import 'package:app_camera/widget/full_screen_image.dart';
 import 'package:app_camera/widget/show_loading.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -92,7 +92,7 @@ class _ListImageState extends State<ListImage> {
                             child: Container(
                               width: 370.w,
                               height: 500.w,
-                              child: Text(
+                              child: const Text(
                                   'You have no photo today \n Please take a photo and comeback'),
                             ),
                           ),
@@ -104,14 +104,14 @@ class _ListImageState extends State<ListImage> {
                             children: [
                               Text(
                                 'Number of DBR: ${cubit.countTrue}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
                               Text(
                                 'Number of no DBR: ${cubit.countFalse}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
                                 ),

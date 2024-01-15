@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:app_camera/chooseImage/media_picker.dart';
+import 'package:app_camera/page/chooseImage/media_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 

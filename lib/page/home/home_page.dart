@@ -1,9 +1,9 @@
-import 'package:app_camera/chooseImage/choose_image.dart';
-import 'package:app_camera/chooseImage/media_picker.dart';
-import 'package:app_camera/list_image/list_image.dart';
+import 'package:app_camera/page/chooseImage/choose_image.dart';
+import 'package:app_camera/page/chooseImage/media_picker.dart';
+import 'package:app_camera/page/list_image/list_image.dart';
 import 'package:app_camera/model/image_data.dart';
-import 'package:app_camera/take_picture/take_picture_screen.dart';
-import 'package:app_camera/upload_image/upload_image_screen.dart';
+import 'package:app_camera/page/take_picture/take_picture_screen.dart';
+import 'package:app_camera/page/upload_image/upload_image_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:app_camera/home/home_page.dart';
+import 'package:app_camera/page/home/home_page.dart';
 import 'package:app_camera/model/image_data.dart';
-import 'package:app_camera/take_picture/take_picture_screen.dart';
+import 'package:app_camera/page/take_picture/take_picture_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';

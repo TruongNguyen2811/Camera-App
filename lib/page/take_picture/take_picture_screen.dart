@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
-import 'package:app_camera/take_picture/custom_paint.dart';
-import 'package:app_camera/take_picture/overlay.dart';
-import 'package:app_camera/take_picture/view_picture.dart';
+import 'package:app_camera/page/preview_image/preview_image.dart';
+import 'package:app_camera/page/take_picture/custom_paint.dart';
+import 'package:app_camera/page/take_picture/overlay.dart';
+import 'package:app_camera/page/take_picture/view_picture.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:camerawesome/pigeon.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -14,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../model/image_data.dart';
+import '../../model/image_data.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
@@ -510,7 +511,7 @@ class _CameraPageState extends State<CameraPage> {
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
-                                                        ViewPicture(
+                                                        PreviewImgaePage(
                                                       // image: imageFile,
                                                       imagePath: imagePath,
                                                     ),
