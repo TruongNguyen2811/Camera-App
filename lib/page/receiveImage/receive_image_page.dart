@@ -249,7 +249,7 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
           DataColumn(
             label: Expanded(
               child: Text(
-                'Serial Number',
+                'Text Output',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
