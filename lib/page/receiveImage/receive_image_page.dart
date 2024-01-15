@@ -5,6 +5,7 @@ import 'package:app_camera/page/receiveImage/receive_image_cubit.dart';
 import 'package:app_camera/page/receiveImage/receive_image_state.dart';
 import 'package:app_camera/res/R.dart';
 import 'package:app_camera/utils/custom_theme.dart';
+import 'package:app_camera/utils/utils.dart';
 import 'package:app_camera/widget/button_widget.dart';
 import 'package:app_camera/widget/full_screen_image.dart';
 import 'package:app_camera/widget/full_screen_image_base64.dart';
@@ -305,29 +306,37 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
                     );
                   },
                   child: Container(
-                    width: 100.w,
-                    padding: EdgeInsets.all(8.h),
-                    child: Base64ImageWidget(
-                      height: 100,
-                      width: 90,
-                      base64String: widget.receiveImage?.images?[index] ?? '',
-                      fit: BoxFit.contain,
-                    ),
-                    // child: AssetEntityImage(
-                    //   cubit.imageModel[index].assetEntity,
-                    //   isOriginal: false,
-                    //   thumbnailSize: const ThumbnailSize.square(50),
-                    //   fit: BoxFit.contain,
-                    //   errorBuilder: (context, error, stackTrace) {
-                    //     return const Center(
-                    //       child: Icon(
-                    //         Icons.error,
-                    //         color: Colors.red,
-                    //       ),
-                    //     );
-                    //   },
-                    // ),
-                  ),
+                      width: 100.w,
+                      padding: EdgeInsets.all(8.h),
+                      child: !Utils.isEmptyArray(widget.receiveImage?.images)
+                          ? Base64ImageWidget(
+                              height: 100,
+                              width: 90,
+                              base64String:
+                                  widget.receiveImage?.images?[index] ?? '',
+                              fit: BoxFit.contain,
+                            )
+                          : Base64ImageWidget(
+                              height: 100,
+                              width: 90,
+                              base64String: '',
+                              fit: BoxFit.contain,
+                            )
+                      // child: AssetEntityImage(
+                      //   cubit.imageModel[index].assetEntity,
+                      //   isOriginal: false,
+                      //   thumbnailSize: const ThumbnailSize.square(50),
+                      //   fit: BoxFit.contain,
+                      //   errorBuilder: (context, error, stackTrace) {
+                      //     return const Center(
+                      //       child: Icon(
+                      //         Icons.error,
+                      //         color: Colors.red,
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
+                      ),
                 ),
               ),
               DataCell(Container(
