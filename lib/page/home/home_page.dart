@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                             child: RichText(
                               text: TextSpan(children: [
                                 TextSpan(
-                                  text: "Camera",
+                                  text: "Take Picture",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16.sp,
@@ -98,76 +98,76 @@ class _HomePageState extends State<HomePage> {
                             ),
                           )),
                     ),
-                    20.verticalSpace,
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UploadImage(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        height: 48.h,
-                        width: 200.w,
-                        padding: EdgeInsets.symmetric(
-                            vertical: 10.h, horizontal: 16.w),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(color: Colors.black, blurRadius: 3.0)
-                          ],
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(16.r),
-                          color: Color.fromARGB(255, 75, 75, 75),
-                        ),
-                        child: Center(
-                            child: Text(
-                          "Upload Image",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600),
-                        )),
-                      ),
-                    ),
-                    20.verticalSpace,
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ListImage(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                          height: 48.h,
-                          width: 200.w,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10.h, horizontal: 16.w),
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(color: Colors.black, blurRadius: 3.0)
-                            ],
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(16.r),
-                            color: Color.fromARGB(255, 75, 75, 75),
-                          ),
-                          child: Center(
-                            child: RichText(
-                              text: TextSpan(children: [
-                                TextSpan(
-                                  text: "Review Image",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ]),
-                            ),
-                          )),
-                    ),
+                    // 20.verticalSpace,
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => UploadImage(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: Container(
+                    //     height: 48.h,
+                    //     width: 200.w,
+                    //     padding: EdgeInsets.symmetric(
+                    //         vertical: 10.h, horizontal: 16.w),
+                    //     decoration: BoxDecoration(
+                    //       boxShadow: [
+                    //         BoxShadow(color: Colors.black, blurRadius: 3.0)
+                    //       ],
+                    //       shape: BoxShape.rectangle,
+                    //       borderRadius: BorderRadius.circular(16.r),
+                    //       color: Color.fromARGB(255, 75, 75, 75),
+                    //     ),
+                    //     child: Center(
+                    //         child: Text(
+                    //       "Upload Image",
+                    //       style: TextStyle(
+                    //           color: Colors.white,
+                    //           fontSize: 16.sp,
+                    //           fontWeight: FontWeight.w600),
+                    //     )),
+                    //   ),
+                    // ),
+                    // 20.verticalSpace,
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => ListImage(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: Container(
+                    //       height: 48.h,
+                    //       width: 200.w,
+                    //       padding: EdgeInsets.symmetric(
+                    //           vertical: 10.h, horizontal: 16.w),
+                    //       decoration: BoxDecoration(
+                    //         boxShadow: [
+                    //           BoxShadow(color: Colors.black, blurRadius: 3.0)
+                    //         ],
+                    //         shape: BoxShape.rectangle,
+                    //         borderRadius: BorderRadius.circular(16.r),
+                    //         color: Color.fromARGB(255, 75, 75, 75),
+                    //       ),
+                    //       child: Center(
+                    //         child: RichText(
+                    //           text: TextSpan(children: [
+                    //             TextSpan(
+                    //               text: "Review Image",
+                    //               style: TextStyle(
+                    //                   color: Colors.white,
+                    //                   fontSize: 16.sp,
+                    //                   fontWeight: FontWeight.w600),
+                    //             ),
+                    //           ]),
+                    //         ),
+                    //       )),
+                    // ),
                   ],
                 )
               ]),
