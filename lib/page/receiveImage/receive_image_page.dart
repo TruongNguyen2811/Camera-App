@@ -334,6 +334,7 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
                 width: 110.w,
                 child: TextFieldWidget(
                   height: 42.w,
+                  maxLines: 1,
                   controller: textControl,
                   onChanged: (value) {
                     cubit.confirmImage.texts?[index] = value;
