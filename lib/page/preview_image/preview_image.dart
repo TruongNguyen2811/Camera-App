@@ -165,8 +165,8 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   width: MediaQuery.of(context).size.width,
                   child: TextFieldWidget(
-                    titleText: 'Enter photo name: ',
-                    hintText: "Enter photo name: ",
+                    titleText: 'Enter runner number: ',
+                    hintText: "Ex: 1, 2, 3, ...",
                     controller: cubit.controller,
                     focusedColorBorder: R.color.newPrimary,
                   ),

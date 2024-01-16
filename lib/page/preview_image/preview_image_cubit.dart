@@ -53,63 +53,72 @@ class PreviewImageCubit extends Cubit<PreviewImageState> {
     print('check upload');
     if (Utils.isEmpty(controller.text)) {
       print('check upload fail');
-      emit(UploadFailure('You need to enter picture name'));
+      emit(UploadFailure('You need to enter runner number'));
       return;
-    } else {
+    } else if (!Utils.isEmpty(controller.text)) {
       try {
-        Dio dio = Dio();
-        print('check upload try');
-        // Thay thế bằng đường dẫn API của bạn
-        MultipartFile file = await MultipartFile.fromFile(
-          fileImage,
-          filename: '${controller.text}.jpg',
-        );
+        int value = int.parse(controller.text);
+        try {
+          Dio dio = Dio();
+          print('check upload try');
+          // Thay thế bằng đường dẫn API của bạn
+          MultipartFile file = await MultipartFile.fromFile(
+            fileImage,
+            filename: '${controller.text}.jpg',
+          );
 
-        // for (int i = 0; i < files.length; i++) {
-        //   // XFile image = selectedFiles[i];
-        //   String originalString = files[i].name;
-        //   String name =
-        //       originalString.substring(originalString.lastIndexOf('_') + 1);
-        //   print('check split name $name');
-        //   // print('${files[i].path}');
-        //   // print('${files[i].name}');
-        //   formDataList
-        //       .add(await MultipartFile.fromFile(files[i].path!, filename: name));
-        // }
+          // for (int i = 0; i < files.length; i++) {
+          //   // XFile image = selectedFiles[i];
+          //   String originalString = files[i].name;
+          //   String name =
+          //       originalString.substring(originalString.lastIndexOf('_') + 1);
+          //   print('check split name $name');
+          //   // print('${files[i].path}');
+          //   // print('${files[i].name}');
+          //   formDataList
+          //       .add(await MultipartFile.fromFile(files[i].path!, filename: name));
+          // }
 
-        FormData formData = FormData.fromMap({
-          'images': file,
-          // Thêm các thông tin khác nếu cần thiết
-        });
-        print('check upload check time');
-        Response response =
-            await dio.post('$domain/ocr-images', data: formData);
-        print('check upload response ${response.statusCode}');
-        if (response.statusCode == 200) {
-          // receiveImage = response.data;
-          receiveImage = ReceiveImage.fromJson(response.data);
-          print('check upload data ${response.data}');
-          print('check upload data ${receiveImage.run_numbers?.first}');
-          print('Image list uploaded successfully');
-          emit(UploadSuccess('Image list uploaded successfully'));
-          print('${response.data}');
-        } else {
-          print('Error uploading image list');
-          emit(UploadFailure('Error uploading image list'));
-          print('check ${response}');
+          FormData formData = FormData.fromMap({
+            'images': file,
+            // Thêm các thông tin khác nếu cần thiết
+          });
+          print('check upload check time');
+          Response response =
+              await dio.post('$domain/ocr-images', data: formData);
+          print('check upload response ${response.statusCode}');
+          if (response.statusCode == 200) {
+            // receiveImage = response.data;
+            receiveImage = ReceiveImage.fromJson(response.data);
+            print('check upload data ${response.data}');
+            print('check upload data ${receiveImage.run_numbers?.first}');
+            print('Image list uploaded successfully');
+            emit(UploadSuccess('Image list uploaded successfully'));
+            print('${response.data}');
+          } else {
+            print('Error uploading image list');
+            emit(UploadFailure('Error uploading image list'));
+            print('check ${response}');
+          }
+        } catch (error) {
+          if (error is DioError) {
+            // Xử lý lỗi và truy cập nội dung phản hồi
+            final detail = error.response?.data['detail'];
+            print('Error response body: $detail');
+            emit(UploadFailure(detail));
+          } else {
+            print(error);
+            emit(UploadFailure('Error uploading image list'));
+            // Xử lý các lỗi khác
+          }
+          // print('${response}');
         }
-      } catch (error) {
-        if (error is DioError) {
-          // Xử lý lỗi và truy cập nội dung phản hồi
-          final detail = error.response?.data['detail'];
-          print('Error response body: $detail');
-          emit(UploadFailure(detail));
-        } else {
-          print(error);
-          emit(UploadFailure('Error uploading image list'));
-          // Xử lý các lỗi khác
-        }
-        // print('${response}');
+        // If parsing succeeds, return true
+        return;
+      } catch (e) {
+        // If parsing fails, return false
+        emit(UploadFailure('You need to enter correct format runner number'));
+        return;
       }
     }
   }
