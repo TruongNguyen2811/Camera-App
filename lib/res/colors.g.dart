@@ -59,7 +59,7 @@ class Colors {
   Color get danger2 => Color(0xFFF14C68);
   Color get dark11 => Color(0xFFD4D5D2);
   Color get dark9 => Color(0xFFAFB1AF);
-  Color get neutral2 => Color(0xFFFF0000);
+  Color get neutral2 => Color(0xFF2D2D2D);
   Color get orange => Color(0xFFFF6B00);
   Color get blueInform => Color(0xFF315BF1);
   Color get bgInform => Color(0xFFEAEFFE);

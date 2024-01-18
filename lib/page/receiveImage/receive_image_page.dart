@@ -5,6 +5,7 @@ import 'package:app_camera/page/receiveImage/receive_image_cubit.dart';
 import 'package:app_camera/page/receiveImage/receive_image_state.dart';
 import 'package:app_camera/res/R.dart';
 import 'package:app_camera/utils/custom_theme.dart';
+import 'package:app_camera/utils/enum.dart';
 import 'package:app_camera/utils/utils.dart';
 import 'package:app_camera/widget/button_widget.dart';
 import 'package:app_camera/widget/full_screen_image.dart';
@@ -65,29 +66,32 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
           bloc: cubit,
           listener: (context, state) {
             if (state is ReceiveFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error),
-                  backgroundColor: Colors.red,
-                ),
-              );
+              Utils.showToast(context, state.error, type: ToastType.ERROR);
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(
+              //     content: Text(state.error),
+              //     backgroundColor: Colors.red,
+              //   ),
+              // );
             }
             if (state is ConfirmSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error),
-                  backgroundColor: Colors.green,
-                ),
-              );
+              Utils.showToast(context, state.error, type: ToastType.SUCCESS);
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(
+              //     content: Text(state.error),
+              //     backgroundColor: Colors.green,
+              //   ),
+              // );
               Navigator.pop(context);
             }
             if (state is ConfirmFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error),
-                  backgroundColor: Colors.red,
-                ),
-              );
+              Utils.showToast(context, state.error, type: ToastType.ERROR);
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(
+              //     content: Text(state.error),
+              //     backgroundColor: Colors.red,
+              //   ),
+              // );
             }
           },
           builder: (context, state) {

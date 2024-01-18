@@ -6,6 +6,8 @@ import 'package:app_camera/page/preview_image/preview_image_state.dart';
 import 'package:app_camera/page/receiveImage/receive_image_page.dart';
 import 'package:app_camera/res/R.dart';
 import 'package:app_camera/utils/custom_theme.dart';
+import 'package:app_camera/utils/enum.dart';
+import 'package:app_camera/utils/utils.dart';
 import 'package:app_camera/widget/button_widget.dart';
 import 'package:app_camera/widget/show_loading.dart';
 import 'package:app_camera/widget/textField_widget.dart';
@@ -43,20 +45,22 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
       bloc: cubit,
       listener: (context, state) {
         if (state is UploadFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error),
-              backgroundColor: Colors.red,
-            ),
-          );
+          Utils.showToast(context, state.error, type: ToastType.ERROR);
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     content: Text(state.error),
+          //     backgroundColor: Colors.red,
+          //   ),
+          // );
         }
         if (state is UploadSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error),
-              backgroundColor: Colors.green,
-            ),
-          );
+          Utils.showToast(context, state.error, type: ToastType.SUCCESS);
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     content: Text(state.error),
+          //     backgroundColor: Colors.green,
+          //   ),
+          // );
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
