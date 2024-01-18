@@ -48,7 +48,7 @@ class FullScreenImageScreen extends StatelessWidget {
               top: 40,
               child: IconButton(
                   icon: Icon(
-                    CupertinoIcons.xmark,
+                    Icons.close,
                     color: R.color.white,
                   ),
                   onPressed: () => Navigator.pop(
