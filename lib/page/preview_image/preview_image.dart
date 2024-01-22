@@ -5,6 +5,7 @@ import 'package:app_camera/page/preview_image/preview_image_cubit.dart';
 import 'package:app_camera/page/preview_image/preview_image_state.dart';
 import 'package:app_camera/page/receiveImage/receive_image_page.dart';
 import 'package:app_camera/res/R.dart';
+import 'package:app_camera/utils/custom_gradient.dart';
 import 'package:app_camera/utils/custom_theme.dart';
 import 'package:app_camera/utils/enum.dart';
 import 'package:app_camera/utils/utils.dart';
@@ -88,10 +89,18 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
             title: const Text("Preview Image"),
             centerTitle: true,
             elevation: 0,
-            backgroundColor: R.color.newPrimary,
+            backgroundColor: R.color.dark3,
           ),
           resizeToAvoidBottomInset: false,
-          body: buildPage(context),
+          body: Stack(
+            children: [
+              Container(
+                height: 100.w,
+                color: R.color.dark3,
+              ),
+              buildPage(context),
+            ],
+          ),
           bottomNavigationBar: Container(
               padding: EdgeInsets.only(
                   left: 16.w, right: 16.w, bottom: 24.h, top: 12.h),
@@ -137,6 +146,7 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
                     width: 165.w,
                     title: 'Upload Image',
                     backgroundColor: R.color.success1,
+                    // gradient: LinnearGradientDarkGreen(),
                     textStyle: Theme.of(context)
                         .textTheme
                         .text17
@@ -158,6 +168,12 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
   Widget buildPage(BuildContext context) {
     return KeyboardDismissOnTap(
       child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16.r),
+              topRight: Radius.circular(16.r),
+            ),
+            color: R.color.newBackground),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

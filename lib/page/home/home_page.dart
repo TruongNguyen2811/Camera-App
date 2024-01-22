@@ -1,3 +1,233 @@
+// import 'package:app_camera/page/chooseImage/choose_image.dart';
+// import 'package:app_camera/page/chooseImage/media_picker.dart';
+// import 'package:app_camera/page/list_image/list_image.dart';
+// import 'package:app_camera/model/image_data.dart';
+// import 'package:app_camera/page/take_picture/take_picture_screen.dart';
+// import 'package:app_camera/page/upload_image/upload_image_screen.dart';
+// import 'package:app_camera/res/R.dart';
+// import 'package:app_camera/utils/custom_gradient.dart';
+// import 'package:app_camera/utils/custom_theme.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/src/widgets/framework.dart';
+// import 'package:flutter/src/widgets/placeholder.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:hive_flutter/adapters.dart';
+
+// class HomePage extends StatefulWidget {
+//   @override
+//   _HomePageState createState() => _HomePageState();
+// }
+
+// class _HomePageState extends State<HomePage>
+//     with SingleTickerProviderStateMixin {
+//   late AnimationController _controller;
+//   late Animation<double> _animation;
+
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     // Khởi tạo AnimationController
+//     _controller = AnimationController(
+//       vsync: this,
+//       duration: Duration(milliseconds: 500),
+//     );
+
+//     // Khởi tạo Animation
+//     _animation = Tween<double>(
+//       begin: 0.0,
+//       end: 3.0,
+//     ).animate(_controller);
+
+//     // Khởi động animation khi widget được xây dựng
+//     _controller.forward();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: R.color.newBackground,
+//       body: AnimatedBuilder(
+//         animation: _controller,
+//         builder: (context, child) {
+//           return Center(
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 AnimatedContainer(
+//                   duration: const Duration(milliseconds: 300),
+//                   child: Text("Welcome to OCR Camera!",
+//                       style: Theme.of(context).textTheme.text20W700),
+//                   transform: Matrix4.translationValues(
+//                     0.0, // Điều chỉnh giá trị để căn giữa
+//                     (_animation.value * 100.w - 300.w),
+//                     0.0,
+//                   ),
+//                 ),
+//                 8.verticalSpace,
+//                 AnimatedContainer(
+//                   duration: const Duration(milliseconds: 500),
+//                   width: 300.w,
+//                   height: 100.h,
+//                   curve: Curves.linear,
+//                   decoration: BoxDecoration(
+//                     // color: R.color.blueTextLight,
+//                     color: R.color.white,
+//                     border:
+//                         Border.all(width: 1.w, color: R.color.blueTextLight),
+//                     // gradient: LinnearGradientDarkBlue(),
+//                     borderRadius: BorderRadius.circular(20.r),
+//                     boxShadow: const [
+//                       BoxShadow(
+//                         offset: Offset(0, -1),
+//                         blurRadius: 5,
+//                         color: Color(0x26000000),
+//                       ),
+//                     ],
+//                   ),
+//                   transform: Matrix4.translationValues(
+//                     (_animation.value * 100.w -
+//                         300.w), // Điều chỉnh giá trị để căn giữa
+//                     0.0,
+//                     0.0,
+//                   ),
+//                   transformAlignment: Alignment.center,
+//                   child: Stack(
+//                     children: [
+//                       Positioned(
+//                           right: 16.w,
+//                           bottom: 0.w,
+//                           child: Image.asset(
+//                               height: 40.w,
+//                               width: 40.w,
+//                               "assets/icon/icon_right.png",
+//                               // color: R.color.grey400,
+//                               color: R.color.blueTextLight))
+//                     ],
+//                   ),
+//                 ),
+//                 16.verticalSpace,
+//                 AnimatedContainer(
+//                   duration: const Duration(milliseconds: 500),
+//                   width: 300.w,
+//                   height: 100.h,
+//                   curve: Curves.linear,
+//                   decoration: BoxDecoration(
+//                     gradient: LinnearGradientDarkGreen(),
+//                     borderRadius: BorderRadius.circular(20.r),
+//                     boxShadow: const [
+//                       BoxShadow(
+//                         offset: Offset(0, -1),
+//                         blurRadius: 5,
+//                         color: Color(0x26000000),
+//                       ),
+//                     ],
+//                   ),
+//                   transform: Matrix4.translationValues(
+//                     -(_animation.value * 100.w -
+//                         300.w), // Điều chỉnh giá trị để căn giữa
+//                     0.0,
+//                     0.0,
+//                   ),
+//                   transformAlignment: Alignment.center,
+//                   child: Stack(
+//                     children: [
+//                       Positioned(
+//                           right: 16.w,
+//                           bottom: 0.w,
+//                           child: Image.asset(
+//                               height: 40.w,
+//                               width: 40.w,
+//                               "assets/icon/icon_right.png",
+//                               // color: R.color.grey400,
+//                               color: R.color.blueTextLight))
+//                     ],
+//                   ),
+//                 ),
+//                 16.verticalSpace,
+//                 AnimatedContainer(
+//                   duration: const Duration(milliseconds: 500),
+//                   width: 300.w,
+//                   height: 100.h,
+//                   curve: Curves.linear,
+//                   decoration: BoxDecoration(
+//                     color: R.color.blueTextLight,
+//                     borderRadius: BorderRadius.circular(20.r),
+//                     boxShadow: const [
+//                       BoxShadow(
+//                         offset: Offset(0, -1),
+//                         blurRadius: 5,
+//                         color: Color(0x26000000),
+//                       ),
+//                     ],
+//                   ),
+//                   transform: Matrix4.translationValues(
+//                     (_animation.value * 100.w -
+//                         300.w), // Điều chỉnh giá trị để căn giữa
+//                     0.0,
+//                     0.0,
+//                   ),
+//                   transformAlignment: Alignment.center,
+//                 ),
+//                 16.verticalSpace,
+//                 AnimatedContainer(
+//                   duration: const Duration(milliseconds: 500),
+//                   width: 300.w,
+//                   height: 100.h,
+//                   curve: Curves.linear,
+//                   decoration: BoxDecoration(
+//                     color: R.color.blueTextLight,
+//                     borderRadius: BorderRadius.circular(20.r),
+//                     boxShadow: const [
+//                       BoxShadow(
+//                         offset: Offset(0, -1),
+//                         blurRadius: 5,
+//                         color: Color(0x26000000),
+//                       ),
+//                     ],
+//                   ),
+//                   transform: Matrix4.translationValues(
+//                     -(_animation.value * 100.w -
+//                         300.w), // Điều chỉnh giá trị để căn giữa
+//                     0.0,
+//                     0.0,
+//                   ),
+//                   transformAlignment: Alignment.center,
+//                 ),
+//               ],
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+
+//   // Widget buildAnimatedContainer(int index) {
+//   //   double beginValue = index.isEven ? -200.0 : 0.0; // Đổi giá trị ban đầu
+//   //   double endValue = 0.0;
+
+//   //   // Tính toán giá trị margin dựa trên animation
+//   //   double marginLeft = beginValue + (endValue - beginValue) * _animation.value;
+//   //   marginLeft = marginLeft < 0 ? 0 : marginLeft; // Đảm bảo không có giá trị âm
+//   //   print('Animation value: ${_animation.value}');
+//   //   print('margin value: ${marginLeft}');
+//   //   return AnimatedContainer(
+//   //     duration: const Duration(seconds: 2),
+//   //     width: 100,
+//   //     height: 100.0,
+//   //     margin: EdgeInsets.only(left: marginLeft),
+//   //     color: Colors.blue,
+//   //   );
+//   // }
+
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
+// }
+
 import 'package:app_camera/page/chooseImage/choose_image.dart';
 import 'package:app_camera/page/chooseImage/media_picker.dart';
 import 'package:app_camera/page/list_image/list_image.dart';

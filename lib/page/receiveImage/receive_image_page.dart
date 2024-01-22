@@ -56,11 +56,12 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
     print('check upload receive ${widget.receiveImage?.indexes?.first}');
     return KeyboardDismissOnTap(
       child: Scaffold(
+        backgroundColor: R.color.newBackground,
         appBar: AppBar(
           title: Text("Confirm Photo Information"),
           centerTitle: true,
           elevation: 0,
-          backgroundColor: R.color.newPrimary,
+          backgroundColor: R.color.lightDarkTheme,
         ),
         body: BlocConsumer<ReceiveImageCubit, ReceiveImageState>(
           bloc: cubit,
@@ -95,20 +96,35 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
             }
           },
           builder: (context, state) {
-            return ShowLoadingWidget(
-              isLoading: state is ReceiveLoading,
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                child: SingleChildScrollView(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    16.verticalSpace,
-                    imageWidget(),
-                    16.verticalSpace,
-                  ],
-                )),
-              ),
+            return Stack(
+              children: [
+                Container(
+                  height: 100.w,
+                  color: R.color.lightDarkTheme,
+                ),
+                ShowLoadingWidget(
+                  isLoading: state is ReceiveLoading,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16.r),
+                        topRight: Radius.circular(16.r),
+                      ),
+                      color: R.color.newBackground,
+                    ),
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        16.verticalSpace,
+                        imageWidget(),
+                        16.verticalSpace,
+                      ],
+                    )),
+                  ),
+                ),
+              ],
             );
           },
         ),

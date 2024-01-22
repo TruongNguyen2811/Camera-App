@@ -111,4 +111,6 @@ class Colors {
   Color get dark6 => Color(0xFF7B7D7C);
   Color get neuturalDark => Color(0xFF0C0D11);
   Color get success5 => Color(0xFFC6F8CE);
+  Color get darkTheme => Color(0xFF212d49);
+  Color get lightDarkTheme => Color(0xFF2d3c5a);
 }
