@@ -61,7 +61,7 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
           title: Text("Confirm Photo Information"),
           centerTitle: true,
           elevation: 0,
-          backgroundColor: R.color.lightDarkTheme,
+          backgroundColor: R.color.dark3,
         ),
         body: BlocConsumer<ReceiveImageCubit, ReceiveImageState>(
           bloc: cubit,
