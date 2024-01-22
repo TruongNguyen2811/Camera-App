@@ -102,10 +102,18 @@ class PreviewImageCubit extends Cubit<PreviewImageState> {
           }
         } catch (error) {
           if (error is DioError) {
+            try {
+              final detail = error.response?.data['detail'];
+              print('Error response body: $detail');
+              emit(UploadFailure(detail));
+            } catch (e) {
+              print(error);
+              emit(UploadFailure('Error uploading image list'));
+            }
             // Xử lý lỗi và truy cập nội dung phản hồi
             // final detail = error.response?.data['detail'];
             // print('Error response body: $detail');
-            emit(UploadFailure('Error uploading image list'));
+            // emit(UploadFailure('Error uploading image list'));
           } else {
             print(error);
             emit(UploadFailure('Error uploading image list'));

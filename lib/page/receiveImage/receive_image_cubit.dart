@@ -61,10 +61,18 @@ class ReceiveImageCubit extends Cubit<ReceiveImageState> {
       }
     } catch (error) {
       if (error is DioError) {
+        try {
+          final detail = error.response?.data['detail'];
+          print('Error response body: $detail');
+          emit(ConfirmFailure(detail));
+        } catch (e) {
+          print(error);
+          emit(ConfirmFailure('Error confirm image list'));
+        }
         // Xử lý lỗi và truy cập nội dung phản hồi
-        final detail = error.response?.data['detail'];
-        print('Error response body: $detail');
-        emit(ConfirmFailure(detail));
+        // final detail = error.response?.data['detail'];
+        // print('Error response body: $detail');
+        // emit(ConfirmFailure(detail));
       } else {
         print(error);
         emit(ConfirmFailure('Error confirm image list'));
