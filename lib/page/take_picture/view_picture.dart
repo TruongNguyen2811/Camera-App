@@ -231,18 +231,18 @@ class _ViewPictureState extends State<ViewPicture> {
                                   // relativePath: '${picturesDir.path}/$title',
                                   // isReturnImagePathOfIOS: true,
                                 );
-                                imageDataList = box.get('imageListKey',
-                                        defaultValue: [])?.cast<ImageData>() ??
-                                    [];
-                                imageDataList.add(
-                                  ImageData(
-                                    createDate: a?.createDateTime,
-                                    assetId: a?.id,
-                                    name: title,
-                                    isDbr: isDBR,
-                                  ),
-                                );
-                                box.put('imageListKey', imageDataList);
+                                // imageDataList = box.get('imageListKey',
+                                //         defaultValue: [])?.cast<ImageData>() ??
+                                //     [];
+                                // imageDataList.add(
+                                //   ImageData(
+                                //     createDate: a?.createDateTime,
+                                //     assetId: a?.id,
+                                //     name: title,
+                                //     isDbr: isDBR,
+                                //   ),
+                                // );
+                                // box.put('imageListKey', imageDataList);
                                 setState(() {
                                   isLoading = false;
                                 });

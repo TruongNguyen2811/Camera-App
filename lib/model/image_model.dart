@@ -1,43 +1,38 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class ImageModel {
   int? id;
   DateTime? createDate;
-  String? assetId;
-  String? name;
+  int? type;
+  Uint8List? uint8list;
   bool? isDbr;
-  AssetEntity assetEntity;
-  String? originName;
-  PlatformFile? file;
-  File? assetFile;
+  String? name;
+  String? byte64;
 
-  ImageModel(
-      {this.id,
-      this.createDate,
-      this.assetId,
-      this.name,
-      this.isDbr,
-      this.originName,
-      this.assetFile,
-      this.file,
-      this.assetEntity =
-          const AssetEntity(id: '', typeInt: 1, width: 1, height: 1)});
+  ImageModel({
+    this.createDate,
+    this.name,
+    this.isDbr,
+    this.uint8list,
+    this.id,
+    this.type,
+    this.byte64,
+  });
 
   // Chuyển đổi dữ liệu thành Map
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'createDate': createDate,
-      'assetId': assetId,
+      'uint8list': uint8list,
       'name': name,
       'isDbr': isDbr,
-      'assetEntity': assetEntity,
-      'originName': originName,
-      'assetFile': assetFile,
-      'file': file,
+      'type': type,
+      'byte64': byte64,
     };
   }
 
@@ -46,13 +41,11 @@ class ImageModel {
     return ImageModel(
       id: map['id'],
       createDate: DateTime.parse(map['createDate']),
-      assetId: map['assetId'],
+      uint8list: map['uint8list'],
       name: map['name'],
       isDbr: map['isDbr'],
-      assetEntity: map['assetEntity'],
-      originName: map['originName'],
-      file: map['file'],
-      assetFile: map['assetFile'],
+      type: map['type'],
+      byte64: map['byte64'],
     );
   }
 }

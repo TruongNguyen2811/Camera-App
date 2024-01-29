@@ -1,10 +1,17 @@
 import 'dart:async';
+import 'package:app_camera/page/check_internet/check_internet_cubit.dart';
+import 'package:app_camera/page/check_internet/check_internet_state.dart';
 import 'package:app_camera/page/home/home_page.dart';
 import 'package:app_camera/model/image_data.dart';
+import 'package:app_camera/page/main/main_cubit.dart';
 import 'package:app_camera/page/main/main_page.dart';
+import 'package:app_camera/page/main/main_state.dart';
 import 'package:app_camera/page/take_picture/take_picture_screen.dart';
+import 'package:app_camera/utils/enum.dart';
+import 'package:app_camera/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -29,9 +36,30 @@ class CameraApp extends StatelessWidget {
     return ScreenUtilInit(
         designSize: const Size(375, 812),
         builder: (_, child) {
-          return MaterialApp(
-            home: HomePage(),
-            // CameraScreen(camera: camera),
+          return BlocProvider<InternetCubit>(
+            create: (_) => InternetCubit(),
+            child: MaterialApp(
+              home: BlocProvider<InternetCubit>(
+                create: (_) => InternetCubit(),
+                child: BlocConsumer<InternetCubit, InternetState>(
+                  listener: (context, state) {
+                    if (state is InternetSucess) {
+                      Utils.showToast(context, state.success,
+                          type: ToastType.SUCCESS);
+                    }
+                    if (state is InternetFailure) {
+                      Utils.showToast(context, state.error,
+                          type: ToastType.ERROR);
+                    }
+                  },
+                  builder: (context, state) {
+                    return MainPage();
+                  },
+                  // child: MainPage()
+                ),
+              ),
+              // CameraScreen(camera: camera),
+            ),
           );
         });
   }

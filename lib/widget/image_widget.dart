@@ -20,13 +20,13 @@ class Base64ImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // Decode chuỗi base64 thành một mảng byte
     List<int> imageBytes;
-    print('check e ${base64String}eeee');
+    // print('check e ${base64String}eeee');
     if (Utils.isEmpty(base64String)) {
-      print('check error ${base64String}');
+      // print('check error ${base64String}');
       return _buildErrorWidget();
     } else {
       try {
-        print('check up error ${base64String}');
+        // print('check up error ${base64String}');
         imageBytes = base64Decode(base64String);
       } catch (e) {
         // Handle the case where decoding fails, for example, display an error icon

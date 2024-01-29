@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app_camera/page/check_internet/check_internet_cubit.dart';
 import 'package:app_camera/page/list_image/list_image.dart';
 import 'package:app_camera/page/preview_image/preview_image_cubit.dart';
 import 'package:app_camera/page/preview_image/preview_image_state.dart';
@@ -144,7 +145,9 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
                     radius: 32.r,
                     height: 48.h,
                     width: 165.w,
-                    title: 'Upload Image',
+                    title: context.watch<InternetCubit>().isConnect == true
+                        ? 'Upload Image'
+                        : 'Save Image',
                     backgroundColor: R.color.success1,
                     // gradient: LinnearGradientDarkGreen(),
                     textStyle: Theme.of(context)
@@ -153,7 +156,7 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
                         .copyWith(color: R.color.white),
                     onPressed: () async {
                       cubit.uploadImageList(
-                          '12312',
+                          '',
                           'https://liked-dominant-raptor.ngrok-free.app',
                           widget.imagePath);
                     },
@@ -194,12 +197,15 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
               ),
               16.verticalSpace,
               if (cubit.latestImageData.name != null) ...[
-                Text(
-                  "Last picture number: ${cubit.latestImageData.name}",
-                  style: TextStyle(
-                    fontSize: 14.sp,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    "Last picture number: ${cubit.latestImageData.name}",
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                    ),
+                    textAlign: TextAlign.left,
                   ),
-                  textAlign: TextAlign.left,
                 ),
                 16.verticalSpace,
               ],

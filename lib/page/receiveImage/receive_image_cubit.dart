@@ -43,6 +43,7 @@ class ReceiveImageCubit extends Cubit<ReceiveImageState> {
       Dio dio = Dio();
       print('check upload try');
       // Thay thế bằng đường dẫn API của bạn
+      print('check upload try ${confirmImage.session_id}');
       print('check upload try ${confirmImage.run_numbers}');
       print('check upload try ${confirmImage.images}');
       print('check upload try ${confirmImage.texts}');

@@ -482,23 +482,23 @@ class _CameraPageState extends State<CameraPage> {
                                                 DateTime todayWithoutTime =
                                                     DateTime(today.year,
                                                         today.month, today.day);
-                                                var imagesToKeep = imageDataList
-                                                    .where((imageData) {
-                                                  DateTime? imageDataDate =
-                                                      imageData.createDate;
-                                                  return imageDataDate !=
-                                                          null &&
-                                                      imageDataDate.year ==
-                                                          todayWithoutTime
-                                                              .year &&
-                                                      imageDataDate.month ==
-                                                          todayWithoutTime
-                                                              .month &&
-                                                      imageDataDate.day ==
-                                                          todayWithoutTime.day;
-                                                }).toList();
-                                                box.put('imageListKey',
-                                                    imagesToKeep);
+                                                // var imagesToKeep = imageDataList
+                                                //     .where((imageData) {
+                                                //   DateTime? imageDataDate =
+                                                //       imageData.createDate;
+                                                //   return imageDataDate !=
+                                                //           null &&
+                                                //       imageDataDate.year ==
+                                                //           todayWithoutTime
+                                                //               .year &&
+                                                //       imageDataDate.month ==
+                                                //           todayWithoutTime
+                                                //               .month &&
+                                                //       imageDataDate.day ==
+                                                //           todayWithoutTime.day;
+                                                // }).toList();
+                                                // box.put('imageListKey',
+                                                //     imagesToKeep);
                                                 // imagePath =
                                                 //     autoCropCenter(imagePath);
 

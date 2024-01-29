@@ -3,11 +3,16 @@ import 'dart:io';
 import 'package:app_camera/model/image_data.dart';
 import 'package:app_camera/model/receive_image.dart';
 import 'package:app_camera/page/preview_image/preview_image_state.dart';
+import 'package:app_camera/page/upload_image/upload_image_screen.dart';
+import 'package:app_camera/service/api/api_result.dart';
+import 'package:app_camera/service/api/network_exceptions.dart';
+import 'package:app_camera/service/repository/app_repository_impl.dart';
 import 'package:app_camera/utils/utils.dart';
 // import 'package:camerawesome/generated/i18n.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -19,6 +24,7 @@ import 'package:path/path.dart' as path;
 
 class PreviewImageCubit extends Cubit<PreviewImageState> {
   PreviewImageCubit() : super(PreviewInitial());
+  final AppRepository repository = AppRepository();
 
   final FocusNode focusNode = FocusNode();
   final TextEditingController controller = TextEditingController();
@@ -29,16 +35,69 @@ class PreviewImageCubit extends Cubit<PreviewImageState> {
   List<ImageData> imageDataList = [];
   ImageData latestImageData = ImageData();
   ReceiveImage receiveImage = ReceiveImage();
+  ImageData imageData = ImageData();
 
   getData() {
     imageDataList =
         box.get('imageListKey', defaultValue: [])?.cast<ImageData>() ?? [];
     if (imageDataList.isNotEmpty) {
+      print('data list length ${imageDataList.length}');
       // Lấy phần tử mới nhất từ danh sách
       latestImageData = imageDataList.last;
       // Sử dụng latestImageData theo nhu cầu của bạn
     }
   }
+
+  saveData(File file) async {
+    int id = 1;
+    Uint8List uint8List = await file.readAsBytes();
+    if (!Utils.isEmptyArray(imageDataList)) {
+      id = imageDataList.last.id! + 1;
+    }
+    imageData = ImageData(
+      createDate: DateTime.now(),
+      // assetId: a?.id,
+      id: id,
+      uint8list: uint8List,
+      name: controller.text,
+      isDbr: isDBR,
+      type: 1,
+    );
+    imageDataList.add(imageData);
+    box.put('imageListKey', imageDataList);
+  }
+
+  // uploadImageList(String fileImage) async {
+  //   emit(PreviewLoading());
+  //   var compressedImage = await FlutterImageCompress.compressWithFile(
+  //     fileImage,
+  //     format: CompressFormat.jpeg,
+  //     quality: Platform.isIOS ? 10 : 30,
+  //   );
+  //   final file = File(fileImage);
+  //   await file.writeAsBytes(compressedImage!.toList());
+  //   print('check upload');
+  //   if (Utils.isEmpty(controller.text)) {
+  //     print('check upload fail');
+  //     emit(UploadFailure('You need to enter runner number'));
+  //     return;
+  //   } else if (!Utils.isEmpty(controller.text)) {
+  //     try {
+  //       int value = int.parse(controller.text);
+  //       saveData(file);
+  //       ApiResult<dynamic> apiResult =
+  //           await repository.uploadImage([imageData]);
+  //       apiResult.when(success: (dynamic data) {
+  //         receiveImage = ReceiveImage.fromJson(data);
+  //         emit(UploadSuccess('Image list uploaded successfully'));
+  //       }, failure: (NetworkExceptions error) {
+  //         emit(UploadFailure(NetworkExceptions.getErrorMessage(error)));
+  //       });
+  //     } catch (e) {
+  //       emit(UploadFailure('You need to enter correct format runner number'));
+  //     }
+  //   }
+  // }
 
   Future<void> uploadImageList(
       String sessionId, String domain, String fileImage) async {
@@ -58,6 +117,7 @@ class PreviewImageCubit extends Cubit<PreviewImageState> {
     } else if (!Utils.isEmpty(controller.text)) {
       try {
         int value = int.parse(controller.text);
+        saveData(file);
         try {
           Dio dio = Dio();
           print('check upload try');
@@ -92,6 +152,7 @@ class PreviewImageCubit extends Cubit<PreviewImageState> {
             receiveImage = ReceiveImage.fromJson(response.data);
             print('check upload data ${response.data}');
             print('check upload data ${receiveImage.run_numbers?.first}');
+            print('check upload serial ${receiveImage.serial_images?.first}');
             print('Image list uploaded successfully');
             emit(UploadSuccess('Image list uploaded successfully'));
             print('${response.data}');

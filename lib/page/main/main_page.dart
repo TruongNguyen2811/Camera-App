@@ -1,4 +1,5 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:app_camera/page/all_Image/all_image_page.dart';
 import 'package:app_camera/page/home/home_page.dart';
 import 'package:app_camera/page/take_picture/take_picture_screen.dart';
 import 'package:app_camera/res/R.dart';
@@ -113,7 +114,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   List<Widget> _buildScreens() {
-    return [HomePage(), Container()];
+    return [HomePage(), AllImagePage()];
   }
 
   List<Widget> iconBottomNavigationBar(Color color) {
@@ -153,7 +154,7 @@ class _MainPageState extends State<MainPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
-              "Check list",
+              "All Images",
               maxLines: 1,
               style: TextStyle(color: color),
             ),

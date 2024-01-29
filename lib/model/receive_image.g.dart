@@ -13,6 +13,9 @@ ReceiveImage _$ReceiveImageFromJson(Map<String, dynamic> json) => ReceiveImage(
       suggested_texts: json['suggested_texts'] as List<dynamic>?,
       images:
           (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      serial_images: (json['serial_images'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$ReceiveImageToJson(ReceiveImage instance) =>
@@ -22,4 +25,5 @@ Map<String, dynamic> _$ReceiveImageToJson(ReceiveImage instance) =>
       'texts': instance.texts,
       'suggested_texts': instance.suggested_texts,
       'images': instance.images,
+      'serial_images': instance.serial_images,
     };

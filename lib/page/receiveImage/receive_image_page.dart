@@ -4,6 +4,7 @@ import 'package:app_camera/model/receive_image.dart';
 import 'package:app_camera/page/receiveImage/receive_image_cubit.dart';
 import 'package:app_camera/page/receiveImage/receive_image_state.dart';
 import 'package:app_camera/res/R.dart';
+import 'package:app_camera/service/app_preferences/app_preferences.dart';
 import 'package:app_camera/utils/custom_theme.dart';
 import 'package:app_camera/utils/enum.dart';
 import 'package:app_camera/utils/utils.dart';
@@ -32,6 +33,8 @@ class ReceiveImagePage extends StatefulWidget {
 
 class _ReceiveImagePageState extends State<ReceiveImagePage> {
   late ReceiveImageCubit cubit;
+  final sharedPref = AppPreferences();
+  String? sessionId = '';
   @override
   void initState() {
     super.initState();
@@ -41,7 +44,9 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
   }
 
   transferData() async {
-    cubit.confirmImage.images = widget.receiveImage?.images;
+    sessionId = await sharedPref.sessionId;
+    cubit.confirmImage.session_id = sessionId;
+    cubit.confirmImage.images = widget.receiveImage?.serial_images;
     cubit.confirmImage.run_numbers = widget.receiveImage?.run_numbers;
     cubit.confirmImage.texts = widget.receiveImage?.texts;
   }
@@ -53,7 +58,7 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
   // int _sortColumnIndex = 0;
   @override
   Widget build(BuildContext context) {
-    print('check upload receive ${widget.receiveImage?.indexes?.first}');
+    // print('check upload receive ${widget.receiveImage?.indexes?.first}');
     return KeyboardDismissOnTap(
       child: Scaffold(
         backgroundColor: R.color.newBackground,
@@ -100,7 +105,7 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
               children: [
                 Container(
                   height: 100.w,
-                  color: R.color.lightDarkTheme,
+                  color: R.color.dark3,
                 ),
                 ShowLoadingWidget(
                   isLoading: state is ReceiveLoading,

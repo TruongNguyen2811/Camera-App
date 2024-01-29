@@ -9,13 +9,16 @@ class ReceiveImage {
   List<dynamic>? texts;
   List<dynamic>? suggested_texts;
   List<String>? images;
+  List<String>? serial_images;
 
-  ReceiveImage(
-      {this.indexes,
-      this.run_numbers,
-      this.texts,
-      this.suggested_texts,
-      this.images});
+  ReceiveImage({
+    this.indexes,
+    this.run_numbers,
+    this.texts,
+    this.suggested_texts,
+    this.images,
+    this.serial_images,
+  });
 
   factory ReceiveImage.fromJson(Map<String, dynamic> json) =>
       _$ReceiveImageFromJson(json);
