@@ -26,7 +26,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeLoading());
     await sharedPref.removeSessionId();
     sessionId = null;
-    emit(HomeGetSessionIdSucess("Yyou have no session Id"));
+    emit(HomeGetSessionIdSucess("You have no session Id"));
   }
 
   var box = Hive.box<List>('imageBox');
