@@ -30,3 +30,5 @@ class ConfirmFailure extends ReceiveImageState {
   final String error;
   const ConfirmFailure(this.error);
 }
+
+class ConvertSuccess extends ReceiveImageState {}

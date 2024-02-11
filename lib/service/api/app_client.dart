@@ -34,7 +34,9 @@ class AppClient {
     dio
       ..options.connectTimeout = _defaultConnectTimeout
       ..options.receiveTimeout = _defaultReceiveTimeout
-      ..options.headers = {'Content-Type': 'application/json; charset=UTF-8'};
+      ..options.headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+      };
 
     if (kDebugMode) {
       dio.interceptors.add(CurlLoggerDioInterceptor());

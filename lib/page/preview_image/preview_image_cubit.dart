@@ -7,6 +7,7 @@ import 'package:app_camera/page/upload_image/upload_image_screen.dart';
 import 'package:app_camera/service/api/api_result.dart';
 import 'package:app_camera/service/api/network_exceptions.dart';
 import 'package:app_camera/service/repository/app_repository_impl.dart';
+import 'package:app_camera/utils/logger.dart';
 import 'package:app_camera/utils/utils.dart';
 // import 'package:camerawesome/generated/i18n.dart';
 import 'package:dio/dio.dart';
@@ -36,6 +37,7 @@ class PreviewImageCubit extends Cubit<PreviewImageState> {
   ImageData latestImageData = ImageData();
   ReceiveImage receiveImage = ReceiveImage();
   ImageData imageData = ImageData();
+  bool isSave = false;
 
   getData() {
     imageDataList =
@@ -49,25 +51,88 @@ class PreviewImageCubit extends Cubit<PreviewImageState> {
   }
 
   saveData(File file) async {
-    int id = 1;
-    Uint8List uint8List = await file.readAsBytes();
-    if (!Utils.isEmptyArray(imageDataList)) {
-      id = imageDataList.last.id! + 1;
+    if (isSave == false) {
+      isSave = true;
+      int id = 1;
+      Uint8List uint8List = await file.readAsBytes();
+      if (!Utils.isEmptyArray(imageDataList)) {
+        id = imageDataList.last.id! + 1;
+      }
+      imageData = ImageData(
+        createDate: DateTime.now(),
+        // assetId: a?.id,
+        id: id,
+        uint8list: uint8List,
+        name: controller.text,
+        isDbr: isDBR,
+        type: 1,
+      );
+      imageDataList.add(imageData);
+      box.put('imageListKey', imageDataList);
     }
-    imageData = ImageData(
-      createDate: DateTime.now(),
-      // assetId: a?.id,
-      id: id,
-      uint8list: uint8List,
-      name: controller.text,
-      isDbr: isDBR,
-      type: 1,
-    );
-    imageDataList.add(imageData);
-    box.put('imageListKey', imageDataList);
   }
 
-  // uploadImageList(String fileImage) async {
+  saveImage(String fileImage) async {
+    emit(PreviewLoading());
+
+    var compressedImage = await FlutterImageCompress.compressWithFile(
+      fileImage,
+      format: CompressFormat.jpeg,
+      quality: Platform.isIOS ? 10 : 30,
+    );
+    final file = File(fileImage);
+    await file.writeAsBytes(compressedImage!.toList());
+    if (Utils.isEmpty(controller.text)) {
+      emit(UploadFailure('You need to enter runner number'));
+      return;
+    } else if (!Utils.isEmpty(controller.text)) {
+      try {
+        int value = int.parse(controller.text);
+        await saveData(file);
+        emit(SaveSuccess('Your image has been saved'));
+      } catch (e) {
+        emit(UploadFailure('You need to enter correct format runner number'));
+      }
+    }
+  }
+
+  uploadImageList(String fileImage) async {
+    emit(PreviewLoading());
+    var compressedImage = await FlutterImageCompress.compressWithFile(
+      fileImage,
+      format: CompressFormat.jpeg,
+      quality: Platform.isIOS ? 10 : 30,
+    );
+    final file = File(fileImage);
+    await file.writeAsBytes(compressedImage!.toList());
+    print('check upload');
+    if (Utils.isEmpty(controller.text)) {
+      print('check upload fail');
+      emit(UploadFailure('You need to enter runner number'));
+      return;
+    } else if (!Utils.isEmpty(controller.text)) {
+      try {
+        int value = int.parse(controller.text);
+        await saveData(file);
+        ApiResult<dynamic> apiResult =
+            await repository.uploadImage([imageData]);
+        apiResult.when(success: (dynamic data) {
+          receiveImage = ReceiveImage.fromJson(data);
+          emit(UploadSuccess('Image list uploaded successfully'));
+          // emit(UploadInternetFailure('s'));
+        }, failure: (NetworkExceptions error) {
+          logger.d(error);
+          emit(UploadInternetFailure(NetworkExceptions.getErrorMessage(error)));
+        });
+      } catch (e) {
+        logger.d(e);
+        emit(UploadFailure('You need to enter correct format runner number'));
+      }
+    }
+  }
+
+  // Future<void> uploadImageList(
+  //     String sessionId, String domain, String fileImage) async {
   //   emit(PreviewLoading());
   //   var compressedImage = await FlutterImageCompress.compressWithFile(
   //     fileImage,
@@ -85,110 +150,77 @@ class PreviewImageCubit extends Cubit<PreviewImageState> {
   //     try {
   //       int value = int.parse(controller.text);
   //       saveData(file);
-  //       ApiResult<dynamic> apiResult =
-  //           await repository.uploadImage([imageData]);
-  //       apiResult.when(success: (dynamic data) {
-  //         receiveImage = ReceiveImage.fromJson(data);
-  //         emit(UploadSuccess('Image list uploaded successfully'));
-  //       }, failure: (NetworkExceptions error) {
-  //         emit(UploadFailure(NetworkExceptions.getErrorMessage(error)));
-  //       });
+  //       try {
+  //         Dio dio = Dio();
+  //         print('check upload try');
+  //         // Thay thế bằng đường dẫn API của bạn
+  //         MultipartFile file = await MultipartFile.fromFile(
+  //           fileImage,
+  //           filename: '${controller.text}.jpg',
+  //         );
+
+  //         // for (int i = 0; i < files.length; i++) {
+  //         //   // XFile image = selectedFiles[i];
+  //         //   String originalString = files[i].name;
+  //         //   String name =
+  //         //       originalString.substring(originalString.lastIndexOf('_') + 1);
+  //         //   print('check split name $name');
+  //         //   // print('${files[i].path}');
+  //         //   // print('${files[i].name}');
+  //         //   formDataList
+  //         //       .add(await MultipartFile.fromFile(files[i].path!, filename: name));
+  //         // }
+
+  //         FormData formData = FormData.fromMap({
+  //           'images': file,
+  //           // Thêm các thông tin khác nếu cần thiết
+  //         });
+  //         print('check upload check time');
+  //         Response response =
+  //             await dio.post('$domain/ocr-images', data: formData);
+  //         print('check upload response ${response.statusCode}');
+  //         if (response.statusCode == 200) {
+  //           // receiveImage = response.data;
+  //           receiveImage = ReceiveImage.fromJson(response.data);
+  //           print('check upload data ${response.data}');
+  //           print('check upload data ${receiveImage.run_numbers?.first}');
+  //           print('check upload serial ${receiveImage.serial_images?.first}');
+  //           print('Image list uploaded successfully');
+  //           emit(UploadSuccess('Image list uploaded successfully'));
+  //           print('${response.data}');
+  //         } else {
+  //           print('Error uploading image list');
+  //           emit(UploadFailure('Error uploading image list'));
+  //           print('check ${response}');
+  //         }
+  //       } catch (error) {
+  //         if (error is DioError) {
+  //           try {
+  //             final detail = error.response?.data['detail'];
+  //             print('Error response body: $detail');
+  //             emit(UploadFailure(detail));
+  //           } catch (e) {
+  //             print(error);
+  //             emit(UploadFailure('Error uploading image list'));
+  //           }
+  //           // Xử lý lỗi và truy cập nội dung phản hồi
+  //           // final detail = error.response?.data['detail'];
+  //           // print('Error response body: $detail');
+  //           // emit(UploadFailure('Error uploading image list'));
+  //         } else {
+  //           print(error);
+  //           emit(UploadFailure('Error uploading image list'));
+  //           // Xử lý các lỗi khác
+  //         }
+  //         // print('${response}');
+  //       }
+  //       // If parsing succeeds, return true
+  //       return;
   //     } catch (e) {
+  //       // If parsing fails, return false
   //       emit(UploadFailure('You need to enter correct format runner number'));
+  //       return;
   //     }
   //   }
   // }
-
-  Future<void> uploadImageList(
-      String sessionId, String domain, String fileImage) async {
-    emit(PreviewLoading());
-    var compressedImage = await FlutterImageCompress.compressWithFile(
-      fileImage,
-      format: CompressFormat.jpeg,
-      quality: Platform.isIOS ? 10 : 30,
-    );
-    final file = File(fileImage);
-    await file.writeAsBytes(compressedImage!.toList());
-    print('check upload');
-    if (Utils.isEmpty(controller.text)) {
-      print('check upload fail');
-      emit(UploadFailure('You need to enter runner number'));
-      return;
-    } else if (!Utils.isEmpty(controller.text)) {
-      try {
-        int value = int.parse(controller.text);
-        saveData(file);
-        try {
-          Dio dio = Dio();
-          print('check upload try');
-          // Thay thế bằng đường dẫn API của bạn
-          MultipartFile file = await MultipartFile.fromFile(
-            fileImage,
-            filename: '${controller.text}.jpg',
-          );
-
-          // for (int i = 0; i < files.length; i++) {
-          //   // XFile image = selectedFiles[i];
-          //   String originalString = files[i].name;
-          //   String name =
-          //       originalString.substring(originalString.lastIndexOf('_') + 1);
-          //   print('check split name $name');
-          //   // print('${files[i].path}');
-          //   // print('${files[i].name}');
-          //   formDataList
-          //       .add(await MultipartFile.fromFile(files[i].path!, filename: name));
-          // }
-
-          FormData formData = FormData.fromMap({
-            'images': file,
-            // Thêm các thông tin khác nếu cần thiết
-          });
-          print('check upload check time');
-          Response response =
-              await dio.post('$domain/ocr-images', data: formData);
-          print('check upload response ${response.statusCode}');
-          if (response.statusCode == 200) {
-            // receiveImage = response.data;
-            receiveImage = ReceiveImage.fromJson(response.data);
-            print('check upload data ${response.data}');
-            print('check upload data ${receiveImage.run_numbers?.first}');
-            print('check upload serial ${receiveImage.serial_images?.first}');
-            print('Image list uploaded successfully');
-            emit(UploadSuccess('Image list uploaded successfully'));
-            print('${response.data}');
-          } else {
-            print('Error uploading image list');
-            emit(UploadFailure('Error uploading image list'));
-            print('check ${response}');
-          }
-        } catch (error) {
-          if (error is DioError) {
-            try {
-              final detail = error.response?.data['detail'];
-              print('Error response body: $detail');
-              emit(UploadFailure(detail));
-            } catch (e) {
-              print(error);
-              emit(UploadFailure('Error uploading image list'));
-            }
-            // Xử lý lỗi và truy cập nội dung phản hồi
-            // final detail = error.response?.data['detail'];
-            // print('Error response body: $detail');
-            // emit(UploadFailure('Error uploading image list'));
-          } else {
-            print(error);
-            emit(UploadFailure('Error uploading image list'));
-            // Xử lý các lỗi khác
-          }
-          // print('${response}');
-        }
-        // If parsing succeeds, return true
-        return;
-      } catch (e) {
-        // If parsing fails, return false
-        emit(UploadFailure('You need to enter correct format runner number'));
-        return;
-      }
-    }
-  }
 }

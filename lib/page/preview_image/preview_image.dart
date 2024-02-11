@@ -5,6 +5,7 @@ import 'package:app_camera/page/list_image/list_image.dart';
 import 'package:app_camera/page/preview_image/preview_image_cubit.dart';
 import 'package:app_camera/page/preview_image/preview_image_state.dart';
 import 'package:app_camera/page/receiveImage/receive_image_page.dart';
+import 'package:app_camera/page/receiveImage/widget/suggest.dart';
 import 'package:app_camera/res/R.dart';
 import 'package:app_camera/utils/custom_gradient.dart';
 import 'package:app_camera/utils/custom_theme.dart';
@@ -42,18 +43,21 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
 
   @override
   Widget build(BuildContext context) {
+    print('check internet a ${context.read<InternetCubit>().isConnect}');
     // TODO: implement build
     return BlocConsumer<PreviewImageCubit, PreviewImageState>(
       bloc: cubit,
       listener: (context, state) {
         if (state is UploadFailure) {
           Utils.showToast(context, state.error, type: ToastType.ERROR);
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: Text(state.error),
-          //     backgroundColor: Colors.red,
-          //   ),
-          // );
+        }
+        if (state is UploadInternetFailure) {
+          Utils.showToast(context, state.error, type: ToastType.ERROR);
+          showDialog(
+              context: context,
+              builder: (_) {
+                return showError();
+              });
         }
         if (state is UploadSuccess) {
           Utils.showToast(context, state.error, type: ToastType.SUCCESS);
@@ -63,14 +67,19 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
           //     backgroundColor: Colors.green,
           //   ),
           // );
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ReceiveImagePage(
                 receiveImage: cubit.receiveImage,
+                imageData: [cubit.imageData],
               ),
             ),
           );
+        }
+        if (state is SaveSuccess) {
+          Utils.showToast(context, state.error, type: ToastType.SUCCESS);
+          Navigator.pop(context);
         }
       },
       builder: (context, state) {
@@ -123,46 +132,136 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
               ),
               child: Row(
                 children: [
-                  ButtonWidget(
-                    textColor: R.color.secondary,
-                    radius: 32.r,
-                    height: 48.h,
-                    width: 165.w,
-                    backgroundColor: Colors.white,
-                    borderColor: R.color.danger1,
-                    title: 'Cancel',
-                    textStyle: Theme.of(context)
-                        .textTheme
-                        .text17
-                        .copyWith(color: R.color.danger1),
-                    isShadow: false,
-                    onPressed: () async {
-                      Navigator.pop(context);
-                    },
+                  Expanded(
+                    child: ButtonWidget(
+                      textColor: R.color.secondary,
+                      radius: 16.r,
+                      height: 44.h,
+                      backgroundColor: Colors.white,
+                      borderColor: R.color.danger1,
+                      title: 'Cancel',
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .text17
+                          .copyWith(color: R.color.danger1),
+                      isShadow: false,
+                      onPressed: () async {
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
-                  9.horizontalSpace,
-                  ButtonWidget(
-                    radius: 32.r,
-                    height: 48.h,
-                    width: 165.w,
-                    title: context.watch<InternetCubit>().isConnect == true
-                        ? 'Upload Image'
-                        : 'Save Image',
-                    backgroundColor: R.color.success1,
-                    // gradient: LinnearGradientDarkGreen(),
-                    textStyle: Theme.of(context)
-                        .textTheme
-                        .text17
-                        .copyWith(color: R.color.white),
-                    onPressed: () async {
-                      cubit.uploadImageList(
-                          '',
-                          'https://liked-dominant-raptor.ngrok-free.app',
-                          widget.imagePath);
-                    },
+                  16.horizontalSpace,
+                  Expanded(
+                    child: ButtonWidget(
+                      radius: 16.r,
+                      height: 44.h,
+                      title: context.watch<InternetCubit>().isConnect == true
+                          ? 'Upload Image'
+                          : 'Save Image',
+                      backgroundColor: R.color.success1,
+                      // gradient: LinnearGradientDarkGreen(),
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .text17
+                          .copyWith(color: R.color.white),
+                      onPressed: () async {
+                        if (context.read<InternetCubit>().isConnect == true) {
+                          cubit.uploadImageList(
+                              // '',
+                              // 'https://liked-dominant-raptor.ngrok-free.app',
+                              widget.imagePath);
+                        } else {
+                          cubit.saveImage(widget.imagePath);
+                        }
+                      },
+                    ),
                   ),
                 ],
               )),
+        ),
+      ),
+    );
+  }
+
+  Widget showError() {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+        width: 327.w,
+        height: 180.h,
+        decoration: ShapeDecoration(
+          color: R.color.newBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0x19000000),
+              blurRadius: 15,
+              offset: Offset(0, 0),
+              spreadRadius: 0,
+            )
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 16.verticalSpace,
+            Text(
+              'Warning!',
+              style: Theme.of(context).textTheme.title5.copyWith(),
+            ),
+            16.verticalSpace,
+            Text(
+              'There are some errors at the moment. Please save this image or try again',
+              style: Theme.of(context).textTheme.body2.copyWith(),
+            ),
+            16.verticalSpace,
+            Row(
+              children: [
+                Expanded(
+                  child: ButtonWidget(
+                      backgroundColor: R.color.white,
+                      borderColor: R.color.blueTextLight,
+                      height: 40.h,
+                      textColor: Colors.white,
+                      radius: 8.r,
+                      title: 'Try again',
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .text14W600
+                          .copyWith(color: R.color.blueTextLight, height: 0),
+                      onPressed: () {
+                        // // cubit.sharedPref.removeFilterConfig();
+                        // NavigationUtils.popDialog(context);
+                        Navigator.pop(context);
+                      }),
+                ),
+                16.horizontalSpace,
+                Expanded(
+                  child: ButtonWidget(
+                      backgroundColor: R.color.dark3,
+                      height: 40.h,
+                      textColor: Colors.white,
+                      radius: 8.r,
+                      title: 'Save Image',
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .text14W600
+                          .copyWith(color: Colors.white, height: 0),
+                      onPressed: () {
+                        // print('Check name brand ${cubit.carBrand?.title}');
+                        cubit.saveImage(widget.imagePath);
+                        Navigator.pop(context);
+                      }),
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );
@@ -221,6 +320,26 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
                         scale: 1,
                       ))),
               16.verticalSpace,
+              if (context.watch<InternetCubit>().isConnect == true) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: ButtonWidget(
+                      backgroundColor: R.color.dark3,
+                      height: 44.h,
+                      textColor: Colors.white,
+                      radius: 16.r,
+                      title: 'Save Image',
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .text14W600
+                          .copyWith(color: Colors.white, height: 0),
+                      onPressed: () {
+                        // print('Check name brand ${cubit.carBrand?.title}');
+                        cubit.saveImage(widget.imagePath);
+                        // Navigator.pop(context);
+                      }),
+                ),
+              ],
               // GestureDetector(
               //   onTap: () {
               //     if (cubit.isDBR == true) {
@@ -252,7 +371,7 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
               //     ],
               //   ),
               // ),
-              16.verticalSpace,
+              24.verticalSpace,
             ],
           ),
         ),

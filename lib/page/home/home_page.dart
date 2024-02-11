@@ -1,3 +1,4 @@
+import 'package:app_camera/page/all_Image/all_image_page.dart';
 import 'package:app_camera/page/chooseImage/choose_image.dart';
 import 'package:app_camera/page/chooseImage/media_picker.dart';
 import 'package:app_camera/page/home/home_cubit.dart';
@@ -131,14 +132,16 @@ class _HomePageState extends State<HomePage>
                         children: [
                           Center(
                             child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 52.w),
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Start New Session',
+                                    cubit.sessionId == null
+                                        ? 'Start New Session'
+                                        : "Update Session",
                                     style:
-                                        Theme.of(context).textTheme.text20W700,
+                                        Theme.of(context).textTheme.body1Bold,
                                   ),
                                   Text(
                                     cubit.sessionId == null
@@ -147,7 +150,7 @@ class _HomePageState extends State<HomePage>
                                     textAlign: TextAlign.center,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.text14,
+                                    style: Theme.of(context).textTheme.text12,
                                   ),
                                 ],
                               ),
@@ -211,12 +214,12 @@ class _HomePageState extends State<HomePage>
                               children: [
                                 Text(
                                   'Take Photo ',
-                                  style: Theme.of(context).textTheme.text20W700,
+                                  style: Theme.of(context).textTheme.body1Bold,
                                 ),
                                 Text(
                                   'Take photo now',
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.text14,
+                                  style: Theme.of(context).textTheme.text12,
                                 ),
                               ],
                             ),
@@ -234,64 +237,76 @@ class _HomePageState extends State<HomePage>
                       ),
                     ),
                   ),
-                  // 16.verticalSpace,
-                  // AnimatedContainer(
-                  //   duration: const Duration(milliseconds: 500),
-                  //   width: 300.w,
-                  //   height: 100.h,
-                  //   curve: Curves.linear,
-                  //   decoration: BoxDecoration(
-                  //     // color: R.color.blueTextLight,
-                  //     color: R.color.white,
-                  //     border:
-                  //         Border.all(width: 1.w, color: R.color.blueTextLight),
-                  //     // gradient: LinnearGradientDarkBlue(),
-                  //     borderRadius: BorderRadius.circular(20.r),
-                  //     boxShadow: const [
-                  //       BoxShadow(
-                  //         offset: Offset(0, -1),
-                  //         blurRadius: 5,
-                  //         color: Color(0x26000000),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   transform: Matrix4.translationValues(
-                  //     (_animation.value * 100.w -
-                  //         300.w), // Điều chỉnh giá trị để căn giữa
-                  //     0.0,
-                  //     0.0,
-                  //   ),
-                  //   transformAlignment: Alignment.center,
-                  //   child: Stack(
-                  //     children: [
-                  //       Center(
-                  //         child: Column(
-                  //           mainAxisAlignment: MainAxisAlignment.center,
-                  //           children: [
-                  //             Text(
-                  //               'Confirm Image',
-                  //               style: Theme.of(context).textTheme.text20W700,
-                  //             ),
-                  //             Text(
-                  //               'You have ${cubit.countUnConfirm} unconfirmed photos',
-                  //               textAlign: TextAlign.center,
-                  //               style: Theme.of(context).textTheme.text14,
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //       Positioned(
-                  //           right: 16.w,
-                  //           bottom: 0.w,
-                  //           child: Image.asset(
-                  //               height: 40.w,
-                  //               width: 40.w,
-                  //               "assets/icon/icon_right.png",
-                  //               // color: R.color.grey400,
-                  //               color: R.color.blueTextLight))
-                  //     ],
-                  //   ),
-                  // ),
+                  16.verticalSpace,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AllImagePage(
+                            type: 1,
+                          ),
+                        ),
+                      ).then((value) => cubit.getData());
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      width: 300.w,
+                      height: 100.h,
+                      curve: Curves.linear,
+                      decoration: BoxDecoration(
+                        // color: R.color.blueTextLight,
+                        color: R.color.white,
+                        border: Border.all(
+                            width: 1.w, color: R.color.blueTextLight),
+                        // gradient: LinnearGradientDarkBlue(),
+                        borderRadius: BorderRadius.circular(20.r),
+                        boxShadow: const [
+                          BoxShadow(
+                            offset: Offset(0, -1),
+                            blurRadius: 5,
+                            color: Color(0x26000000),
+                          ),
+                        ],
+                      ),
+                      transform: Matrix4.translationValues(
+                        (_animation.value * 100.w -
+                            300.w), // Điều chỉnh giá trị để căn giữa
+                        0.0,
+                        0.0,
+                      ),
+                      transformAlignment: Alignment.center,
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Confirm Image',
+                                  style: Theme.of(context).textTheme.body1Bold,
+                                ),
+                                Text(
+                                  'You have ${cubit.countUnConfirm} unconfirmed photos',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.text12,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                              right: 16.w,
+                              bottom: 0.w,
+                              child: Image.asset(
+                                  height: 40.w,
+                                  width: 40.w,
+                                  "assets/icon/icon_right.png",
+                                  // color: R.color.grey400,
+                                  color: R.color.blueTextLight))
+                        ],
+                      ),
+                    ),
+                  ),
                   // 16.verticalSpace,
                   // AnimatedContainer(
                   //   duration: const Duration(milliseconds: 500),
@@ -333,7 +348,7 @@ class _HomePageState extends State<HomePage>
                   //             Text(
                   //               "You haven't run ${cubit.countUnRunNumber} images yet",
                   //               textAlign: TextAlign.center,
-                  //               style: Theme.of(context).textTheme.text14,
+                  //               style: Theme.of(context).textTheme.text12,
                   //             ),
                   //           ],
                   //         ),
@@ -389,7 +404,7 @@ class _HomePageState extends State<HomePage>
                               children: [
                                 Text(
                                   'Clear Serial Number',
-                                  style: Theme.of(context).textTheme.text20W700,
+                                  style: Theme.of(context).textTheme.body1Bold,
                                 ),
                               ],
                             ),

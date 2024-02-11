@@ -43,7 +43,7 @@ class Colors {
   Color get blue11 => Color(0xFFE3F1F6);
   Color get dark5 => Color(0xFF6B6D6C);
   Color get darkger1 => Color(0xFFED1F42);
-  Color get dark3 => Color(0xFF474847);
+  Color get dark3 => Color(0xFF779ECB);
   Color get primary1 => Color(0xFFAA283E);
   Color get neutral7 => Color(0xFFF3F3F3);
   Color get danger1 => Color(0xFFED1F42);

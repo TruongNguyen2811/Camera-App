@@ -40,7 +40,7 @@ class _SubmitSessionState extends State<SubmitSession> {
       listener: (context, state) {
         if (state is SubmitSessionSucess) {
           Utils.showToast(context, state.success, type: ToastType.SUCCESS);
-          Navigator.pop(context);
+          Navigator.popUntil(context, (route) => route.isFirst);
         }
         if (state is SubmitSessionFailure) {
           Utils.showToast(context, state.error, type: ToastType.ERROR);

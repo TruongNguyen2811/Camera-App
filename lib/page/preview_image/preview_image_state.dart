@@ -26,7 +26,17 @@ class UploadFailure extends PreviewImageState {
   const UploadFailure(this.error);
 }
 
+class UploadInternetFailure extends PreviewImageState {
+  final String error;
+  const UploadInternetFailure(this.error);
+}
+
 class UploadSuccess extends PreviewImageState {
   final String error;
   const UploadSuccess(this.error);
+}
+
+class SaveSuccess extends PreviewImageState {
+  final String error;
+  const SaveSuccess(this.error);
 }

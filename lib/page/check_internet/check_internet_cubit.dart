@@ -15,8 +15,8 @@ class InternetCubit extends Cubit<InternetState> {
 
   InternetCubit() : super(InternetInitial()) {
     // Khởi tạo lắng nghe sự thay đổi của trạng thái kết nối
-    connectivitySubscription =
-        connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+    connectivitySubscription = connectivity.onConnectivityChanged
+        .listen((ConnectivityResult result) async {
       if (result == ConnectivityResult.none) {
         isConnect = false;
         emit(InternetFailure('Lost Connect Internet'));
@@ -24,7 +24,18 @@ class InternetCubit extends Cubit<InternetState> {
         isConnect = true;
         emit(InternetSucess('You are online'));
       }
+      print('check internet onchange ${isConnect}');
     });
+  }
+  Future<void> checkInternetConnectivity() async {
+    ConnectivityResult result = await Connectivity().checkConnectivity();
+    if (result == ConnectivityResult.none) {
+      isConnect = false;
+      emit(InternetFailure('Lost Connect Internet'));
+    } else {
+      isConnect = true;
+      emit(InternetSucess('You are online'));
+    }
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app_camera/model/confirm_image.dart';
 import 'package:app_camera/model/image_data.dart';
 import 'package:app_camera/service/api/api_result.dart';
 import 'package:app_camera/service/api/app_api.dart';
@@ -13,10 +14,20 @@ import 'package:flutter/foundation.dart';
 class AppRepository extends BaseRepository {
   Future<ApiResult<dynamic>> uploadImage(List<ImageData> data) async {
     try {
-      logger.d('aaaaaa');
       final dynamic response =
-          await appClient.uploadImage(convertImageDataListToFormData(data));
-      logger.d(convertImageDataListToFormData(data));
+          await appClient.uploadImage(await createFormDataFromImageList(data));
+      logger.d(createFormDataFromImageList(data));
+      return ApiResult.success(data: response);
+    } catch (e) {
+      logger.d(e);
+      return handleErrorApi(e);
+    }
+  }
+
+  Future<ApiResult<dynamic>> confirmImage(ConfrimImage request) async {
+    try {
+      logger.d(request.toJson());
+      final dynamic response = await appClient.confirmImage(request);
       return ApiResult.success(data: response);
     } catch (e) {
       return handleErrorApi(e);

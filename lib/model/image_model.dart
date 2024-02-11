@@ -12,6 +12,7 @@ class ImageModel {
   bool? isDbr;
   String? name;
   String? byte64;
+  bool? isChoose;
 
   ImageModel({
     this.createDate,
@@ -21,6 +22,7 @@ class ImageModel {
     this.id,
     this.type,
     this.byte64,
+    this.isChoose,
   });
 
   // Chuyển đổi dữ liệu thành Map
@@ -33,6 +35,7 @@ class ImageModel {
       'isDbr': isDbr,
       'type': type,
       'byte64': byte64,
+      'isChoose': isChoose,
     };
   }
 
@@ -46,6 +49,7 @@ class ImageModel {
       isDbr: map['isDbr'],
       type: map['type'],
       byte64: map['byte64'],
+      isChoose: map['isChoose'],
     );
   }
 }

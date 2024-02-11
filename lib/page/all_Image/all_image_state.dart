@@ -25,3 +25,17 @@ class ImageDeleteSuccess extends AllImageState {
 }
 
 class ListImageEmpty extends AllImageState {}
+
+class DeleteImage extends AllImageState {
+  final String message;
+  const DeleteImage(this.message);
+}
+
+class UploadImageSuccess extends AllImageState {
+  final String message;
+  const UploadImageSuccess(this.message);
+}
+
+class selectAllSuccess extends AllImageState {}
+
+class AllImagePaging extends AllImageState {}

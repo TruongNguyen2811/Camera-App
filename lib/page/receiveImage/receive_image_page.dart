@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:app_camera/model/image_data.dart';
 import 'package:app_camera/model/receive_image.dart';
 import 'package:app_camera/page/receiveImage/receive_image_cubit.dart';
 import 'package:app_camera/page/receiveImage/receive_image_state.dart';
+import 'package:app_camera/page/receiveImage/widget/suggest.dart';
 import 'package:app_camera/res/R.dart';
 import 'package:app_camera/service/app_preferences/app_preferences.dart';
 import 'package:app_camera/utils/custom_theme.dart';
@@ -11,7 +14,9 @@ import 'package:app_camera/utils/utils.dart';
 import 'package:app_camera/widget/button_widget.dart';
 import 'package:app_camera/widget/full_screen_image.dart';
 import 'package:app_camera/widget/full_screen_image_base64.dart';
+import 'package:app_camera/widget/full_screen_image_uint8list.dart';
 import 'package:app_camera/widget/image_widget.dart';
+import 'package:app_camera/widget/image_widget_uint8.dart';
 import 'package:app_camera/widget/show_loading.dart';
 import 'package:app_camera/widget/textField_widget.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -25,7 +30,8 @@ import 'package:photo_manager/photo_manager.dart';
 
 class ReceiveImagePage extends StatefulWidget {
   ReceiveImage? receiveImage;
-  ReceiveImagePage({super.key, this.receiveImage});
+  List<ImageData> imageData;
+  ReceiveImagePage({super.key, this.receiveImage, required this.imageData});
 
   @override
   State<ReceiveImagePage> createState() => _ReceiveImagePageState();
@@ -40,6 +46,8 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
     super.initState();
     cubit = ReceiveImageCubit();
     // cubit.getImage();
+    cubit.getData();
+    cubit.convertBase64(widget.receiveImage?.images);
     transferData();
   }
 
@@ -48,7 +56,17 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
     cubit.confirmImage.session_id = sessionId;
     cubit.confirmImage.images = widget.receiveImage?.serial_images;
     cubit.confirmImage.run_numbers = widget.receiveImage?.run_numbers;
+    cubit.returnText = List<dynamic>.from(widget.receiveImage?.texts ?? []);
     cubit.confirmImage.texts = widget.receiveImage?.texts;
+    // cubit.confirmImage.texts =
+    //     List<String>.from(widget.receiveImage?.texts ?? []);
+
+    cubit.imageDataUpdate.addAll(widget.imageData);
+
+    // if (widget.receiveImage?.suggested_texts?[0] is List<dynamic>) {
+    //   print(
+    //       'check transfer list dynamic ${widget.receiveImage?.suggested_texts?[0].length}');
+    // }
   }
 
   // bool _sortNameAsc = true;
@@ -58,7 +76,6 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
   // int _sortColumnIndex = 0;
   @override
   Widget build(BuildContext context) {
-    // print('check upload receive ${widget.receiveImage?.indexes?.first}');
     return KeyboardDismissOnTap(
       child: Scaffold(
         backgroundColor: R.color.newBackground,
@@ -89,6 +106,7 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
               //   ),
               // );
               Navigator.pop(context);
+              Navigator.pop(context);
             }
             if (state is ConfirmFailure) {
               Utils.showToast(context, state.error, type: ToastType.ERROR);
@@ -110,24 +128,21 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
                 ShowLoadingWidget(
                   isLoading: state is ReceiveLoading,
                   child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16.r),
-                        topRight: Radius.circular(16.r),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16.r),
+                          topRight: Radius.circular(16.r),
+                        ),
+                        color: R.color.newBackground,
                       ),
-                      color: R.color.newBackground,
-                    ),
-                    padding: const EdgeInsets.all(16.0),
-                    child: SingleChildScrollView(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        16.verticalSpace,
-                        imageWidget(),
-                        16.verticalSpace,
-                      ],
-                    )),
-                  ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: SingleChildScrollView(
+                        child: Column(children: [
+                          24.verticalSpace,
+                          imageWidget(),
+                          24.verticalSpace,
+                        ]),
+                      )),
                 ),
               ],
             );
@@ -171,44 +186,6 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
     );
   }
 
-  // Widget _fieldPickCarServiceWidget(BuildContext context) {
-  //   return InkWell(
-  //     onTap: () {
-  //       // cubit.selectImages();
-  //       // Navigator.push(
-  //       //   context,
-  //       //   MaterialPageRoute(
-  //       //     builder: (context) => ChooseImage(),
-  //       //   ),
-  //       // );
-  //       cubit.selectImages();
-  //     },
-  //     child: Container(
-  //       width: 343.w,
-  //       height: 42.h,
-  //       child: DottedBorder(
-  //         borderType: BorderType.RRect,
-  //         dashPattern: [4, 2],
-  //         radius: Radius.circular(16.r),
-  //         strokeWidth: 1.75,
-  //         color: Color.fromARGB(255, 40, 40, 40),
-  //         strokeCap: StrokeCap.butt,
-  //         // padding: EdgeInsets.all(6),
-  //         child: Center(
-  //           child: Text(
-  //             'Choose image to review',
-  //             style: TextStyle(
-  //               color: Color.fromARGB(255, 40, 40, 40),
-  //               fontSize: 16.sp,
-  //               fontWeight: FontWeight.normal,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   // onsortColum(int columnIndex, bool ascending) {
   //   if (columnIndex == 0) {
   //     if (ascending) {
@@ -230,23 +207,13 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
           ),
           borderRadius: BorderRadius.circular(16.r),
         ),
-
         clipBehavior: Clip.antiAliasWithSaveLayer,
         border: TableBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
-        dataRowHeight: 80.h,
+        dataRowHeight: 120.h,
         columnSpacing: 0,
         horizontalMargin: 12,
-
-        // dataRowColor: MaterialStateColor.resolveWith((states) {
-        //   // Mảng màu sắc xen kẽ
-        //   final colors = [AppColors.white, AppColors.mainBackground];
-        //   // Lấy màu tương ứng dựa trên chỉ số hàng
-        //   final colorIndex = 3 % colors.length;
-        //   return colors[colorIndex];
-        // }
-        // ),
         columns: const <DataColumn>[
           DataColumn(
             label: Expanded(
@@ -293,6 +260,8 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
           // bool containsDBR = cubit.imageName[index].contains("DBR");
           TextEditingController textControl = TextEditingController();
           textControl.text = widget.receiveImage?.texts?[index];
+          // textControl.text = cubit.confirmImage.texts?[index] ??
+          //     widget.receiveImage?.texts?[index];
           return DataRow(
             color: MaterialStateColor.resolveWith((states) {
               // Mảng màu sắc xen kẽ
@@ -306,13 +275,11 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
                 Container(
                   width: 100.w,
                   child: Text(
-                    // cubit.image[index].titleAsync,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
                     '${widget.receiveImage?.run_numbers?[index]}.jpg',
-                    // 'Lọc dầu Vios 2019',
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -323,9 +290,8 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => FullScreenImageScreen(
-                                base64Strings:
-                                    widget.receiveImage?.images ?? [],
+                          builder: (context) => FullScreenImageScreenUint8(
+                                imageBytes: cubit.imageBytes,
                                 initialIndex: index,
                               )),
                     );
@@ -334,17 +300,16 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
                       width: 100.w,
                       padding: EdgeInsets.all(8.h),
                       child: !Utils.isEmptyArray(widget.receiveImage?.images)
-                          ? Base64ImageWidget(
+                          ? Uint8ListImageWidget(
                               height: 100,
                               width: 90,
-                              base64String:
-                                  widget.receiveImage?.images?[index] ?? '',
+                              imageBytes: cubit.imageBytes[index],
                               fit: BoxFit.contain,
                             )
-                          : Base64ImageWidget(
+                          : Uint8ListImageWidget(
                               height: 100,
                               width: 90,
-                              base64String: '',
+                              imageBytes: Uint8List(0),
                               fit: BoxFit.contain,
                             )
                       // child: AssetEntityImage(
@@ -366,21 +331,75 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
               ),
               DataCell(Container(
                 width: 110.w,
-                child: TextFieldWidget(
-                  height: 42.w,
-                  maxLines: 1,
-                  controller: textControl,
-                  onChanged: (value) {
-                    cubit.confirmImage.texts?[index] = value;
-                  },
-                  radius: 8.r,
-                  showShadow: false,
-                  enableColorBorder: R.color.shadowColor,
+                padding: EdgeInsets.only(top: 12.h),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // 10.verticalSpace,
+                    TextFieldWidget(
+                      height: 42.w,
+                      maxLines: 1,
+                      controller: textControl,
+                      onChanged: (value) {
+                        cubit.confirmImage.texts?[index] = value;
+                      },
+                      radius: 8.r,
+                      showShadow: false,
+                      enableColorBorder: R.color.shadowColor,
+                    ),
+                    !Utils.isEmpty(widget.receiveImage?.suggested_texts?[index])
+                        ? ButtonWidget(
+                            radius: 12.r,
+                            height: 24.h,
+                            // width: 165.w,
+                            backgroundColor: R.color.white,
+                            borderColor: R.color.blueTextLight,
+                            title: 'Suggestion',
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .text12W300
+                                .copyWith(
+                                    color: R.color.blueTextLight, height: 0),
+                            onPressed: () async {
+                              // print('check control1 ${textControl.text}');
+                              // print(
+                              //     'check c1 ${widget.receiveImage?.texts?[index]}');
+                              showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return SuggestText(
+                                      controller: textControl,
+                                      text: cubit.returnText[index],
+                                      suggestText: widget.receiveImage
+                                          ?.suggested_texts?[index],
+                                    );
+                                  }).then((value) {
+                                cubit.confirmImage.texts?[index] =
+                                    textControl.text;
+                                print(
+                                    'check confirm ${cubit.confirmImage.texts?[index]}');
+                                print(
+                                    'check textcontroller ${textControl.text}');
+                                print(
+                                    'check textsuggest ${widget.receiveImage?.texts?[index]}');
+                              });
+                              // setState(() {
+                              //   // cubit.confirmImage.texts?[index] = widget
+                              //   //     .receiveImage?.suggested_texts?[index][i];
+                              //   // textControl.text = widget
+                              //   //     .receiveImage?.suggested_texts?[index][i];
+                              // });
+                              // cubit.confirmListImage(
+                              //     'https://liked-dominant-raptor.ngrok-free.app');
+                            },
+                          )
+                        : SizedBox()
+                  ],
                 ),
               )),
             ],
           );
-        }),
+        }).toList(),
       ),
     );
     // return ListView.builder(

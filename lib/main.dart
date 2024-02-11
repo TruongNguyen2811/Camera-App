@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app_camera/injection_container.dart';
 import 'package:app_camera/page/check_internet/check_internet_cubit.dart';
 import 'package:app_camera/page/check_internet/check_internet_state.dart';
 import 'package:app_camera/page/home/home_page.dart';
@@ -13,11 +14,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 
 Future<void> main() async {
   // Khởi tạo CameraFlutterBinding trước khi chạy ứng dụng
+  await configureDependencies();
   await Hive.initFlutter();
   Hive.registerAdapter(ImageDataAdapter()); // Đảm bảo đăng ký adapter
   await Hive.openBox<List>('imageBox');
@@ -35,31 +38,47 @@ class CameraApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
         designSize: const Size(375, 812),
-        builder: (_, child) {
+        builder: (context, child) {
           return BlocProvider<InternetCubit>(
-            create: (_) => InternetCubit(),
+            create: (context) => InternetCubit(),
             child: MaterialApp(
-              home: BlocProvider<InternetCubit>(
-                create: (_) => InternetCubit(),
-                child: BlocConsumer<InternetCubit, InternetState>(
-                  listener: (context, state) {
-                    if (state is InternetSucess) {
-                      Utils.showToast(context, state.success,
-                          type: ToastType.SUCCESS);
-                    }
-                    if (state is InternetFailure) {
-                      Utils.showToast(context, state.error,
-                          type: ToastType.ERROR);
-                    }
-                  },
-                  builder: (context, state) {
-                    return MainPage();
-                  },
-                  // child: MainPage()
-                ),
+              builder: (context, widget) {
+                return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+                    child: widget!);
+              },
+              theme: ThemeData(
+                  brightness: Brightness.light,
+                  textTheme:
+                      GoogleFonts.interTextTheme(Theme.of(context).textTheme),
+                  sliderTheme: Theme.of(context).sliderTheme.copyWith(
+                      overlayShape:
+                          const RoundSliderOverlayShape(overlayRadius: 0),
+                      thumbShape:
+                          const RoundSliderThumbShape(enabledThumbRadius: 6),
+                      thumbColor: const Color(0xFF6476D7),
+                      tickMarkShape:
+                          const RoundSliderTickMarkShape(tickMarkRadius: 4),
+                      inactiveTickMarkColor: const Color(0xFFC4C4C4),
+                      activeTickMarkColor: const Color(0xFF6476D7))),
+              home: BlocConsumer<InternetCubit, InternetState>(
+                listener: (context, state) {
+                  if (state is InternetSucess) {
+                    Utils.showToast(context, state.success,
+                        type: ToastType.SUCCESS);
+                  }
+                  if (state is InternetFailure) {
+                    Utils.showToast(context, state.error,
+                        type: ToastType.ERROR);
+                  }
+                },
+                builder: (context, state) {
+                  return MainPage();
+                },
+                // child: MainPage()
               ),
-              // CameraScreen(camera: camera),
             ),
+            // CameraScreen(camera: camera),
           );
         });
   }

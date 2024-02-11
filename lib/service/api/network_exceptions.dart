@@ -150,39 +150,43 @@ abstract class NetworkExceptions with _$NetworkExceptions {
   static String getErrorMessage(NetworkExceptions networkExceptions) {
     var errorMessage = "";
     networkExceptions.when(notImplemented: () {
-      errorMessage = "Không được thực hiện";
+      errorMessage = "The request not fulfilled";
     }, requestCancelled: () {
-      errorMessage = "Yêu cầu đã huỷ";
+      errorMessage = "The request has been cancelled";
     }, internalServerError: () {
-      errorMessage = 'Lỗi máy chủ';
+      errorMessage = 'Server error';
     }, notFound: (String reason) {
-      errorMessage = reason;
+      print('check error reason');
+      logger.d(reason);
+      errorMessage = "Sever not found";
     }, serviceUnavailable: () {
-      errorMessage = 'Dịch vụ không sẵn có';
+      errorMessage = 'Service is not available';
     }, methodNotAllowed: () {
-      errorMessage = 'Phương thức đã cho phép';
+      errorMessage = 'Method not allowed';
     }, badRequest: (String? reason) {
-      errorMessage = reason ?? 'Yêu cầu sai';
+      errorMessage = reason ?? 'Bad request';
     }, unauthorizedRequest: (reason) {
-      errorMessage = reason ?? 'Không có quyền truy cập';
+      errorMessage = reason ?? 'You do not have access';
     }, unexpectedError: () {
-      errorMessage = 'Đã xảy ra lỗi không mong muốn';
+      print('unexpectedError');
+      errorMessage = 'An unexpected error occurred';
     }, requestTimeout: () {
-      errorMessage = 'Hết thời gian yêu cầu kết nối';
+      errorMessage = 'Connection request timed out';
     }, noInternetConnection: () {
-      errorMessage = 'Kết nối bị gián đoạn!';
+      errorMessage = 'Connection interrupted!';
     }, conflict: () {
-      errorMessage = 'Lỗi do xung đột';
+      errorMessage = 'Error due to conflict';
     }, sendTimeout: () {
-      errorMessage = 'Hết thời gian gửi kết nối với máy chủ';
+      errorMessage = 'Timeout sent connection to server';
     }, unableToProcess: () {
-      errorMessage = 'Không thể xử lý dữ liệu';
+      errorMessage = 'Unable to process data';
     }, defaultError: (String errorCode, String message, dynamic data) {
       errorMessage = message;
     }, formatException: () {
-      errorMessage = 'Đã xảy ra lỗi không mong muốn';
+      print('formatExeption');
+      errorMessage = 'An unexpected error occurred';
     }, notAcceptable: () {
-      errorMessage = 'Không thể chấp nhận';
+      errorMessage = 'Request is not accepted';
     });
     return errorMessage;
   }

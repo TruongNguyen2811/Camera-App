@@ -1,5 +1,6 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:app_camera/page/all_Image/all_image_page.dart';
+import 'package:app_camera/page/check_internet/check_internet_cubit.dart';
 import 'package:app_camera/page/home/home_page.dart';
 import 'package:app_camera/page/take_picture/take_picture_screen.dart';
 import 'package:app_camera/res/R.dart';
@@ -7,6 +8,7 @@ import 'package:app_camera/utils/custom_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MainPage extends StatefulWidget {
@@ -23,6 +25,12 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    checkconnection();
+  }
+
+  checkconnection() async {
+    await context.read<InternetCubit>().checkInternetConnectivity();
+    print('check internet ${context.read<InternetCubit>().isConnect}');
   }
 
   @override

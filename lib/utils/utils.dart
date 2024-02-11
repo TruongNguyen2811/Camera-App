@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:app_camera/res/R.dart';
 import 'package:app_camera/utils/custom_theme.dart';
 import 'package:app_camera/utils/enum.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Utils {
   static bool isEmpty(Object? text) {
@@ -93,4 +97,18 @@ class Utils {
       }
     });
   }
+
+  // Future<void> uint8ListToFile(Uint8List uint8list) async {
+  //   // Lấy thư mục ứng dụng tạm thời
+  //   Directory appDocDir = await getTemporaryDirectory();
+  //   String appDocPath = appDocDir.path;
+
+  //   // Tạo tệp tin với tên ngẫu nhiên
+  //   String filePath =
+  //       '$appDocPath/file_${DateTime.now().millisecondsSinceEpoch}.jpg';
+  //   File file = File(filePath);
+
+  //   // Ghi dữ liệu từ Uint8List vào tệp tin
+  //   await file.writeAsBytes(uint8list, flush: true);
+  // }
 }
