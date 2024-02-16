@@ -340,6 +340,8 @@ class _ReceiveImagePageState extends State<ReceiveImagePage> {
                       height: 42.w,
                       maxLines: 1,
                       controller: textControl,
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
                       onChanged: (value) {
                         cubit.confirmImage.texts?[index] = value;
                       },

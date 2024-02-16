@@ -96,8 +96,17 @@ class AllImageCubit extends Cubit<AllImageState> {
     print('start');
     String? base64String;
     isChoose = [];
-    imageDataList =
-        box.get('imageListKey', defaultValue: [])?.cast<ImageData>() ?? [];
+    if (type != null) {
+      imageDataList = List<ImageData>.from(box
+              .get('imageListKey', defaultValue: [])
+              ?.cast<ImageData>()
+              .where((imageData) => imageData.type == type)
+              .toList() ??
+          []);
+    } else {
+      imageDataList = List<ImageData>.from(
+          box.get('imageListKey', defaultValue: [])?.cast<ImageData>() ?? []);
+    }
     if (imageDataList.isNotEmpty) {
       pagingImage(0);
       createPage();

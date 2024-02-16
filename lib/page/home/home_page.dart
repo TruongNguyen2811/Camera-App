@@ -403,7 +403,7 @@ class _HomePageState extends State<HomePage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Clear Serial Number',
+                                  'Clear Session ID',
                                   style: Theme.of(context).textTheme.body1Bold,
                                 ),
                               ],

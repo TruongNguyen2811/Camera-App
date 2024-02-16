@@ -42,6 +42,7 @@ class CameraApp extends StatelessWidget {
           return BlocProvider<InternetCubit>(
             create: (context) => InternetCubit(),
             child: MaterialApp(
+              debugShowCheckedModeBanner: false,
               builder: (context, widget) {
                 return MediaQuery(
                     data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
