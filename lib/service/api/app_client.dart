@@ -27,7 +27,7 @@ class AppClient {
 
   void _setupClient() {
     dio = Dio(BaseOptions(
-        baseUrl: "https://liked-dominant-raptor.ngrok-free.app",
+        baseUrl: "http://defender.machinax.net:8000",
         receiveTimeout: 60 * 1000 * 2,
         connectTimeout: 60 * 1000 * 2,
         contentType: "application/json"));

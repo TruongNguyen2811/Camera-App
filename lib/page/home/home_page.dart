@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage>
                 children: [
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
-                    child: Text("Welcome to OCR Camera!",
+                    child: Text("Welcome to DEFENDER TS!",
                         style: Theme.of(context).textTheme.text20W700),
                     transform: Matrix4.translationValues(
                       0.0, // Điều chỉnh giá trị để căn giữa

@@ -71,9 +71,9 @@ dependencies:
   # qr_flutter: 4.0.0
 flutter_launcher_icons:
   android: "launcher_icon"
-  ios: false
+  ios: true
   remove_alpha_ios: true
-  image_path: "assets/images/ocr-picture.png"
+  image_path: "assets/images/logo_app.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
 flutter_native_splash:
   color: "#f7f7e8"
@@ -81,7 +81,7 @@ flutter_native_splash:
   android_12:
     color: "#f7f7e8"
   fullscreen: false
-  image: "assets/images/ocr-picture.png"
+  image: "assets/images/logo_app.png"
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
