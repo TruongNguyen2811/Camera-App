@@ -246,8 +246,8 @@ class _QRViewExampleState extends State<QRViewExample> {
       // ScaffoldMessenger.of(context).showSnackBar(
       //   const SnackBar(content: Text('no Permission')),
       // );
-      Utils.showToast(context, 'You have not granted access to the camera',
-          type: ToastType.ERROR);
+      // Utils.showToast(context, 'You have not granted access to the camera',
+      //     type: ToastType.ERROR);
     }
   }
 

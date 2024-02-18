@@ -320,26 +320,26 @@ class _PreviewImgaePageState extends State<PreviewImgaePage> {
                         scale: 1,
                       ))),
               16.verticalSpace,
-              if (context.watch<InternetCubit>().isConnect == true) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: ButtonWidget(
-                      backgroundColor: R.color.dark3,
-                      height: 44.h,
-                      textColor: Colors.white,
-                      radius: 16.r,
-                      title: 'Save Image',
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .text14W600
-                          .copyWith(color: Colors.white, height: 0),
-                      onPressed: () {
-                        // print('Check name brand ${cubit.carBrand?.title}');
-                        cubit.saveImage(widget.imagePath);
-                        // Navigator.pop(context);
-                      }),
-                ),
-              ],
+              // if (context.watch<InternetCubit>().isConnect == true) ...[
+              //   Container(
+              //     padding: const EdgeInsets.symmetric(horizontal: 24),
+              //     child: ButtonWidget(
+              //         backgroundColor: R.color.dark3,
+              //         height: 44.h,
+              //         textColor: Colors.white,
+              //         radius: 16.r,
+              //         title: 'Save Image',
+              //         textStyle: Theme.of(context)
+              //             .textTheme
+              //             .text14W600
+              //             .copyWith(color: Colors.white, height: 0),
+              //         onPressed: () {
+              //           // print('Check name brand ${cubit.carBrand?.title}');
+              //           cubit.saveImage(widget.imagePath);
+              //           // Navigator.pop(context);
+              //         }),
+              //   ),
+              // ],
               // GestureDetector(
               //   onTap: () {
               //     if (cubit.isDBR == true) {

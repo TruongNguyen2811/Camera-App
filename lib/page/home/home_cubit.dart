@@ -40,9 +40,9 @@ class HomeCubit extends Cubit<HomeState> {
         box.get('imageListKey', defaultValue: [])?.cast<ImageData>() ?? [];
     if (imageDataList.isNotEmpty) {
       print('check length ${imageDataList.length}');
-      List<ImageData> filteredList =
-          imageDataList.where((obj) => obj.type == 0).toList();
-      countUnRunNumber = filteredList.length;
+      // List<ImageData> filteredList =
+      //     imageDataList.where((obj) => obj.type == 0).toList();
+      // countUnRunNumber = filteredList.length;
       List<ImageData> filteredList2 =
           imageDataList.where((obj) => obj.type == 1).toList();
       countUnConfirm = filteredList2.length;
@@ -50,6 +50,8 @@ class HomeCubit extends Cubit<HomeState> {
       // // Lấy phần tử mới nhất từ danh sách
       // latestImageData = imageDataList.last;
       // Sử dụng latestImageData theo nhu cầu của bạn
+    } else {
+      countUnConfirm = 0;
     }
     emit(HomeInitial());
   }

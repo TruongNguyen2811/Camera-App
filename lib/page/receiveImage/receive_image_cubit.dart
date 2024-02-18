@@ -49,6 +49,10 @@ class ReceiveImageCubit extends Cubit<ReceiveImageState> {
 
   Future<void> confirmListImage(String domain) async {
     emit(ReceiveLoading());
+    if (Utils.isEmpty(confirmImage.session_id)) {
+      emit(ConfirmFailure('You are not in any session Id'));
+      return;
+    }
     if (Utils.isEmptyArray(confirmImage.texts)) {
       print('check upload fail');
       emit(ConfirmFailure('You need to enter all text output'));

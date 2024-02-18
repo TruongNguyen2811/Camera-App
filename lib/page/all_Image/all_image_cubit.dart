@@ -96,6 +96,8 @@ class AllImageCubit extends Cubit<AllImageState> {
     print('start');
     String? base64String;
     isChoose = [];
+    // imageDataList = List<ImageData>.from(
+    //     box.get('imageListKey', defaultValue: [])?.cast<ImageData>() ?? []);
     if (type != null) {
       imageDataList = List<ImageData>.from(box
               .get('imageListKey', defaultValue: [])

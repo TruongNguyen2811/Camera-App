@@ -103,7 +103,7 @@ class _AllImagePageState extends State<AllImagePage> {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SingleChildScrollView(
-                child: !Utils.isEmptyArray(_cubit.imageDataShow)
+                child: !Utils.isEmptyArray(_cubit.imageDataList)
                     ? Column(
                         children: [
                           16.verticalSpace,
@@ -133,8 +133,15 @@ class _AllImagePageState extends State<AllImagePage> {
                           ),
                           16.verticalSpace,
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              Text(
+                                'Delete selected photos:',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .body1
+                                    .copyWith(height: 0),
+                              ),
                               ButtonWidget(
                                 textColor: R.color.secondary,
                                 radius: 8.r,
@@ -154,7 +161,46 @@ class _AllImagePageState extends State<AllImagePage> {
                                   showDialog(
                                       context: context,
                                       builder: (_) {
-                                        return popupDelete();
+                                        return popupDelete(1);
+                                      });
+                                  // _cubit.cleanAllData();
+                                },
+                              ),
+                              // 16.horizontalSpace,
+                            ],
+                          ),
+                          16.verticalSpace,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Delete all photos:',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .body1
+                                    .copyWith(height: 0),
+                              ),
+                              // 16.horizontalSpace,
+                              ButtonWidget(
+                                textColor: R.color.secondary,
+                                radius: 8.r,
+                                height: 32.h,
+                                width: 100.w,
+                                backgroundColor: R.color.newBackground,
+                                borderColor: R.color.danger1,
+                                title: 'Delete All',
+                                textStyle: Theme.of(context)
+                                    .textTheme
+                                    .label14
+                                    .copyWith(
+                                        color: R.color.danger1, height: 0),
+                                isShadow: false,
+                                onPressed: () async {
+                                  // Navigator.pop(context);
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return popupDelete(null);
                                       });
                                   // _cubit.cleanAllData();
                                 },
@@ -300,7 +346,7 @@ class _AllImagePageState extends State<AllImagePage> {
     );
   }
 
-  Widget popupDelete() {
+  Widget popupDelete(int? type) {
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.r),
@@ -334,7 +380,7 @@ class _AllImagePageState extends State<AllImagePage> {
             ),
             16.verticalSpace,
             Text(
-              !Utils.isEmptyArray(_cubit.imageDataShow)
+              type == 1
                   ? 'Do you want to delete photos'
                   : 'Do you want to delete all photos',
               style: Theme.of(context).textTheme.body2.copyWith(),
@@ -373,7 +419,7 @@ class _AllImagePageState extends State<AllImagePage> {
                           .text14W600
                           .copyWith(color: Colors.white, height: 0),
                       onPressed: () {
-                        if (!Utils.isEmptyArray(_cubit.imageDataListChoose)) {
+                        if (type == 1) {
                           _cubit.cleanChoosedData();
                         } else {
                           _cubit.cleanAllData();
