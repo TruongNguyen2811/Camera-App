@@ -26,7 +26,6 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:photo_manager/photo_manager.dart';
 
 class ReceiveImagePage extends StatefulWidget {
   ReceiveImage? receiveImage;

@@ -11,16 +11,15 @@ import 'package:app_camera/utils/logger.dart';
 import 'package:app_camera/utils/utils.dart';
 // import 'package:camerawesome/generated/i18n.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 // import 'package:native_exif/native_exif.dart';
 // import 'package:native_exif/native_exif.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:path/path.dart' as path;
 
 class PreviewImageCubit extends Cubit<PreviewImageState> {
@@ -31,7 +30,6 @@ class PreviewImageCubit extends Cubit<PreviewImageState> {
   final TextEditingController controller = TextEditingController();
   bool isLoading = false;
   bool isDBR = false;
-  late AssetPathEntity _album;
   var box = Hive.box<List>('imageBox');
   List<ImageData> imageDataList = [];
   ImageData latestImageData = ImageData();

@@ -3,15 +3,15 @@
 <plist version="1.0">
 	<dict>
 		<key>NSCameraUsageDescription</key>
-		<string>$(PRODUCT_NAME) uses Cameras</string>
+		<string>DEFENDER OCR utilizes the camera to capture OCR images and scan QR codes to participate in a new session ID</string>
 		<key>NSPhotoLibraryAddUsageDescription</key>
-		<string>$(PRODUCT_NAME) uses photo library</string>
+		<string>DEFENDER OCR uses images and videos captured from the device's camera roll, allowing you to upload images for serial number recognition to facilitate OCR scanning</string>
 		<key>NSMicrophoneUsageDescription</key>
-		<string>To enable microphone access when recording video</string>
+		<string>DEFENDER OCR utilizes the microphone to record and play videos for OCR scanning purposes</string>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>$(PRODUCT_NAME) uses photo library</string>
-		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>To enable GPS location access for Exif data</string>
+		<string>DEFENDER OCR uses images and videos captured from the device's camera roll, allowing you to upload images for serial number recognition to facilitate OCR scanning</string>
+		<!-- <key>NSLocationWhenInUseUsageDescription</key>
+		<string>To enable GPS location access for Exif data</string> -->
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>

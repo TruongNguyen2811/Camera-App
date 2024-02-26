@@ -19,7 +19,6 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:native_exif/native_exif.dart';
 // import 'package:native_exif/native_exif.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:path/path.dart' as path;
 
 class ReceiveImageCubit extends Cubit<ReceiveImageState> {
