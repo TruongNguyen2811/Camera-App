@@ -12,6 +12,8 @@ class HomeCubit extends Cubit<HomeState> {
   final sharedPref = AppPreferences();
   String? sessionId;
 
+  List<ChartData> chartData = [];
+
   voidGetSessionId() async {
     emit(HomeLoading());
     sessionId = await sharedPref.sessionId;
@@ -31,7 +33,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   var box = Hive.box<List>('imageBox');
   List<ImageData> imageDataList = [];
-  int countUnRunNumber = 0;
+  int countRunNumber = 0;
   int countUnConfirm = 0;
 
   getData() {
@@ -40,12 +42,13 @@ class HomeCubit extends Cubit<HomeState> {
         box.get('imageListKey', defaultValue: [])?.cast<ImageData>() ?? [];
     if (imageDataList.isNotEmpty) {
       print('check length ${imageDataList.length}');
-      // List<ImageData> filteredList =
-      //     imageDataList.where((obj) => obj.type == 0).toList();
-      // countUnRunNumber = filteredList.length;
+      List<ImageData> filteredList =
+          imageDataList.where((obj) => obj.type == 2).toList();
+      countRunNumber = filteredList.length;
       List<ImageData> filteredList2 =
           imageDataList.where((obj) => obj.type == 1).toList();
       countUnConfirm = filteredList2.length;
+
       // print('data list length ${imageDataList.length}');
       // // Lấy phần tử mới nhất từ danh sách
       // latestImageData = imageDataList.last;
@@ -53,6 +56,16 @@ class HomeCubit extends Cubit<HomeState> {
     } else {
       countUnConfirm = 0;
     }
+    chartData = [
+      ChartData('Unconfirm', countUnConfirm),
+      ChartData('Confirm', countRunNumber),
+    ];
     emit(HomeInitial());
   }
+}
+
+class ChartData {
+  ChartData(this.x, this.y);
+  final String x;
+  final int y;
 }
