@@ -48,16 +48,20 @@ abstract class NetworkExceptions with _$NetworkExceptions {
   static NetworkExceptions handleResponse(dynamic data, int? statusCode) {
     String? message;
     String? errorCode;
+    print('status code ${statusCode}');
+    print('check logger fail data ${data}');
     logger.e(data);
 
-    if (data.toString().contains("message")) {
-      message = data["message"].toString();
+    if (data.toString().contains("detail")) {
+      message = data["detail"].toString();
     }
     if (data.toString().contains("errorCode")) {
+      print('check logger fail data2 ${data}');
       errorCode = data["errorCode"].toString();
     }
 
     if (data is String) {
+      print('check logger fail data3 ${data}');
       message = data;
     }
 
@@ -66,12 +70,16 @@ abstract class NetworkExceptions with _$NetworkExceptions {
     }
 
     if (message!.isNotEmpty) {
+      print('check logger fail data4 ${data}');
       return NetworkExceptions.defaultError(
-          errorCode ?? statusCode.toString(), message, data["data"]);
+          errorCode ?? statusCode.toString(), message, data["detail"]);
     }
 
     switch (statusCode) {
       case 400:
+      // print('13123 ${data["detail"]}');
+      // return NetworkExceptions.defaultError(
+      //     errorCode ?? statusCode.toString(), message, data["detail"]);
       case 403:
         return NetworkExceptions.badRequest(message);
       case 401:
@@ -89,10 +97,10 @@ abstract class NetworkExceptions with _$NetworkExceptions {
         return const NetworkExceptions.serviceUnavailable();
       case 501:
         return NetworkExceptions.defaultError(
-            errorCode ?? statusCode.toString(), message, data["data"]);
+            errorCode ?? statusCode.toString(), message, data["detail"]);
       default:
         return NetworkExceptions.defaultError(
-            errorCode ?? statusCode.toString(), message, data["data"]);
+            errorCode ?? statusCode.toString(), message, data["detail"]);
     }
   }
 
